@@ -1,0 +1,279 @@
+[
+  {
+    "id": "default-overview",
+    "title": "Gambaran Umum Sistem",
+    "titleEn": "System Overview",
+    "description": "Analisis otomatis dari data CMS: datasets, blog posts, dan pages.",
+    "descriptionEn": "Auto-generated analysis from CMS data: datasets, blog posts, and pages.",
+    "locale": "both",
+    "status": "active",
+    "sections": [
+      {
+        "id": "s1-coverage",
+        "title": "Cakupan Data",
+        "titleEn": "Data Coverage",
+        "description": "Distribusi konten berdasarkan kategori dan bahasa.",
+        "locale": "both",
+        "sectionType": "overview",
+        "order": 1,
+        "sectionBg": "/gambar.png",
+        "widgets": [
+          {
+            "id": "w1",
+            "type": "metric-card",
+            "title": "Total Konten",
+            "metrics": [
+              {
+                "id": "m1",
+                "label": "Datasets",
+                "value": "11",
+                "trend": "neutral",
+                "note": "11 chart datasets available"
+              },
+              {
+                "id": "m2",
+                "label": "Blog Posts",
+                "value": "14",
+                "trend": "up",
+                "trendValue": "+2 this month",
+                "note": "13 published, 1 draft"
+              },
+              {
+                "id": "m3",
+                "label": "Pages",
+                "value": "14",
+                "trend": "neutral",
+                "note": "EN + ID versions"
+              },
+              {
+                "id": "m4",
+                "label": "Kategori Dataset",
+                "value": "4",
+                "trend": "neutral",
+                "note": "Macro, Sectoral, Market, Financial"
+              }
+            ]
+          },
+          {
+            "id": "w2",
+            "type": "distribution",
+            "title": "Distribusi Dataset per Kategori",
+            "subtitle": "Focus Area AndaraLab",
+            "distributionItems": [
+              {
+                "label": "Sectoral Intelligence",
+                "value": 4,
+                "percentage": 36,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Macro Foundations",
+                "value": 3,
+                "percentage": 27,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Market Dashboard",
+                "value": 2,
+                "percentage": 18,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Financial Markets",
+                "value": 1,
+                "percentage": 9,
+                "color": "#1e3a5f"
+              }
+            ]
+          },
+          {
+            "id": "w3",
+            "type": "highlight",
+            "title": "Key Insight",
+            "calloutColor": "#1e3a5f",
+            "text": "Sectoral Intelligence mendominasi dengan 36% dari total dataset, menunjukkan fokus AndaraLab pada analisis sektoral ekonomi Indonesia. Nickel dan Energi Terbarukan menjadi topik utama."
+          }
+        ],
+        "createdAt": "2026-01-01",
+        "updatedAt": "2026-04-06"
+      },
+      {
+        "id": "s2-blog",
+        "title": "Konten Blog",
+        "titleEn": "Blog Content",
+        "description": "Analisis distribusi dan kualitas artikel blog.",
+        "locale": "both",
+        "sectionType": "blog-insights",
+        "order": 2,
+        "widgets": [
+          {
+            "id": "w4",
+            "type": "metric-card",
+            "title": "Blog Statistics",
+            "metrics": [
+              {
+                "id": "m5",
+                "label": "Published",
+                "value": "13",
+                "trend": "up",
+                "trendValue": "93%",
+                "note": "1 draft pending"
+              },
+              {
+                "id": "m6",
+                "label": "English Posts",
+                "value": "10",
+                "trend": "up",
+                "trendValue": "71%",
+                "note": "Primary language"
+              },
+              {
+                "id": "m7",
+                "label": "Indonesian Posts",
+                "value": "4",
+                "trend": "neutral",
+                "trendValue": "29%",
+                "note": "Growing content"
+              },
+              {
+                "id": "m8",
+                "label": "Categories",
+                "value": "5",
+                "trend": "neutral",
+                "note": "economics, sectoral, etc."
+              }
+            ]
+          },
+          {
+            "id": "w5",
+            "type": "distribution",
+            "title": "Distribusi Blog per Kategori",
+            "distributionItems": [
+              {
+                "label": "Economics 101",
+                "value": 4,
+                "percentage": 29,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Sectoral Analysis",
+                "value": 4,
+                "percentage": 29,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Financial Markets",
+                "value": 2,
+                "percentage": 14,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Policy Analysis",
+                "value": 2,
+                "percentage": 14,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Market Pulse",
+                "value": 1,
+                "percentage": 7,
+                "color": "#1e3a5f"
+              },
+              {
+                "label": "Lab Notes",
+                "value": 1,
+                "percentage": 7,
+                "color": "#1e3a5f"
+              }
+            ]
+          },
+          {
+            "id": "w6",
+            "type": "highlight",
+            "title": "Content Strategy Insight",
+            "calloutColor": "#1e3a5f",
+            "text": "Dominasi konten economics-101 dan sectoral-analysis menunjukkan positioning AndaraLab sebagai platform edukasi + analisis. Rasio EN:ID sebesar 71:29 mengindikasikan target audience global."
+          }
+        ],
+        "createdAt": "2026-01-01",
+        "updatedAt": "2026-04-06"
+      },
+      {
+        "id": "s3-risk",
+        "title": "Analisis Risiko",
+        "titleEn": "Risk Analysis",
+        "description": "Identifikasi risiko utama sistem.",
+        "locale": "both",
+        "sectionType": "custom",
+        "order": 3,
+        "widgets": [
+          {
+            "id": "w7",
+            "type": "comparison",
+            "title": "Risk Matrix",
+            "subtitle": "Dampak vs Likelihood",
+            "compareHeaders": [
+              "Risiko",
+              "Dampak",
+              "Likelihood",
+              "Mitigasi"
+            ],
+            "compareItems": [
+              {
+                "label": "API Server Down",
+                "values": [
+                  "High",
+                  "Medium",
+                  "PM2 auto-restart"
+                ]
+              },
+              {
+                "label": "Data Loss (CRUD test)",
+                "values": [
+                  "High",
+                  "Low",
+                  "Reset to Default"
+                ]
+              },
+              {
+                "label": "Cross-browser Issue",
+                "values": [
+                  "Medium",
+                  "Medium",
+                  "Multi-browser test"
+                ]
+              },
+              {
+                "label": "Content Mismatch (EN/ID)",
+                "values": [
+                  "Low",
+                  "Low",
+                  "Verify toggle"
+                ]
+              },
+              {
+                "label": "Auth Security",
+                "values": [
+                  "High",
+                  "Medium",
+                  "Password protect /admin"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "w8",
+            "type": "highlight",
+            "title": "Critical Action",
+            "calloutColor": "#1e3a5f",
+            "text": "Administrators harus selalu menjalankan Reset to Default setelah melakukan test CRUD. Tidak ada test autentikasi untuk panel admin — perlu implementasi password protection."
+          }
+        ],
+        "createdAt": "2026-01-01",
+        "updatedAt": "2026-04-06"
+      }
+    ],
+    "createdAt": "2026-01-01",
+    "updatedAt": "2026-04-06"
+  }
+]

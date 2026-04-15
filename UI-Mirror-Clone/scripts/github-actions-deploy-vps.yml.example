@@ -1,0 +1,38 @@
+# Copy to: .github/workflows/deploy-vps.yml
+# GitHub → Settings → Secrets: VPS_HOST, VPS_USER, VPS_SSH_KEY
+# PAT used for `git push` needs the `workflow` scope to add this file via push.
+#
+# This job SSHs into the VPS, syncs main, and rebuilds Docker images (see scripts/vps-docker-rebuild.sh).
+
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH — sync + Docker rebuild
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            APP_DIR="${{ secrets.VPS_APP_DIR }}"
+            if [ -z "$APP_DIR" ]; then APP_DIR="/opt/andara-lab"; fi
+            cd "$APP_DIR"
+            git config --global --add safe.directory "$APP_DIR" || true
+            git fetch origin main
+            git checkout main
+            git reset --hard origin/main
+            bash scripts/vps-docker-rebuild.sh "$APP_DIR"

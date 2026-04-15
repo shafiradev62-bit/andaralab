@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com)",
+      "Bash(python3 -c \"import xlrd; print\\(''xlrd available''\\)\")",
+      "Bash(python -c \"import xlrd; print\\(''xlrd available''\\)\")",
+      "Bash(python -c \"import pandas; print\\(''pandas ok''\\)\")",
+      "Bash(python -c \"import openpyxl; print\\(''openpyxl ok''\\)\")",
+      "Bash(python -c \":*)",
+      "Bash(pip install:*)",
+      "Bash(pnpm add:*)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(curl -s http://localhost:5174/)",
+      "Bash(curl -s http://localhost:5174/data)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(node ./build.mjs)",
+      "Bash(curl -s http://localhost:3001/api/datasets)",
+      "Bash(python -m json.tool)"
+    ]
+  }
+}

@@ -1,0 +1,947 @@
+[
+  {
+    "id": "oil-gas-production",
+    "title": "Produksi Minyak Bumi & Gas Alam",
+    "description": "Produksi minyak mentah, kondensat, dan gas alam Indonesia 1996–2024 (ribuan barel & MMscf)",
+    "category": "Sectoral Intelligence",
+    "chartType": "line",
+    "color": "#2E5A88",
+    "unit": "000 Barel / MMscf",
+    "unitType": "custom",
+    "chartTitle": "Produksi Minyak Bumi & Gas Alam Indonesia",
+    "xAxisLabel": "Tahun",
+    "yAxisLabel": "Volume (000 Barel & MMscf)",
+    "subtitle": "Sumber: SKK Migas / Ministry of Energy and Mineral Resources",
+    "columns": [
+      "Tahun",
+      "Minyak & Kondensat (000 Barel)",
+      "Gas Alam (MMscf)"
+    ],
+    "rows": [
+      {
+        "Tahun": "1996",
+        "Minyak & Kondensat (000 Barel)": 548648.3,
+        "Gas Alam (MMscf)": 3164016.2
+      },
+      {
+        "Tahun": "1997",
+        "Minyak & Kondensat (000 Barel)": 543752.6,
+        "Gas Alam (MMscf)": 3166034.9
+      },
+      {
+        "Tahun": "1998",
+        "Minyak & Kondensat (000 Barel)": 534892,
+        "Gas Alam (MMscf)": 2978851.9
+      },
+      {
+        "Tahun": "1999",
+        "Minyak & Kondensat (000 Barel)": 494643,
+        "Gas Alam (MMscf)": 3068349.1
+      },
+      {
+        "Tahun": "2000",
+        "Minyak & Kondensat (000 Barel)": 484393.3,
+        "Gas Alam (MMscf)": 2845532.9
+      },
+      {
+        "Tahun": "2001",
+        "Minyak & Kondensat (000 Barel)": 480116.1,
+        "Gas Alam (MMscf)": 3762828.5
+      },
+      {
+        "Tahun": "2002",
+        "Minyak & Kondensat (000 Barel)": 397308.5,
+        "Gas Alam (MMscf)": 2279373.9
+      },
+      {
+        "Tahun": "2003",
+        "Minyak & Kondensat (000 Barel)": 383700,
+        "Gas Alam (MMscf)": 2142605
+      },
+      {
+        "Tahun": "2004",
+        "Minyak & Kondensat (000 Barel)": 404992.9,
+        "Gas Alam (MMscf)": 3026069.3
+      },
+      {
+        "Tahun": "2005",
+        "Minyak & Kondensat (000 Barel)": 387653.5,
+        "Gas Alam (MMscf)": 2985341
+      },
+      {
+        "Tahun": "2006",
+        "Minyak & Kondensat (000 Barel)": 357477.4,
+        "Gas Alam (MMscf)": 2948021.6
+      },
+      {
+        "Tahun": "2007",
+        "Minyak & Kondensat (000 Barel)": 348348,
+        "Gas Alam (MMscf)": 2805540.3
+      },
+      {
+        "Tahun": "2008",
+        "Minyak & Kondensat (000 Barel)": 358718.7,
+        "Gas Alam (MMscf)": 2790988
+      },
+      {
+        "Tahun": "2009",
+        "Minyak & Kondensat (000 Barel)": 346313,
+        "Gas Alam (MMscf)": 2887892.2
+      },
+      {
+        "Tahun": "2010",
+        "Minyak & Kondensat (000 Barel)": 344888,
+        "Gas Alam (MMscf)": 3407592.3
+      },
+      {
+        "Tahun": "2011",
+        "Minyak & Kondensat (000 Barel)": 329249.3,
+        "Gas Alam (MMscf)": 3256378.9
+      },
+      {
+        "Tahun": "2012",
+        "Minyak & Kondensat (000 Barel)": 314665.9,
+        "Gas Alam (MMscf)": 2982753.5
+      },
+      {
+        "Tahun": "2013",
+        "Minyak & Kondensat (000 Barel)": 301191.9,
+        "Gas Alam (MMscf)": 2969210.8
+      },
+      {
+        "Tahun": "2014",
+        "Minyak & Kondensat (000 Barel)": 287902.2,
+        "Gas Alam (MMscf)": 2999524.4
+      },
+      {
+        "Tahun": "2015",
+        "Minyak & Kondensat (000 Barel)": 286814.2,
+        "Gas Alam (MMscf)": 2948365.8
+      },
+      {
+        "Tahun": "2017",
+        "Minyak & Kondensat (000 Barel)": 292373.8,
+        "Gas Alam (MMscf)": 2781154
+      },
+      {
+        "Tahun": "2018",
+        "Minyak & Kondensat (000 Barel)": 281826.61,
+        "Gas Alam (MMscf)": 2833783.51
+      },
+      {
+        "Tahun": "2019",
+        "Minyak & Kondensat (000 Barel)": 273494.8,
+        "Gas Alam (MMscf)": 2647985.9
+      },
+      {
+        "Tahun": "2020",
+        "Minyak & Kondensat (000 Barel)": 259246.8,
+        "Gas Alam (MMscf)": 2442830.7
+      },
+      {
+        "Tahun": "2021",
+        "Minyak & Kondensat (000 Barel)": 240324.5,
+        "Gas Alam (MMscf)": 2433364
+      },
+      {
+        "Tahun": "2022",
+        "Minyak & Kondensat (000 Barel)": 223532.5,
+        "Gas Alam (MMscf)": 1962929
+      },
+      {
+        "Tahun": "2023",
+        "Minyak & Kondensat (000 Barel)": 221088.9,
+        "Gas Alam (MMscf)": 2420059.5
+      },
+      {
+        "Tahun": "2024*",
+        "Minyak & Kondensat (000 Barel)": 211756.18,
+        "Gas Alam (MMscf)": 2483498.15
+      }
+    ],
+    "createdAt": "2024-01-01",
+    "updatedAt": "2026-03-31"
+  },
+  {
+    "id": "gdp-growth",
+    "title": "Indonesia GDP Growth Rate",
+    "description": "Quarterly GDP growth rate year-over-year (%)",
+    "category": "Macro Foundations",
+    "chartType": "line",
+    "color": "#5CA0C8",
+    "unit": "%",
+    "unitType": "percent",
+    "chartTitle": "PDB Indonesia — Pertumbuhan Kuartalan (YoY %)",
+    "xAxisLabel": "Kuartal",
+    "yAxisLabel": "Pertumbuhan (%)",
+    "subtitle": "Sumber: BPS Indonesia",
+    "columns": [
+      "Quarter",
+      "GDP Growth",
+      "Forecast"
+    ],
+    "rows": [
+      {
+        "Quarter": "Q1 2023",
+        "GDP Growth": 5.03,
+        "Forecast": 5.1
+      },
+      {
+        "Quarter": "Q2 2023",
+        "GDP Growth": 5.17,
+        "Forecast": 5.2
+      },
+      {
+        "Quarter": "Q3 2023",
+        "GDP Growth": 4.94,
+        "Forecast": 5
+      },
+      {
+        "Quarter": "Q4 2023",
+        "GDP Growth": 5.04,
+        "Forecast": 5
+      },
+      {
+        "Quarter": "Q1 2024",
+        "GDP Growth": 5.11,
+        "Forecast": 5.1
+      },
+      {
+        "Quarter": "Q2 2024",
+        "GDP Growth": 5.05,
+        "Forecast": 5.1
+      },
+      {
+        "Quarter": "Q3 2024",
+        "GDP Growth": 4.95,
+        "Forecast": 5
+      },
+      {
+        "Quarter": "Q4 2024",
+        "GDP Growth": 5.02,
+        "Forecast": 5
+      }
+    ],
+    "createdAt": "2024-01-01",
+    "updatedAt": "2024-12-01"
+  },
+  {
+    "id": "inflation-rate",
+    "title": "Indonesia Inflation Rate",
+    "description": "Monthly consumer price index inflation (%)",
+    "category": "Macro Foundations",
+    "chartType": "area",
+    "color": "#83BFCC",
+    "unit": "%",
+    "unitType": "percent",
+    "chartTitle": "Inflasi IHK Indonesia (YoY %)",
+    "xAxisLabel": "Bulan",
+    "yAxisLabel": "Inflasi (%)",
+    "subtitle": "Sumber: BPS Indonesia",
+    "columns": [
+      "Month",
+      "CPI Inflation",
+      "Core Inflation"
+    ],
+    "rows": [
+      {
+        "Month": "Jan 2024",
+        "CPI Inflation": 2.57,
+        "Core Inflation": 1.8
+      },
+      {
+        "Month": "Feb 2024",
+        "CPI Inflation": 2.75,
+        "Core Inflation": 1.9
+      },
+      {
+        "Month": "Mar 2024",
+        "CPI Inflation": 3.05,
+        "Core Inflation": 1.8
+      },
+      {
+        "Month": "Apr 2024",
+        "CPI Inflation": 3,
+        "Core Inflation": 1.8
+      },
+      {
+        "Month": "May 2024",
+        "CPI Inflation": 2.84,
+        "Core Inflation": 1.9
+      },
+      {
+        "Month": "Jun 2024",
+        "CPI Inflation": 2.51,
+        "Core Inflation": 1.9
+      },
+      {
+        "Month": "Jul 2024",
+        "CPI Inflation": 2.13,
+        "Core Inflation": 1.9
+      },
+      {
+        "Month": "Aug 2024",
+        "CPI Inflation": 2.12,
+        "Core Inflation": 2
+      }
+    ],
+    "createdAt": "2024-01-01",
+    "updatedAt": "2024-09-01"
+  },
+  {
+    "id": "bi-rate",
+    "title": "Bank Indonesia Policy Rate",
+    "description": "BI 7-Day Reverse Repo Rate (%)",
+    "category": "Macro Foundations",
+    "chartType": "bar",
+    "color": "#C4E0EE",
+    "unit": "%",
+    "unitType": "percent",
+    "chartTitle": "Suku Bunga Kebijakan BI vs Fed Funds Rate (%)",
+    "xAxisLabel": "Periode",
+    "yAxisLabel": "Suku Bunga (%)",
+    "subtitle": "Sumber: Bank Indonesia / Federal Reserve",
+    "columns": [
+      "Period",
+      "BI Rate",
+      "US Fed Rate"
+    ],
+    "rows": [
+      {
+        "Period": "Jan 2023",
+        "BI Rate": 5.75,
+        "US Fed Rate": 4.5
+      },
+      {
+        "Period": "Apr 2023",
+        "BI Rate": 5.75,
+        "US Fed Rate": 5
+      },
+      {
+        "Period": "Jul 2023",
+        "BI Rate": 5.75,
+        "US Fed Rate": 5.25
+      },
+      {
+        "Period": "Oct 2023",
+        "BI Rate": 6,
+        "US Fed Rate": 5.5
+      },
+      {
+        "Period": "Jan 2024",
+        "BI Rate": 6,
+        "US Fed Rate": 5.5
+      },
+      {
+        "Period": "Apr 2024",
+        "BI Rate": 6.25,
+        "US Fed Rate": 5.5
+      },
+      {
+        "Period": "Jul 2024",
+        "BI Rate": 6.25,
+        "US Fed Rate": 5.5
+      },
+      {
+        "Period": "Oct 2024",
+        "BI Rate": 6,
+        "US Fed Rate": 5
+      }
+    ],
+    "createdAt": "2024-01-01",
+    "updatedAt": "2024-11-01"
+  },
+  {
+    "id": "trade-balance",
+    "title": "Indonesia Trade Balance",
+    "description": "Monthly trade balance in USD Billion",
+    "category": "Sectoral Intelligence",
+    "chartType": "bar",
+    "color": "#CEDBEB",
+    "unit": "USD B",
+    "unitType": "currency_usd",
+    "chartTitle": "Neraca Perdagangan Indonesia (USD Miliar)",
+    "xAxisLabel": "Bulan",
+    "yAxisLabel": "USD Miliar",
+    "subtitle": "Sumber: BPS Indonesia",
+    "columns": [
+      "Month",
+      "Exports",
+      "Imports",
+      "Balance"
+    ],
+    "rows": [
+      {
+        "Month": "Jan 2024",
+        "Exports": 20.5,
+        "Imports": 18.1,
+        "Balance": 2.4
+      },
+      {
+        "Month": "Feb 2024",
+        "Exports": 19.3,
+        "Imports": 17.8,
+        "Balance": 1.5
+      },
+      {
+        "Month": "Mar 2024",
+        "Exports": 22.1,
+        "Imports": 19.5,
+        "Balance": 2.6
+      },
+      {
+        "Month": "Apr 2024",
+        "Exports": 21.5,
+        "Imports": 18.9,
+        "Balance": 2.6
+      },
+      {
+        "Month": "May 2024",
+        "Exports": 22.4,
+        "Imports": 19.8,
+        "Balance": 2.6
+      },
+      {
+        "Month": "Jun 2024",
+        "Exports": 20.8,
+        "Imports": 18.5,
+        "Balance": 2.3
+      }
+    ],
+    "createdAt": "2024-01-01",
+    "updatedAt": "2024-07-01"
+  },
+  {
+    "id": "idr-usd",
+    "title": "IDR/USD Exchange Rate",
+    "description": "Indonesian Rupiah vs US Dollar (monthly average)",
+    "category": "Market Dashboard",
+    "chartType": "line",
+    "color": "#B8D4E8",
+    "unit": "IDR",
+    "unitType": "currency_idr",
+    "chartTitle": "Kurs IDR/USD (Rata-rata Bulanan)",
+    "xAxisLabel": "Bulan",
+    "yAxisLabel": "IDR per USD",
+    "subtitle": "Sumber: Bank Indonesia",
+    "columns": [
+      "Month",
+      "IDR/USD"
+    ],
+    "rows": [
+      {
+        "Month": "Jan 2024",
+        "IDR/USD": 15620
+      },
+      {
+        "Month": "Feb 2024",
+        "IDR/USD": 15680
+      },
+      {
+        "Month": "Mar 2024",
+        "IDR/USD": 15721
+      },
+      {
+        "Month": "Apr 2024",
+        "IDR/USD": 16100
+      },
+      {
+        "Month": "May 2024",
+        "IDR/USD": 16015
+      },
+      {
+        "Month": "Jun 2024",
+        "IDR/USD": 16373
+      },
+      {
+        "Month": "Jul 2024",
+        "IDR/USD": 16200
+      },
+      {
+        "Month": "Aug 2024",
+        "IDR/USD": 15780
+      }
+    ],
+    "createdAt": "2024-01-01",
+    "updatedAt": "2024-09-01"
+  },
+  {
+    "id": "nickel-production",
+    "title": "Produksi Nikel Indonesia",
+    "description": "Output nikel Indonesia 2010–2024 (tonnikel konten metal) dan pangsa pasar global",
+    "category": "Sectoral Intelligence",
+    "chartType": "area",
+    "color": "#2E5A88",
+    "unit": "Ton Metal",
+    "unitType": "number",
+    "chartTitle": "Produksi Nikel Indonesia vs Dunia (%)",
+    "xAxisLabel": "Tahun",
+    "yAxisLabel": "Ton Metal (Ribuan)",
+    "subtitle": "Sumber: USGS / Indonesia ESDM Ministry",
+    "columns": [
+      "Year",
+      "Indonesia Production",
+      "Global Share %"
+    ],
+    "rows": [
+      {
+        "Year": "2015",
+        "Indonesia Production": 169.2,
+        "Global Share %": 18
+      },
+      {
+        "Year": "2016",
+        "Indonesia Production": 188.3,
+        "Global Share %": 21
+      },
+      {
+        "Year": "2017",
+        "Indonesia Production": 201.5,
+        "Global Share %": 24
+      },
+      {
+        "Year": "2018",
+        "Indonesia Production": 213.6,
+        "Global Share %": 27
+      },
+      {
+        "Year": "2019",
+        "Indonesia Production": 229.4,
+        "Global Share %": 30
+      },
+      {
+        "Year": "2020",
+        "Indonesia Production": 237.8,
+        "Global Share %": 32
+      },
+      {
+        "Year": "2021",
+        "Indonesia Production": 245.3,
+        "Global Share %": 33
+      },
+      {
+        "Year": "2022",
+        "Indonesia Production": 258.1,
+        "Global Share %": 35
+      },
+      {
+        "Year": "2023",
+        "Indonesia Production": 271.5,
+        "Global Share %": 37
+      },
+      {
+        "Year": "2024*",
+        "Indonesia Production": 289,
+        "Global Share %": 39
+      }
+    ],
+    "createdAt": "2024-06-01",
+    "updatedAt": "2026-03-01"
+  },
+  {
+    "id": "digital-economy-gmv",
+    "title": "Ekonomi Digital Indonesia",
+    "description": "Gross Merchandise Value (GMV) ekonomi digital Indonesia 2019–2026 (USD Miliar)",
+    "category": "Market Dashboard",
+    "chartType": "line",
+    "color": "#5CA0C8",
+    "unit": "USD B",
+    "unitType": "currency_usd",
+    "chartTitle": "GMV Ekonomi Digital Indonesia (USD Miliar)",
+    "xAxisLabel": "Tahun",
+    "yAxisLabel": "USD Miliar",
+    "subtitle": "Sumber: Google Temasek Bain / AndaraLab estimates",
+    "columns": [
+      "Year",
+      "GMV (USD B)",
+      "YoY Growth %"
+    ],
+    "rows": [
+      {
+        "Year": "2019",
+        "GMV (USD B)": 40,
+        "YoY Growth %": 49
+      },
+      {
+        "Year": "2020",
+        "GMV (USD B)": 44,
+        "YoY Growth %": 10
+      },
+      {
+        "Year": "2021",
+        "GMV (USD B)": 70,
+        "YoY Growth %": 59
+      },
+      {
+        "Year": "2022",
+        "GMV (USD B)": 77,
+        "YoY Growth %": 10
+      },
+      {
+        "Year": "2023",
+        "GMV (USD B)": 82,
+        "YoY Growth %": 6
+      },
+      {
+        "Year": "2024",
+        "GMV (USD B)": 95,
+        "YoY Growth %": 16
+      },
+      {
+        "Year": "2025",
+        "GMV (USD B)": 110,
+        "YoY Growth %": 16
+      },
+      {
+        "Year": "2026*",
+        "GMV (USD B)": 130,
+        "YoY Growth %": 18
+      }
+    ],
+    "createdAt": "2024-06-01",
+    "updatedAt": "2026-03-01"
+  },
+  {
+    "id": "sovereign-bond-yield",
+    "title": "Imbal Hasil SBN Indonesia",
+    "description": "Yield obligasi pemerintah tenor 5, 10, 15 tahun (%) — Indikator risiko sovereign",
+    "category": "Financial Markets",
+    "chartType": "line",
+    "color": "#83BFCC",
+    "unit": "%",
+    "unitType": "percent",
+    "chartTitle": "Yield SBN Indonesia (% p.a.)",
+    "xAxisLabel": "Tanggal",
+    "yAxisLabel": "Yield (%)",
+    "subtitle": "Sumber: Refinitiv / Bloomberg",
+    "columns": [
+      "Date",
+      "SUN 5Y",
+      "SUN 10Y",
+      "SUN 15Y"
+    ],
+    "rows": [
+      {
+        "Date": "Jan 2024",
+        "SUN 5Y": 6.35,
+        "SUN 10Y": 6.62,
+        "SUN 15Y": 6.8
+      },
+      {
+        "Date": "Feb 2024",
+        "SUN 5Y": 6.48,
+        "SUN 10Y": 6.75,
+        "SUN 15Y": 6.91
+      },
+      {
+        "Date": "Mar 2024",
+        "SUN 5Y": 6.52,
+        "SUN 10Y": 6.8,
+        "SUN 15Y": 6.95
+      },
+      {
+        "Date": "Apr 2024",
+        "SUN 5Y": 6.88,
+        "SUN 10Y": 7.05,
+        "SUN 15Y": 7.18
+      },
+      {
+        "Date": "May 2024",
+        "SUN 5Y": 6.95,
+        "SUN 10Y": 7.12,
+        "SUN 15Y": 7.25
+      },
+      {
+        "Date": "Jun 2024",
+        "SUN 5Y": 7.02,
+        "SUN 10Y": 7.2,
+        "SUN 15Y": 7.32
+      },
+      {
+        "Date": "Jul 2024",
+        "SUN 5Y": 6.75,
+        "SUN 10Y": 6.95,
+        "SUN 15Y": 7.1
+      },
+      {
+        "Date": "Aug 2024",
+        "SUN 5Y": 6.5,
+        "SUN 10Y": 6.7,
+        "SUN 15Y": 6.85
+      }
+    ],
+    "createdAt": "2024-06-01",
+    "updatedAt": "2024-09-01"
+  },
+  {
+    "id": "coal-production",
+    "title": "Produksi Batu Bara Indonesia",
+    "description": "Output batu bara Indonesia 2010–2024 (juta ton) dan ekspor",
+    "category": "Sectoral Intelligence",
+    "chartType": "bar",
+    "color": "#C4E0EE",
+    "unit": "Juta Ton",
+    "unitType": "number",
+    "chartTitle": "Produksi & Ekspor Batu Bara Indonesia (Juta Ton)",
+    "xAxisLabel": "Tahun",
+    "yAxisLabel": "Juta Ton",
+    "subtitle": "Sumber: Ministry of Energy and Mineral Resources",
+    "columns": [
+      "Year",
+      "Production",
+      "Exports"
+    ],
+    "rows": [
+      {
+        "Year": "2015",
+        "Production": 492,
+        "Exports": 381
+      },
+      {
+        "Year": "2016",
+        "Production": 510,
+        "Exports": 395
+      },
+      {
+        "Year": "2017",
+        "Production": 523,
+        "Exports": 399
+      },
+      {
+        "Year": "2018",
+        "Production": 557,
+        "Exports": 439
+      },
+      {
+        "Year": "2019",
+        "Production": 610,
+        "Exports": 464
+      },
+      {
+        "Year": "2020",
+        "Production": 563,
+        "Exports": 405
+      },
+      {
+        "Year": "2021",
+        "Production": 614,
+        "Exports": 434
+      },
+      {
+        "Year": "2022",
+        "Production": 687,
+        "Exports": 494
+      },
+      {
+        "Year": "2023",
+        "Production": 743,
+        "Exports": 518
+      },
+      {
+        "Year": "2024*",
+        "Production": 775,
+        "Exports": 532
+      }
+    ],
+    "createdAt": "2024-06-01",
+    "updatedAt": "2026-03-01"
+  },
+  {
+    "id": "fdi-inflow",
+    "title": "Foreign Direct Investment Indonesia",
+    "description": "Aliran FDI masuk ke Indonesia per kuartal (USD Miliar) — berdasarkan negara asal",
+    "category": "Macro Foundations",
+    "chartType": "bar",
+    "color": "#CEDBEB",
+    "unit": "USD B",
+    "unitType": "currency_usd",
+    "chartTitle": "FDI Masuk Indonesia per Kuartal (USD Miliar)",
+    "xAxisLabel": "Kuartal",
+    "yAxisLabel": "USD Miliar",
+    "subtitle": "Sumber: BKPM / Bank Indonesia",
+    "columns": [
+      "Quarter",
+      "FDI (USD B)"
+    ],
+    "rows": [
+      {
+        "Quarter": "Q1 2023",
+        "FDI (USD B)": 5.2
+      },
+      {
+        "Quarter": "Q2 2023",
+        "FDI (USD B)": 5.8
+      },
+      {
+        "Quarter": "Q3 2023",
+        "FDI (USD B)": 5.5
+      },
+      {
+        "Quarter": "Q4 2023",
+        "FDI (USD B)": 6.1
+      },
+      {
+        "Quarter": "Q1 2024",
+        "FDI (USD B)": 5.9
+      },
+      {
+        "Quarter": "Q2 2024",
+        "FDI (USD B)": 6.3
+      },
+      {
+        "Quarter": "Q3 2024",
+        "FDI (USD B)": 6
+      },
+      {
+        "Quarter": "Q4 2024",
+        "FDI (USD B)": 6.8
+      }
+    ],
+    "createdAt": "2024-06-01",
+    "updatedAt": "2025-01-01"
+  },
+  {
+    "title": "Local Test: GDP Growth",
+    "description": "Economic growth data for localhost testing.",
+    "category": "Macro Foundations",
+    "chartType": "line",
+    "color": "#1a3a5c",
+    "unit": "%",
+    "unitType": "percent",
+    "columns": [
+      "Tahun",
+      "Value"
+    ],
+    "rows": [
+      {
+        "Tahun": 2020,
+        "Value": 5.5
+      },
+      {
+        "Tahun": 2021,
+        "Value": 6.2
+      },
+      {
+        "Tahun": 2022,
+        "Value": 5.8
+      },
+      {
+        "Tahun": 2023,
+        "Value": 6
+      },
+      {
+        "Tahun": 2024,
+        "Value": 6.5
+      }
+    ],
+    "id": "ds-1775717936918-ws9s",
+    "createdAt": "2026-04-09T06:58:56.923Z",
+    "updatedAt": "2026-04-09T06:58:56.923Z"
+  },
+  {
+    "title": "Local Test: Inflation",
+    "description": "Inflation index for testing bulk upload.",
+    "category": "Macro Foundations",
+    "chartType": "bar",
+    "color": "#1a3a5c",
+    "unit": "%",
+    "unitType": "percent",
+    "columns": [
+      "Month",
+      "Value"
+    ],
+    "rows": [
+      {
+        "Month": "Jan",
+        "Value": 1.2
+      },
+      {
+        "Month": "Feb",
+        "Value": 1.5
+      },
+      {
+        "Month": "Mar",
+        "Value": 1.8
+      },
+      {
+        "Month": "Apr",
+        "Value": 2.1
+      },
+      {
+        "Month": "May",
+        "Value": 1.9
+      }
+    ],
+    "id": "ds-1775717936923-209i",
+    "createdAt": "2026-04-09T06:58:56.923Z",
+    "updatedAt": "2026-04-09T06:58:56.923Z"
+  },
+  {
+    "title": "Local Test: Nickel Export",
+    "description": "Volume of nickel exports for testing sectoral data.",
+    "category": "Sectoral",
+    "chartType": "area",
+    "color": "#1a3a5c",
+    "unit": "MT",
+    "unitType": "number",
+    "columns": [
+      "Year",
+      "Value"
+    ],
+    "rows": [
+      {
+        "Year": 2021,
+        "Value": 120
+      },
+      {
+        "Year": 2022,
+        "Value": 150
+      },
+      {
+        "Year": 2023,
+        "Value": 180
+      },
+      {
+        "Year": 2024,
+        "Value": 210
+      }
+    ],
+    "id": "ds-1775717936923-ojei",
+    "createdAt": "2026-04-09T06:58:56.923Z",
+    "updatedAt": "2026-04-09T06:58:56.923Z"
+  },
+  {
+    "title": "Local Test: USD/IDR",
+    "description": "Currency exchange rates for market intelligence.",
+    "category": "Market",
+    "chartType": "line",
+    "color": "#1a3a5c",
+    "unit": "IDR",
+    "unitType": "currency_idr",
+    "columns": [
+      "Date",
+      "Value"
+    ],
+    "rows": [
+      {
+        "Date": "01/01",
+        "Value": 15600
+      },
+      {
+        "Date": "02/01",
+        "Value": 15650
+      },
+      {
+        "Date": "03/01",
+        "Value": 15700
+      },
+      {
+        "Date": "04/01",
+        "Value": 15680
+      }
+    ],
+    "id": "ds-1775717936923-ktj2",
+    "createdAt": "2026-04-09T06:58:56.923Z",
+    "updatedAt": "2026-04-09T06:58:56.923Z"
+  }
+]

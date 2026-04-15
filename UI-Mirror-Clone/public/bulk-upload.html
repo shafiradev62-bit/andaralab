@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bulk Upload - AndaraLab CSV Uploader</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0a1628;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar {
+      background: #0d1f3c;
+      border-bottom: 1px solid #1a3a5c;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar .logo {
+      font-size: 20px;
+      font-weight: 700;
+      color: #4fc3f7;
+      letter-spacing: 1px;
+    }
+
+    .navbar .subtitle {
+      font-size: 13px;
+      color: #6b8cae;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      flex: 1;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #4fc3f7;
+      margin-bottom: 8px;
+    }
+
+    .subtitle-text {
+      color: #8ab4d4;
+      margin-bottom: 32px;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #0d1f3c;
+      border: 1px solid #1a3a5c;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      color: #b0c4de;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .drop-zone {
+      border: 2px dashed #1a3a5c;
+      border-radius: 10px;
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #081424;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: #4fc3f7;
+      background: #0d2240;
+    }
+
+    .drop-zone .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    .drop-zone p {
+      color: #6b8cae;
+      font-size: 15px;
+    }
+
+    .drop-zone .hint {
+      font-size: 12px;
+      color: #3d6080;
+      margin-top: 8px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #1565c0;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #1e88e5; }
+    .btn-primary:disabled { background: #1a3a5c; color: #4a6080; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: #1a3a5c;
+      color: #b0c4de;
+    }
+
+    .btn-secondary:hover { background: #234e7a; }
+    .btn-danger { background: #c62828; color: #fff; }
+    .btn-danger:hover { background: #e53935; }
+
+    .status-bar {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 16px;
+      display: none;
+    }
+
+    .status-bar.show { display: block; }
+    .status-bar.info { background: #0d2240; border: 1px solid #1565c0; color: #64b5f6; }
+    .status-bar.success { background: #0d2e1e; border: 1px solid #2e7d32; color: #81c784; }
+    .status-bar.error { background: #2e0d0d; border: 1px solid #c62828; color: #ef5350; }
+
+    .progress-bar-wrap {
+      background: #081424;
+      border-radius: 6px;
+      height: 8px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #1565c0, #4fc3f7);
+      border-radius: 6px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .preview-table-wrap {
+      overflow-x: auto;
+      margin-top: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th {
+      background: #0d2240;
+      color: #4fc3f7;
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 2px solid #1a3a5c;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #0d2240;
+      color: #b0c4de;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    tr:hover td { background: #081424; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-macro { background: #0d2240; color: #4fc3f7; border: 1px solid #1565c0; }
+    .badge-sectoral { background: #1a2e0d; color: #81c784; border: 1px solid #2e7d32; }
+    .badge-market { background: #2e1a0d; color: #ffb74d; border: 1px solid #f57c00; }
+    .badge-financial { background: #1a0d2e; color: #ce93d8; border: 1px solid #7b1fa2; }
+
+    .config-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 12px;
+      color: #6b8cae;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    input[type="text"], input[type="url"] {
+      width: 100%;
+      padding: 8px 12px;
+      background: #081424;
+      border: 1px solid #1a3a5c;
+      border-radius: 6px;
+      color: #e0e0e0;
+      font-size: 13px;
+    }
+
+    input[type="text"]:focus, input[type="url"]:focus {
+      outline: none;
+      border-color: #4fc3f7;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: #081424;
+      border: 1px solid #1a3a5c;
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .stat-card .num {
+      font-size: 28px;
+      font-weight: 700;
+      color: #4fc3f7;
+    }
+
+    .stat-card .label {
+      font-size: 11px;
+      color: #6b8cae;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .log-area {
+      background: #050d18;
+      border: 1px solid #1a3a5c;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .log-area.show { display: block; }
+
+    .log-line { padding: 2px 0; }
+    .log-line.ok { color: #81c784; }
+    .log-line.err { color: #ef5350; }
+    .log-line.info { color: #64b5f6; }
+    .log-line.warn { color: #ffb74d; }
+
+    .result-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .result-chip {
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .result-chip.total { background: #081424; border: 1px solid #1a3a5c; color: #b0c4de; }
+    .result-chip.ok { background: #0d2e1e; border: 1px solid #2e7d32; color: #81c784; }
+    .result-chip.fail { background: #2e0d0d; border: 1px solid #c62828; color: #ef5350; }
+
+    .result-chip strong { display: block; font-size: 22px; margin-bottom: 2px; }
+
+    .chart-preview {
+      background: #050d18;
+      border: 1px solid #1a3a5c;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .chart-preview h3 {
+      color: #4fc3f7;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .chart-canvas {
+      width: 100%;
+      height: 250px;
+    }
+
+    .auto-detect-info {
+      background: #0d2e1e;
+      border: 1px solid #2e7d32;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #81c784;
+    }
+
+    .auto-detect-info .detected {
+      display: inline-block;
+      background: #1565c0;
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <div class="logo">AndaraLab</div>
+    <div class="subtitle">Smart CSV Uploader - Auto Detect & Generate</div>
+  </div>
+
+  <div class="container">
+
+    <h1>Smart Dataset Upload</h1>
+    <p class="subtitle-text">Upload file CSV apa saja - sistem akan otomatis mendeteksi format & menghasilkan table + chart preview!</p>
+
+    <!-- Auto Detect Info -->
+    <div class="auto-detect-info" id="autoDetectInfo" style="display:none;">
+      <span class="detected" id="detectedFormat">CSV</span>
+      <span id="detectedDetails">Mendeteksi struktur data...</span>
+    </div>
+
+  <!-- Upload -->
+  <div class="card">
+    <h2>Upload File CSV</h2>
+    
+    <!-- Configuration -->
+    <div class="config-section">
+      <label>API Base URL</label>
+      <input type="url" id="baseUrl" value="http://localhost:3000" placeholder="e.g., http://localhost:3000 or https://your-domain.com" />
+      
+      <label style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        <input type="checkbox" id="useBulk" checked style="width:auto;" />
+        <span>Use bulk upload endpoint (faster for multiple datasets)</span>
+      </label>
+    </div>
+    
+    <div class="drop-zone" id="dropZone">
+      <div class="icon">📁</div>
+      <p>Drag & drop file CSV di sini</p>
+      <p style="margin-top:8px; color:#4fc3f7;">atau klik untuk pilih file</p>
+      <p class="hint">Upload CSV apa saja - sistem akan auto generate table & chart!</p>
+    </div>
+    <input type="file" id="fileInput" accept=".csv,.txt" />
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="downloadSample()">⬇ Download Sample CSV</button>
+      <button class="btn btn-primary" id="parseBtn" onclick="smartParseCSV()" disabled>🔍 Smart Parse & Generate</button>
+      <button class="btn btn-primary" id="uploadBtn" onclick="uploadAll()" disabled>⬆ Upload ke VPS</button>
+      <button class="btn btn-danger" onclick="clearAll()">🗑 Clear</button>
+    </div>
+
+    <div class="status-bar" id="statusBar"></div>
+    <div class="progress-bar-wrap" id="progressWrap" style="display:none;">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- Smart Table Preview -->
+  <div class="card" id="tablePreviewCard" style="display:none;">
+    <h2>📊 Table Preview (<span id="tableRowCount">0</span> rows)</h2>
+    <div class="summary-grid" id="tableSummaryGrid"></div>
+    <div class="preview-table-wrap">
+      <table id="tablePreviewTable">
+        <thead id="tablePreviewHead"></thead>
+        <tbody id="tablePreviewBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Smart Chart Preview -->
+  <div class="card" id="chartPreviewCard" style="display:none;">
+    <h2>📈 Chart Preview</h2>
+    <div class="chart-preview">
+      <canvas id="chartCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Dataset Preview -->
+  <div class="card" id="previewCard" style="display:none;">
+    <h2>Dataset Output (<span id="previewCount">0</span> datasets)</h2>
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="preview-table-wrap">
+      <table id="previewTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Type</th>
+            <th>Unit</th>
+            <th>Rows</th>
+            <th>Columns</th>
+          </tr>
+        </thead>
+        <tbody id="previewBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Log -->
+  <div class="card" id="logCard" style="display:none;">
+    <h2>Upload Log</h2>
+    <div class="result-summary" id="resultSummary"></div>
+    <div class="log-area" id="logArea"></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // ── Constants
+  const COLORS = ["#1a3a5c", "#2a5a8c", "#0d9fbf", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#5b21b6"];
+  
+  // ── State
+  let parsedDatasets = [];
+
+  // ── DOM refs
+  const dropZone    = document.getElementById('dropZone');
+  const fileInput   = document.getElementById('fileInput');
+  const parseBtn    = document.getElementById('parseBtn');
+  const uploadBtn   = document.getElementById('uploadBtn');
+  const statusBar   = document.getElementById('statusBar');
+  const progressWrap = document.getElementById('progressWrap');
+  const progressBar = document.getElementById('progressBar');
+  const previewCard = document.getElementById('previewCard');
+  const previewBody = document.getElementById('previewBody');
+  const previewCount = document.getElementById('previewCount');
+  const logCard     = document.getElementById('logCard');
+  const logArea     = document.getElementById('logArea');
+  const resultSummary = document.getElementById('resultSummary');
+  const summaryGrid  = document.getElementById('summaryGrid');
+
+  // ── Drag & Drop
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) loadFile(file);
+  });
+
+  fileInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) loadFile(file);
+  });
+
+  function loadFile(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      window.csvRaw = e.target.result;
+      window.csvFileName = file.name;
+      // Auto-parse immediately on file load
+      smartParseCSV();
+    };
+    reader.readAsText(file);
+  }
+
+  // ── Smart CSV Parser - Auto-detects ANY CSV format
+  function smartParseCSV() {
+    if (!window.csvRaw) return;
+
+    const text = window.csvRaw.trim();
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length < 2) {
+      showStatus('error', 'CSV tidak valid atau hanya 1 baris.');
+      return;
+    }
+
+    // Detect CSV structure
+    const result = detectCSVStructure(lines);
+    
+    if (result.error) {
+      showStatus('error', result.error);
+      return;
+    }
+
+    parsedDatasets = result.datasets;
+    
+    // Show auto-detect info
+    document.getElementById('autoDetectInfo').style.display = 'block';
+    document.getElementById('detectedFormat').textContent = result.format;
+    document.getElementById('detectedDetails').textContent = result.details;
+
+    // Render all previews
+    renderTablePreview(result.rawHeaders, result.rawData);
+    renderDatasetPreview();
+    renderChartPreview(parsedDatasets[0]);
+
+    parseBtn.disabled = false;
+    uploadBtn.disabled = false;
+    showStatus('success', `✅ Auto-detect berhasil! <b>${parsedDatasets.length}</b> dataset, <b>${result.rawData.length}</b> baris data.`);
+  }
+
+  // ── Detect CSV structure automatically
+  function detectCSVStructure(lines) {
+    // Skip empty lines at start
+    let startIdx = 0;
+    while (startIdx < lines.length && !lines[startIdx].replace(/,/g, '').trim()) {
+      startIdx++;
+    }
+    
+    const dataLines = lines.slice(startIdx);
+    if (dataLines.length < 2) {
+      return { error: 'CSV tidak memiliki cukup data.' };
+    }
+
+    // Parse first line as potential header
+    let headers = parseCSVLine(dataLines[0]).map(h => h.trim());
+    let dataStartIdx = 1;
+    let multiLineHeader = false;
+
+    // Check if second line is part of header (multi-line header)
+    if (dataLines.length > 2) {
+      const secondLine = parseCSVLine(dataLines[1]).map(h => h.trim());
+      const hasData = secondLine.some(cell => !isNaN(Number(cell.replace(/[$,\s%]/g, ''))) && cell !== '');
+      const hasText = secondLine.some(cell => isNaN(Number(cell.replace(/[$,\s%]/g, ''))) && cell !== '');
+      
+      if (!hasData && hasText) {
+        // Multi-line header detected
+        multiLineHeader = true;
+        headers = headers.map((h, i) => {
+          const sub = secondLine[i] || '';
+          return sub ? `${h} ${sub}`.trim() : h;
+        });
+        dataStartIdx = 2;
+      }
+    }
+
+    // Parse data rows
+    const rawData = [];
+    for (let i = dataStartIdx; i < dataLines.length; i++) {
+      const values = parseCSVLine(dataLines[i]).map(v => v.trim());
+      if (values.every(v => !v)) continue; // Skip empty rows
+      
+      const row = {};
+      headers.forEach((h, idx) => {
+        row[h] = values[idx] || '';
+      });
+      rawData.push(row);
+    }
+
+    // Detect column types
+    const columnTypes = {};
+    headers.forEach(h => {
+      const values = rawData.map(r => r[h]).filter(v => v !== '');
+      const numericCount = values.filter(v => !isNaN(Number(v.replace(/[$,\s%]/g, ''))) && v !== '').length;
+      columnTypes[h] = numericCount > values.length / 2 ? 'numeric' : 'text';
+    });
+
+    // Find label column (first text column or first column)
+    const labelCol = headers.find(h => columnTypes[h] === 'text') || headers[0];
+    
+    // Find numeric columns for data series
+    const numericCols = headers.filter(h => columnTypes[h] === 'numeric' && h !== labelCol);
+
+    // Generate smart dataset
+    const datasets = [];
+    
+    if (numericCols.length > 0) {
+      // Multiple series detected
+      numericCols.forEach((col, idx) => {
+        const rows = rawData.map(r => {
+          const obj = {};
+          obj[labelCol] = r[labelCol];
+          obj['Value'] = parseFloat(r[col].replace(/[$,\s%]/g, '')) || 0;
+          return obj;
+        }).filter(r => r[labelCol] && r['Value'] !== 0);
+
+        datasets.push({
+          title: col,
+          description: `Data series for ${col}`,
+          category: 'Macro Foundations',
+          chartType: 'line',
+          color: COLORS[idx % COLORS.length],
+          unit: detectUnit(rawData.map(r => r[col])),
+          unitType: detectUnitType(rawData.map(r => r[col])),
+          chartTitle: col,
+          xAxisLabel: labelCol,
+          yAxisLabel: col,
+          subtitle: '',
+          columns: [labelCol, 'Value'],
+          columnNames: { en: [labelCol, 'Value'], id: [labelCol, 'Nilai'] },
+          rows: rows,
+          colors: [COLORS[idx % COLORS.length]],
+        });
+      });
+    } else {
+      // Single dataset with all columns
+      const columns = headers;
+      const rows = rawData.map(r => {
+        const obj = {};
+        headers.forEach(h => {
+          const val = r[h];
+          obj[h] = columnTypes[h] === 'numeric' ? (parseFloat(val.replace(/[$,\s%]/g, '')) || 0) : val;
+        });
+        return obj;
+      });
+
+      datasets.push({
+        title: window.csvFileName?.replace(/\.[^/.]+$/, '') || 'Dataset',
+        description: `Auto-generated from ${window.csvFileName || 'CSV'}`,
+        category: 'Macro Foundations',
+        chartType: 'line',
+        color: '#1a3a5c',
+        unit: '',
+        unitType: 'number',
+        chartTitle: window.csvFileName?.replace(/\.[^/.]+$/, '') || 'Dataset',
+        xAxisLabel: labelCol,
+        yAxisLabel: '',
+        subtitle: '',
+        columns,
+        columnNames: { en: columns, id: columns },
+        rows,
+        colors: ['#1a3a5c'],
+      });
+    }
+
+    return {
+      format: multiLineHeader ? 'Multi-line Header CSV' : 'Standard CSV',
+      details: `${headers.length} columns, ${rawData.length} rows, ${numericCols.length} numeric series`,
+      rawHeaders: headers,
+      rawData,
+      datasets,
+      error: null,
+    };
+  }
+
+  function detectUnit(values) {
+    const sample = values[0] || '';
+    if (sample.includes('%')) return '%';
+    if (sample.includes('$') || sample.toLowerCase().includes('usd')) return 'USD';
+    if (sample.toLowerCase().includes('idr') || sample.toLowerCase().includes('rp')) return 'IDR';
+    return '';
+  }
+
+  function detectUnitType(values) {
+    const sample = values[0] || '';
+    if (sample.includes('%')) return 'percent';
+    if (sample.includes('$') || sample.toLowerCase().includes('usd')) return 'currency_usd';
+    if (sample.toLowerCase().includes('idr') || sample.toLowerCase().includes('rp')) return 'currency_idr';
+    return 'number';
+  }
+
+  function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        inQuotes = !inQuotes;
+      } else if (ch === ',' && !inQuotes) {
+        result.push(current);
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    result.push(current);
+    return result;
+  }
+
+  // ── Render Table Preview
+  function renderTablePreview(headers, data) {
+    const tablePreviewCard = document.getElementById('tablePreviewCard');
+    const tablePreviewHead = document.getElementById('tablePreviewHead');
+    const tablePreviewBody = document.getElementById('tablePreviewBody');
+    const tableRowCount = document.getElementById('tableRowCount');
+    const tableSummaryGrid = document.getElementById('tableSummaryGrid');
+
+    tablePreviewCard.style.display = 'block';
+    tableRowCount.textContent = data.length;
+
+    // Summary stats
+    tableSummaryGrid.innerHTML = `
+      <div class="stat-card"><div class="num">${headers.length}</div><div class="label">Columns</div></div>
+      <div class="stat-card"><div class="num">${data.length}</div><div class="label">Rows</div></div>
+    `;
+
+    // Render headers
+    tablePreviewHead.innerHTML = '<tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
+
+    // Render data (limit to first 100 rows for performance)
+    const displayData = data.slice(0, 100);
+    tablePreviewBody.innerHTML = displayData.map(row => 
+      '<tr>' + headers.map(h => `<td>${row[h] || ''}</td>`).join('') + '</tr>'
+    ).join('');
+
+    if (data.length > 100) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="${headers.length}" style="text-align:center; color:#6b8cae; font-style:italic;">... ${data.length - 100} more rows hidden for performance ...</td>`;
+      tablePreviewBody.appendChild(tr);
+    }
+  }
+
+  // ── Render Dataset Preview
+  function renderDatasetPreview() {
+    const previewCard = document.getElementById('previewCard');
+    const previewBody = document.getElementById('previewBody');
+    const previewCount = document.getElementById('previewCount');
+    const summaryGrid = document.getElementById('summaryGrid');
+
+    previewCard.style.display = 'block';
+    previewCount.textContent = parsedDatasets.length;
+
+    const categories = {};
+    parsedDatasets.forEach(ds => {
+      categories[ds.category] = (categories[ds.category] || 0) + 1;
+    });
+
+    // Summary stats
+    const totalRows = parsedDatasets.reduce((s, d) => s + d.rows.length, 0);
+    summaryGrid.innerHTML = `
+      <div class="stat-card"><div class="num">${parsedDatasets.length}</div><div class="label">Total Datasets</div></div>
+      <div class="stat-card"><div class="num">${totalRows}</div><div class="label">Total Rows</div></div>
+      <div class="stat-card"><div class="num">${Object.keys(categories).length}</div><div class="label">Categories</div></div>
+    `;
+
+    previewBody.innerHTML = '';
+    parsedDatasets.forEach((ds, i) => {
+      const badgeClass = getCategoryClass(ds.category);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td title="${ds.title}">${ds.title}</td>
+        <td><span class="badge ${badgeClass}">${ds.category}</span></td>
+        <td>${ds.chartType}</td>
+        <td>${ds.unit}</td>
+        <td>${ds.rows.length}</td>
+        <td>${ds.columns.join(', ')}</td>
+      `;
+      previewBody.appendChild(tr);
+    });
+  }
+
+  // ── Render Chart Preview
+  function renderChartPreview(dataset) {
+    if (!dataset || !dataset.rows || dataset.rows.length === 0) return;
+
+    const chartPreviewCard = document.getElementById('chartPreviewCard');
+    const canvas = document.getElementById('chartCanvas');
+
+    chartPreviewCard.style.display = 'block';
+
+    // Destroy existing chart if any
+    if (window.chartInstance) {
+      window.chartInstance.destroy();
+    }
+
+    const ctx = canvas.getContext('2d');
+    const labels = dataset.rows.map(r => r[dataset.columns[0]]);
+    const values = dataset.rows.map(r => r[dataset.columns[1]] || 0);
+
+    window.chartInstance = new Chart(ctx, {
+      type: dataset.chartType || 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: dataset.title,
+          data: values,
+          borderColor: dataset.color || '#1a3a5c',
+          backgroundColor: dataset.chartType === 'area' ? (dataset.color || '#1a3a5c') + '33' : 'transparent',
+          fill: dataset.chartType === 'area',
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: '#b0c4de' }
+          },
+          title: {
+            display: true,
+            text: dataset.chartTitle || dataset.title,
+            color: '#4fc3f7'
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#6b8cae' },
+            grid: { color: '#1a3a5c' }
+          },
+          y: {
+            ticks: { color: '#6b8cae' },
+            grid: { color: '#1a3a5c' }
+          }
+        }
+      }
+    });
+  }
+
+  // ── Old parseCSV function (kept for backward compatibility)
+  function parseCSV() {
+    smartParseCSV();
+  }
+
+  // ── Preview (legacy)
+  function renderPreview() {
+    renderDatasetPreview();
+  }
+
+  function getCategoryClass(cat) {
+    if (cat.includes('Macro')) return 'badge-macro';
+    if (cat.includes('Sectoral')) return 'badge-sectoral';
+    if (cat.includes('Market')) return 'badge-market';
+    if (cat.includes('Financial')) return 'badge-financial';
+    return 'badge-macro';
+  }
+
+  // ── Upload
+  async function uploadAll() {
+    if (!parsedDatasets.length) return;
+
+    const baseUrl = document.getElementById('baseUrl').value.replace(/\/$/, '');
+    const useBulk = document.getElementById('useBulk').checked;
+    const url = baseUrl + (useBulk ? '/api/datasets/bulk' : '/api/datasets');
+
+    uploadBtn.disabled = true;
+    parseBtn.disabled = true;
+    progressWrap.style.display = 'block';
+    logArea.classList.add('show');
+    logArea.innerHTML = '';
+    logCard.style.display = 'block';
+    logCard.scrollIntoView({ behavior: 'smooth' });
+
+    let ok = 0, fail = 0;
+    const total = parsedDatasets.length;
+
+    if (useBulk) {
+      // Bulk upload — single request
+      log(`🚀 Menggunakan endpoint bulk: POST ${url}`, 'info');
+      log(`📦 Mengirim ${total} datasets sekaligus...`, 'info');
+      progressBar.style.width = '30%';
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout for bulk
+
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(parsedDatasets),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+        progressBar.style.width = '80%';
+
+        if (res.ok) {
+          const data = await res.json();
+          const count = data.data ? data.data.length : total;
+          log(`✅ Bulk upload berhasil! ${count} datasets dibuat.`, 'ok');
+          ok = count;
+          if (data.data && data.data.length > 0) {
+            data.data.forEach((ds, i) => {
+              log(`  → ${ds.title || ds.chartTitle || `Dataset ${i+1}`}`, 'ok');
+            });
+          }
+        } else {
+          const errText = await res.text();
+          log(`❌ Bulk upload gagal [${res.status}]: ${errText.substring(0, 200)}`, 'err');
+          fail = total;
+          // Fallback: try one-by-one
+          log(`↩ Falling back ke upload satu-per-satu dengan retry...`, 'warn');
+          ({ ok, fail } = await uploadOneByOne(total));
+        }
+      } catch (err) {
+        const errorMsg = err.name === 'AbortError' ? 'Timeout (60s)' : err.message;
+        log(`❌ Bulk upload error: ${errorMsg}`, 'err');
+        fail = total;
+        log(`↩ Falling back ke upload satu-per-satu dengan retry...`, 'warn');
+        ({ ok, fail } = await uploadOneByOne(total));
+      }
+    } else {
+      ({ ok, fail } = await uploadOneByOne(total));
+    }
+
+    progressBar.style.width = '100%';
+    uploadBtn.disabled = false;
+    parseBtn.disabled = false;
+
+    resultSummary.innerHTML = `
+      <div class="result-chip total"><strong>${total}</strong>Total Dataset</div>
+      <div class="result-chip ok"><strong>${ok}</strong>Berhasil</div>
+      <div class="result-chip fail"><strong>${fail}</strong>Gagal</div>
+    `;
+
+    showStatus(fail === 0 ? 'success' : 'error',
+      `Selesai! <b>${ok}/${total}</b> dataset berhasil diupload. ${fail > 0 ? `<b>${fail}</b> gagal.` : ''}`);
+  }
+
+  async function uploadOneByOne(total) {
+    let ok = 0, fail = 0;
+    const baseUrl = document.getElementById('baseUrl').value.replace(/\/$/, '');
+    const url = baseUrl + '/api/datasets';
+    const maxRetries = 2;
+    const retryDelay = 1000; // 1 second between retries
+
+    for (let i = 0; i < parsedDatasets.length; i++) {
+      const ds = parsedDatasets[i];
+      const pct = Math.round(((i + 1) / total) * 100);
+      progressBar.style.width = pct + '%';
+
+      let uploaded = false;
+      let lastError = '';
+
+      // Retry loop
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        if (attempt > 0) {
+          log(`  ⏳ Retry ${attempt}/${maxRetries} untuk: ${ds.title}`, 'warn');
+          await sleep(retryDelay * attempt); // Exponential backoff
+        }
+
+        log(`[${i+1}/${total}] ${attempt === 0 ? 'Mengupload' : 'Retry ' + attempt}: ${ds.title}`, 'info');
+
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(ds),
+            signal: controller.signal,
+          });
+
+          clearTimeout(timeoutId);
+
+          if (res.ok) {
+            const data = await res.json();
+            log(`✅ Berhasil: ${ds.title} (ID: ${data.data?.id || 'n/a'})`, 'ok');
+            ok++;
+            uploaded = true;
+            break; // Success, exit retry loop
+          } else {
+            const errText = await res.text();
+            lastError = `[${res.status}]: ${errText}`;
+            
+            // Don't retry on validation errors (400)
+            if (res.status === 400) {
+              log(`❌ Gagal (Validation Error): ${ds.title} — ${errText.substring(0, 150)}`, 'err');
+              fail++;
+              uploaded = false;
+              break; // Don't retry validation errors
+            }
+            
+            log(`⚠ Gagal ${lastError}`, 'warn');
+          }
+        } catch (err) {
+          lastError = err.message;
+          if (err.name === 'AbortError') {
+            lastError = 'Timeout (15s)';
+          }
+          log(`⚠ Error: ${lastError}`, 'warn');
+        }
+      }
+
+      // If all retries failed
+      if (!uploaded) {
+        log(`❌ FINAL FAIL: ${ds.title} — Last error: ${lastError}`, 'err');
+        fail++;
+      }
+
+      await sleep(150);
+    }
+    return { ok, fail };
+  }
+
+  function log(msg, type = 'info') {
+    const div = document.createElement('div');
+    div.className = `log-line ${type}`;
+    div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+    logArea.appendChild(div);
+    logArea.scrollTop = logArea.scrollHeight;
+  }
+
+  // ── Sample CSV download
+  function downloadSample() {
+    const sample = `title,description,category,chartType,color,unit,unitType,chartTitle,xAxisLabel,yAxisLabel,subtitle,columns,rows
+"Historical GDP Growth Rate","Official data for GDP Growth Rate in Indonesia.","Macro Foundations","line","#1a3a5c","%","percent","GDP Growth Indonesia","Tahun","Pertumbuhan (%)","Tingkat pertumbuhan PDB tahunan Indonesia","Tahun|Value","2020|5.7,2021|10.99,2022|7.97,2023|7.57,2024|8.44"
+"Historical Inflation (CPI)","Official data for Inflation (CPI) in Indonesia.","Macro Foundations","line","#c62828","%","percent","Inflasi Indonesia","Tahun","Inflasi (%)","Laju inflasi konsumen tahunan","Tahun|Value","2020|12.77,2021|2.04,2022|11.5,2023|12.45,2024|3.34"
+"Historical Current Account","Official data for Current Account in Indonesia.","Macro Foundations","line","#1565c0","USD B","currency_usd","Current Account Indonesia","Tahun","USD (Billion)","Neraca transaksi berjalan","Tahun|Value","2020|50.89,2021|39.39,2022|95.46,2023|89.15,2024|78.76"
+"Historical Coal Production","Official data for Coal Production in Indonesia.","Sectoral","line","#2e7d32","MT","number","Produksi Batubara Indonesia","Tahun","Juta Ton","Produksi batubara Indonesia","Tahun|Value","2020|5.24,2021|57.07,2022|26.61,2023|11.22,2024|74.04"
+"Historical Nickel Export","Official data for Nickel Export in Indonesia.","Sectoral","line","#f57c00","MT","number","Ekspor Nikel Indonesia","Tahun","Ribu Ton","Volume ekspor nikel Indonesia","Tahun|Value","2020|12.85,2021|36.1,2022|79.52,2023|46.15,2024|32.15"
+"Historical Crude Oil Liftings","Official data for Crude Oil Liftings in Indonesia.","Sectoral","line","#c62828","BPD","number","Pengangkatan Minyak Mentah","Tahun","Ribu Barel/Hari","Total pengangkatan minyak mentah","Tahun|Value","2020|30.88,2021|43.94,2022|45.46,2023|51.03,2024|60.35"
+"Historical Consumer Confidence","Official data for Consumer Confidence in Indonesia.","Market","line","#1565c0","Index","number","Indeks Kepercayaan Konsumen","Tahun","Indeks","Indeks keyakinan konsumen Indonesia","Tahun|Value","2020|50.07,2021|62.76,2022|28.72,2023|20.83,2024|44.5"
+"Historical Retail Sales","Official data for Retail Sales in Indonesia.","Market","line","#6a1b9a","Growth %","percent","Penjualan Retail Indonesia","Tahun","Pertumbuhan (%)","Pertumbuhan penjualan ritel tahunan","Tahun|Value","2020|67.93,2021|79.81,2022|7.03,2023|97.89,2024|98.33"
+"Historical USD/IDR Rate","Official data for USD/IDR Rate in Indonesia.","Market","line","#ef6c00","IDR","currency_idr","Kurs USD/IDR","Tahun","Rupiah","Kurs USD terhadap Rupiah","Tahun|Value","2020|82.93,2021|35.87,2022|55.11,2023|19.34,2024|95.01"
+"Historical 10Y SBN Yield","Official data for 10Y SBN Yield in Indonesia.","Financial","line","#00838f","%","percent","Yield SBN 10 Tahun","Tahun","Yield (%)","Yield obligasi pemerintah tenor 10 tahun","Tahun|Value","2020|7.28,2021|5.39,2022|14.91,2023|11.98,2024|9.71"
+"Historical JCI Index","Official data for JCI Index in Indonesia.","Financial","line","#283593","Points","number","Indeks JCI","Tahun","Poin","Indeks Harga Saham Gabungan","Tahun|Value","2020|77.4,2021|25.52,2022|89.35,2023|79.39,2024|59.27"
+"Historical Banking Credit","Official data for Banking Credit in Indonesia.","Financial","line","#4527a0","Trillion IDR","currency_idr","Kredit Perbankan Indonesia","Tahun","Triliun IDR","Total kredit perbankan Indonesia","Tahun|Value","2020|88.1,2021|49.88,2022|87.13,2023|32.36,2024|78.15"
+"Historical Foreign Reserves","Official data for Foreign Reserves in Indonesia.","Macro Foundations","line","#00695c","USD B","currency_usd","Cadangan Devisa Indonesia","Tahun","USD (Billion)","Cadangan devisa nasional","Tahun|Value","2020|41.94,2021|43.03,2022|41.76,2023|39.96,2024|11.24"
+"Historical Gold Mine Output","Official data for Gold Mine Output in Indonesia.","Sectoral","line","#ffc107","KG","number","Produksi Emas Indonesia","Tahun","Ton","Produksi emas nasional","Tahun|Value","2020|98.92,2021|57.06,2022|11.96,2023|73.69,2024|4.36"
+"Historical E-commerce GMV","Official data for E-commerce GMV in Indonesia.","Market","line","#e91e63","USD B","currency_usd","GMV E-commerce Indonesia","Tahun","USD (Billion)","Gross Merchandise Value e-commerce","Tahun|Value","2020|44.82,2021|42.63,2022|98.85,2023|10.15,2024|8.52"
+"Historical LDR Ratio","Official data for LDR Ratio in Indonesia.","Financial","line","#3f51b5","%","percent","Rasio LDR Perbankan","Tahun","LDR (%)","Loan to Deposit Ratio perbankan","Tahun|Value","2020|10.9,2021|11.01,2022|12.81,2023|7.43,2024|14.22"
+"Historical CPO Production","Official data for CPO Production in Indonesia.","Sectoral","line","#388e3c","MT","number","Produksi CPO Indonesia","Tahun","Juta Ton","Produksi crude palm oil Indonesia","Tahun|Value","2020|86.92,2021|38.18,2022|82.42,2023|92.3,2024|35.67"
+"Historical Unemployment Rate","Official data for Unemployment Rate in Indonesia.","Macro Foundations","line","#d32f2f","%","percent","Tingkat Pengangguran","Tahun","%","Tingkat pengangguran terbuka","Tahun|Value","2020|7.05,2021|4.38,2022|2.86,2023|4.21,2024|12.43"
+"Historical Net Interest Margin","Official data for Net Interest Margin in Indonesia.","Financial","line","#7b1fa2","%","percent","Margin Bunga Neto","Tahun","NIM (%)","Net Interest Margin perbankan","Tahun|Value","2020|12.87,2021|12.94,2022|11.01,2023|4.68,2024|9.65"
+"Historical Business Expectations","Official data for Business Expectations in Indonesia.","Market","line","#0097a7","Index","number","Ekspektasi Bisnis Indonesia","Tahun","Indeks","Indeks ekspektasi dunia usaha","Tahun|Value","2020|17.61,2021|67.34,2022|81.14,2023|32.83,2024|71.34"`;
+
+    const blob = new Blob([sample], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'sample_bulk_datasets.csv';
+    link.click();
+    URL.revokeObjectURL(link.href);
+    showStatus('info', 'Sample CSV berhasil didownload.');
+  }
+
+  // ── Clear
+  function clearAll() {
+    parsedDatasets = [];
+    window.csvRaw = '';
+    fileInput.value = '';
+    parseBtn.disabled = true;
+    uploadBtn.disabled = true;
+    progressBar.style.width = '0%';
+    progressWrap.style.display = 'none';
+    previewCard.style.display = 'none';
+    document.getElementById('tablePreviewCard').style.display = 'none';
+    document.getElementById('chartPreviewCard').style.display = 'none';
+    document.getElementById('autoDetectInfo').style.display = 'none';
+    logCard.style.display = 'none';
+    statusBar.className = 'status-bar';
+    statusBar.innerHTML = '';
+    logArea.innerHTML = '';
+    showStatus('info', 'Cleared. Siap untuk upload file baru.');
+  }
+
+  // ── Status helper
+  function showStatus(type, msg) {
+    statusBar.className = `status-bar show ${type}`;
+    statusBar.innerHTML = msg;
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+</script>
+</body>
+</html>

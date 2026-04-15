@@ -1,0 +1,137 @@
+name: Auto Deploy to VPS
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:  # Allow manual trigger
+
+concurrency:
+  group: deploy-vps
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get commit info
+        id: commit
+        run: |
+          echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "message=$(git log -1 --pretty=format:'%s')" >> $GITHUB_OUTPUT
+          echo "author=$(git log -1 --pretty=format:'%an')" >> $GITHUB_OUTPUT
+      
+      - name: Create deployment archive
+        run: |
+          echo "Creating deployment archive..."
+          tar -czf andaralab-deploy.tar.gz \
+            --exclude=node_modules \
+            --exclude=.git \
+            --exclude=dist \
+            --exclude=screenshots \
+            --exclude=test-screenshots \
+            --exclude=*.log \
+            --exclude=attached_assets \
+            --exclude=*.tar.gz \
+            --exclude=bulk_upload_20_datasets.csv \
+            --exclude=bulk_push_20.json \
+            --exclude=real_datasets.json \
+            --exclude=cms_playwright_test.py \
+            --exclude=debug*.py \
+            --exclude=test_*.py \
+            --exclude=*.xls \
+            --exclude=push_final.tar.gz \
+            --exclude=source.tar.gz \
+            --exclude=.vercel \
+            --exclude=.replit \
+            --exclude=.npmrc \
+            --exclude=.replitignore \
+            --exclude=.vercelignore \
+            .
+          
+          ARCHIVE_SIZE=$(du -h andaralab-deploy.tar.gz | cut -f1)
+          echo "Archive size: $ARCHIVE_SIZE"
+      
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || \
+          ssh-keyscan -H ${{ secrets.VPS_IP }} >> ~/.ssh/known_hosts 2>/dev/null || true
+      
+      - name: Upload to VPS
+        run: |
+          echo "Uploading deployment archive to VPS..."
+          scp -o StrictHostKeyChecking=no \
+            andaralab-deploy.tar.gz \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/root/andaralab-deploy.tar.gz
+          
+          echo "Upload complete!"
+      
+      - name: Deploy on VPS
+        run: |
+          echo "Starting deployment on VPS..."
+          ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'ENDSSH'
+          set -e
+          
+          echo "[VPS] Starting deployment..."
+          cd /root
+          
+          echo "[VPS] Extracting archive..."
+          tar -xzf andaralab-deploy.tar.gz
+          
+          echo "[VPS] Stopping old containers..."
+          docker stop andaralab-app-frontend andaralab-app-backend 2>/dev/null || true
+          docker rm andaralab-app-frontend andaralab-app-backend 2>/dev/null || true
+          
+          echo "[VPS] Building frontend (this may take 5-10 minutes)..."
+          docker build --platform linux/amd64 -f Dockerfile.frontend -t andaralab-frontend .
+          
+          echo "[VPS] Building backend (this may take 2-5 minutes)..."
+          docker build --platform linux/amd64 -f Dockerfile -t andaralab-backend .
+          
+          echo "[VPS] Starting containers..."
+          docker compose up -d --force-recreate
+          
+          echo "[VPS] Cleaning up..."
+          rm -f andaralab-deploy.tar.gz
+          
+          echo ""
+          echo "[VPS] Deployment complete!"
+          echo "[VPS] Container status:"
+          docker ps --filter name=andaralab-app
+          ENDSSH
+      
+      - name: Deployment Success
+        if: success()
+        run: |
+          echo "✅ Deployment Successful!"
+          echo ""
+          echo "📊 Deployment Info:"
+          echo "   Commit: ${{ steps.commit.outputs.hash }}"
+          echo "   Message: ${{ steps.commit.outputs.message }}"
+          echo "   Author: ${{ steps.commit.outputs.author }}"
+          echo "   Branch: ${{ github.ref_name }}"
+          echo ""
+          echo "🌐 Access URLs:"
+          echo "   Frontend: http://${{ secrets.VPS_HOST }}"
+          echo "   Admin: http://${{ secrets.VPS_HOST }}/admin"
+          echo "   API: http://${{ secrets.VPS_HOST }}:3001"
+      
+      - name: Deployment Failed
+        if: failure()
+        run: |
+          echo "❌ Deployment Failed!"
+          echo ""
+          echo "Please check the logs above for error details."
+          echo "You can also manually deploy using:"
+          echo "  ssh root@${{ secrets.VPS_HOST }}"
+          echo "  cd /opt/andara-lab"
+          echo "  bash scripts/vps-docker-rebuild.sh"

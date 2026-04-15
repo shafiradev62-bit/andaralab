@@ -1,0 +1,10 @@
+[Unit]
+Description=AndaraLab Full Deploy
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/opt/andara-lab/scripts/vps-deploy.sh
+User=root
+StandardOutput=journal
+StandardError=journal

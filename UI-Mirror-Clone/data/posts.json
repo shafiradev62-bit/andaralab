@@ -1,0 +1,268 @@
+[
+  {
+    "slug": "what-is-current-account-deficit",
+    "locale": "en",
+    "status": "published",
+    "title": "What Is a Current Account Deficit — and Why It Matters for Indonesia",
+    "excerpt": "A current account deficit is one of the most watched macro variables in emerging markets.",
+    "body": [
+      "The current account is the broadest measure of a country's transactions with the rest of the world.",
+      "When a country spends more on imports than it earns from exports, it runs a current account deficit. This is not inherently bad.",
+      "For Indonesia, the current account has become a focal point for investors and policymakers alike."
+    ],
+    "category": "economics-101",
+    "tag": "Macro",
+    "readTime": "5 min read",
+    "publishedAt": "2026-01-15",
+    "id": 1,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "cpi-vs-core-inflation",
+    "locale": "en",
+    "status": "published",
+    "title": "CPI vs. Core Inflation: Why Central Banks Watch the Difference",
+    "excerpt": "Headline inflation captures everything. Core inflation tells you what the central bank really cares about.",
+    "body": [
+      "Consumer Price Index (CPI) inflation is the number that makes headlines.",
+      "Core inflation strips out the most volatile components: food prices and administered prices.",
+      "When core inflation falls below 2.5% and is on a stable downward path, BI has room to begin easing."
+    ],
+    "category": "economics-101",
+    "tag": "Inflation",
+    "readTime": "6 min read",
+    "publishedAt": "2026-03-01",
+    "id": 2,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "jci-7200-bi-hold",
+    "locale": "en",
+    "status": "published",
+    "title": "JCI at 7,200: Why BI's Rate Hold Changes the Playbook",
+    "excerpt": "With Bank Indonesia holding rates and the Fed signaling caution, the calculus for Indonesian equities has shifted.",
+    "body": [
+      "The Jakarta Composite Index's push toward 7,200 this quarter reflects resilient corporate earnings and foreign inflow momentum.",
+      "Bank Indonesia's decision to hold the BI Rate at 6.00% removes one tail risk from the equity market.",
+      "However, the external backdrop remains challenging."
+    ],
+    "category": "market-pulse",
+    "tag": "Equities",
+    "readTime": "4 min read",
+    "publishedAt": "2026-02-20",
+    "id": 3,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "how-we-build-macro-models",
+    "locale": "en",
+    "status": "published",
+    "title": "How We Build Our Macro Models: A Behind-the-Scenes Look",
+    "excerpt": "Our GDP nowcasting model combines official data, high-frequency indicators, and machine learning.",
+    "body": [
+      "One of the most challenging problems in emerging market research is the lag between what is happening and what official data reveals.",
+      "This is the nowcasting problem — and it's where we spend a significant portion of our analytical effort.",
+      "We validate this model continuously against new official releases and publish our nowcast alongside each BPS release."
+    ],
+    "category": "lab-notes",
+    "tag": "Methodology",
+    "readTime": "8 min read",
+    "publishedAt": "2026-03-10",
+    "id": 4,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "prospeks-makro-indonesia-2026-id",
+    "locale": "id",
+    "status": "published",
+    "title": "Prospek Makro Indonesia 2026: Menavigasi Angin Keringat Global",
+    "excerpt": "Dengan pertumbuhan global melambat, fundamental makroekonomi Indonesia tetap tangguh.",
+    "body": [
+      "Indonesia memasuki 2026 dengan salah satu profil makro paling tangguh di Asia Tenggara.",
+      "Pendorong utama ketahanan ini adalah konsumsi rumah tangga yang kuat, yang menyumbang sekitar 57% PDB.",
+      "Risiko utama meliputi pelemahan IDR jika The Fed menunda pemotongan suku bunga."
+    ],
+    "category": "economics-101",
+    "tag": "Makro",
+    "readTime": "6 min read",
+    "publishedAt": "2026-03-26",
+    "id": 5,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "nickel-ev-indonesia",
+    "locale": "en",
+    "status": "published",
+    "title": "Indonesia's Nickel Dominance: The EV Supply Chain Power Play",
+    "excerpt": "Indonesia controls 22% of global nickel reserves. Here's how it became the world's battery manufacturing hub.",
+    "body": [
+      "Indonesia's strategic move to ban raw nickel ore exports in 2020 was controversial. Three years later, the strategy is paying off spectacularly.",
+      "By forcing foreign investment in domestic processing, Indonesia attracted over $15 billion in EV battery and smelter investments.",
+      "HPAL (High Pressure Acid Leach) plants now dot the Sulawesi coastline, processing laterite ore into nickel sulphate for lithium-ion batteries."
+    ],
+    "category": "sectoral-analysis",
+    "tag": "Commodities",
+    "readTime": "9 min read",
+    "publishedAt": "2026-02-10",
+    "id": 6,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "digital-economy-indonesia-2026",
+    "locale": "en",
+    "status": "published",
+    "title": "Indonesia's Digital Economy: Why 2026 Is the Inflection Point",
+    "excerpt": "With 220 million internet users and a $40B GMV target, Indonesia's digital economy is entering a new phase.",
+    "body": [
+      "Indonesia's digital economy has grown at a compound annual growth rate of 22% since 2021.",
+      "The government's Making Indonesia 4.0 roadmap targets 22% contribution to GDP by 2030.",
+      "Fintech, e-commerce, and super-apps continue to drive growth, while enterprise SaaS adoption is accelerating among SMEs."
+    ],
+    "category": "sectoral-analysis",
+    "tag": "Digital Economy",
+    "readTime": "7 min read",
+    "publishedAt": "2026-03-15",
+    "id": 7,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "bank-mandatory-ratio-q1-2026",
+    "locale": "en",
+    "status": "published",
+    "title": "Understanding G20's New Bank Capital Rules and What They Mean for Indonesian Banks",
+    "excerpt": "Basel III endgame rules will reshape how Indonesian banks allocate capital. Here's a practical guide.",
+    "body": [
+      "Bank Indonesia has begun implementing Basel III endgame capital standards that will require major banks to hold more capital against risk-weighted assets.",
+      "For Indonesian banks, the primary impact will be on mortgage lending, where risk weights for property exposures will increase.",
+      "We estimate that the largest four banks — BCA, BRI, Mandiri, BNI — will need to raise a combined Rp 120 trillion in Tier-1 capital."
+    ],
+    "category": "financial-markets",
+    "tag": "Banking",
+    "readTime": "10 min read",
+    "publishedAt": "2026-01-28",
+    "id": 8,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "ri-transmigration-nickel-downstreaming",
+    "locale": "id",
+    "status": "published",
+    "title": "Downstreaming Nikel Indonesia: Dari Raw Ore ke Baterai Kendaraan Listrik",
+    "excerpt": "Strategi hilirisasi nikel telah menarik investasi Rp 230 triliun dan menciptakan ekosistem industri baterai kendaraan listrik.",
+    "body": [
+      "Larangan ekspor bijih nikel mentah pada 2020 adalah langkah berani yang kini membuahkan hasil.",
+      "Pabrik-pabrik HPAL (High Pressure Acid Leach) kini berdiri di Sulawesi, memproses ore laterit menjadi nikel sulfat untuk baterai litium-ion.",
+      "Invetsasi dari TSLA-backed CATL, LG Energy Solution, dan Hyundai menciptakan rantai pasok kendaraan listrik terintegrasi."
+    ],
+    "category": "sectoral-analysis",
+    "tag": "Nikel",
+    "readTime": "8 min read",
+    "publishedAt": "2026-02-12",
+    "id": 9,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "food-inflation-handling-indonesia",
+    "locale": "id",
+    "status": "published",
+    "title": "Menggenggam Inflasi Harga Pangan: Dari Petani hingga Konsumen",
+    "excerpt": "Inflasi pangan volatile. AndaraLab menganalisis mekanisme transmisinya dan kebijakan stabilisasi harga yang efektif.",
+    "body": [
+      "Inflasi harga pangan menyumbang sekitar 30-40% dari total inflasi IHK di Indonesia.",
+      "Volatilitas ini terutama didorong oleh faktor musiman produksi pertanian dan gangguan cuaca.",
+      "AndaraLab mengembangkan model prediktif untuk memperkirakan pergerakan harga pangan 4-6 minggu ke depan."
+    ],
+    "category": "economics-101",
+    "tag": "Inflasi",
+    "readTime": "6 min read",
+    "publishedAt": "2026-01-20",
+    "id": 10,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "p励keuatan-terbesar-di-asia-tenggara",
+    "locale": "id",
+    "status": "published",
+    "title": "Mengapa Ekonomi Digital Indonesia adalah Pasar Terbesar di Asia Tenggara",
+    "excerpt": "Dengan GMV yang ditargetkan mencapai $360 miliar pada 2030, ekonomi digital Indonesia adalah ladang riset utama.",
+    "body": [
+      "Indonesia menyumbang 35% dari total GMV ekonomi digital ASEAN.",
+      "E-commerce, fintech, dan super-apps menjadi mesin pertumbuhan utama.",
+      "Adopsi SaaS enterprise di kalangan UMKM mulai mempercepat transformasi digital."
+    ],
+    "category": "sectoral-analysis",
+    "tag": "Ekonomi Digital",
+    "readTime": "7 min read",
+    "publishedAt": "2026-03-20",
+    "id": 11,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "omnibus-job-creation-law-analysis",
+    "locale": "en",
+    "status": "published",
+    "title": "Omnibus Law Two Years Later: What the Data Actually Shows",
+    "excerpt": "After two years of the Job Creation Law, we examine whether it delivered on its investment and employment promises.",
+    "body": [
+      "The Job Creation Law (UU Cipta Kerja) was Indonesia's most significant regulatory overhaul in decades.",
+      "Initial data on foreign direct investment shows a 12% increase in approved investments in the 18 months following its passage.",
+      "However, formal employment growth has been modest, and the law's impact on labor market dynamics remains contested."
+    ],
+    "category": "policy-analysis",
+    "tag": "Policy",
+    "readTime": "11 min read",
+    "publishedAt": "2026-01-05",
+    "id": 12,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "government-bond-market-outlook-2026",
+    "locale": "en",
+    "status": "published",
+    "title": "Indonesia Government Bond Market Outlook H1 2026",
+    "excerpt": "With a record Rp 890 trillion in net financing needed, the SUN market faces a pivotal first half.",
+    "body": [
+      "Indonesia's government bond market is entering a critical period with significant refinancing needs.",
+      "Foreign ownership of government bonds stands at 15.2% — down from the 40% peak in 2019 but still a meaningful market share.",
+      "We expect yield curve steepening in Q1 2026 as BI holds rates while fiscal issuance accelerates."
+    ],
+    "category": "financial-markets",
+    "tag": "Fixed Income",
+    "readTime": "8 min read",
+    "publishedAt": "2026-01-18",
+    "id": 13,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  },
+  {
+    "slug": "tax-reform-2026-indonesia",
+    "locale": "en",
+    "status": "draft",
+    "title": "Indonesia's Progressive Tax Reform Agenda for 2026",
+    "excerpt": "Draft legislation proposes a new progressive personal income tax bracket that could reshape household consumption patterns.",
+    "body": [
+      "The Ministry of Finance has published draft legislation proposing a revised PPh Article 25 bracket structure.",
+      "For high-income earners (above Rp 5 billion annually), effective tax rates would increase from 30% to 35%.",
+      "The reform is expected to generate Rp 25 trillion in additional annual revenue."
+    ],
+    "category": "policy-analysis",
+    "tag": "Fiscal",
+    "readTime": "7 min read",
+    "publishedAt": "2026-04-01",
+    "id": 14,
+    "createdAt": "2026-04-09T06:54:09.952Z",
+    "updatedAt": "2026-04-09T06:54:09.952Z"
+  }
+]

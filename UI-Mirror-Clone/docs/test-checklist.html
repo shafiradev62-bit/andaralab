@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AndaraLab CMS — Test Checklist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', Arial, sans-serif;
+    font-size: 12px;
+    color: #1a1a2e;
+    background: #fff;
+    padding: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  @media print {
+    @page {
+      size: A4;
+      margin: 18mm 15mm;
+    }
+    body { padding: 0; font-size: 11px; }
+    .no-print { display: none !important; }
+    .page-break { page-break-before: always; }
+    tr { page-break-inside: avoid; }
+  }
+
+  /* ── Header ─────────────────────────────────── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid #1a3a5c;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+
+  .header-left h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a3a5c;
+    letter-spacing: -0.5px;
+  }
+
+  .header-left p {
+    color: #666;
+    font-size: 11px;
+    margin-top: 4px;
+  }
+
+  .header-right {
+    text-align: right;
+  }
+
+  .header-right .url {
+    font-size: 13px;
+    font-weight: 600;
+    color: #0d7377;
+  }
+
+  .header-right .date {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .meta-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: #f8f9fc;
+  }
+
+  .meta-card .label {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  .meta-card .value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a3a5c;
+    margin-top: 2px;
+  }
+
+  .meta-card .sub {
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 2px;
+  }
+
+  /* ── Section ────────────────────────────────── */
+  .section {
+    margin-bottom: 28px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .section-num {
+    background: #1a3a5c;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a3a5c;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .section-desc {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+  }
+
+  /* ── Table ──────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+  }
+
+  thead th {
+    background: #1a3a5c;
+    color: #fff;
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  thead th:first-child { border-radius: 6px 0 0 0; }
+  thead th:last-child  { border-radius: 0 6px 0 0; }
+
+  tbody tr:nth-child(even) { background: #f8f9fc; }
+  tbody tr:nth-child(odd)  { background: #fff; }
+
+  tbody td {
+    padding: 7px 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tbody tr:hover { background: #eef3ff; }
+
+  .col-num   { width: 28px;  text-align: center; font-weight: 600; color: #888; }
+  .col-check { width: 44px;  text-align: center; }
+  .col-item  { width: 30%; }
+  .col-step  { width: 40%; }
+  .col-api   { width: 30%; font-size: 9.5px; }
+
+  /* ── Checkbox ───────────────────────────────── */
+  .check-cell {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #c0c0c0;
+    border-radius: 4px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .check-cell.pass {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #28a745;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .check-cell.fail {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #dc3545;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── Badges ─────────────────────────────────── */
+  .badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-crud { background: #e3f2fd; color: #1565c0; }
+  .badge-read  { background: #e8f5e9; color: #2e7d32; }
+  .badge-api   { background: #fff3e0; color: #e65100; }
+  .badge-nav   { background: #f3e5f5; color: #6a1b9a; }
+  .badge-perf  { background: #fce4ec; color: #c62828; }
+
+  /* ── Data Table ─────────────────────────────── */
+  .data-table td:nth-child(1) { font-weight: 600; color: #1a3a5c; text-align: center; }
+  .data-table td:nth-child(2) { font-weight: 500; }
+  .data-table td:nth-child(3) { text-align: center; }
+  .data-table td:nth-child(4) { text-align: center; }
+
+  /* ── API Response ──────────────────────────── */
+  .api-box {
+    background: #1a1a2e;
+    color: #a8ff78;
+    font-family: 'Courier New', monospace;
+    font-size: 9.5px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+  /* ── Summary Box ────────────────────────────── */
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 28px;
+    padding: 18px;
+    background: #1a3a5c;
+    border-radius: 10px;
+    color: #fff;
+  }
+
+  .summary-item {
+    text-align: center;
+  }
+
+  .summary-item .s-num {
+    font-size: 32px;
+    font-weight: 700;
+    color: #a8ff78;
+  }
+
+  .summary-item .s-label {
+    font-size: 10px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  .summary-item .s-num.fail { color: #ff6b6b; }
+
+  /* ── Signatures ─────────────────────────────── */
+  .signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 2px solid #e0e0e0;
+  }
+
+  .sig-box .sig-line {
+    border-bottom: 1px solid #333;
+    height: 36px;
+    margin-bottom: 6px;
+  }
+
+  .sig-box .sig-label {
+    font-size: 10px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .sig-box .sig-date {
+    font-size: 10px;
+    color: #aaa;
+    margin-top: 4px;
+  }
+
+  /* ── Footer ─────────────────────────────────── */
+  .footer {
+    margin-top: 24px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: #aaa;
+  }
+
+  /* ── Color-coded rows ───────────────────────── */
+  tr.crud-row  td { border-left: 3px solid #1565c0; }
+  tr.read-row  td { border-left: 3px solid #2e7d32; }
+  tr.api-row   td { border-left: 3px solid #e65100; }
+  tr.nav-row   td { border-left: 3px solid #6a1b9a; }
+  tr.perf-row  td { border-left: 3px solid #c62828; }
+
+  /* ── Print button ───────────────────────────── */
+  .no-print {
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    background: #1a3a5c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(26,58,92,0.3);
+    z-index: 999;
+  }
+
+  .no-print:hover { background: #0d7377; }
+</style>
+</head>
+<body>
+
+<!-- Print Button -->
+<button class="no-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════ -->
+<div class="header">
+  <div class="header-left">
+    <h1>AndaraLab CMS — Test Checklist</h1>
+    <p>Manual acceptance testing untuk semua fitur AndaraLab UI + API</p>
+  </div>
+  <div class="header-right">
+    <div class="url">http://76.13.17.91</div>
+    <div class="date" id="test-date">Test Date: —</div>
+    <div class="date">Tester: _________________</div>
+  </div>
+</div>
+
+<!-- Quick Counts -->
+<div class="meta-grid">
+  <div class="meta-card">
+    <div class="label">Datasets</div>
+    <div class="value">11</div>
+    <div class="sub">Charts & data points</div>
+  </div>
+  <div class="meta-card">
+    <div class="label">Blog Posts</div>
+    <div class="value">14</div>
+    <div class="sub">13 published / 1 draft</div>
+  </div>
+  <div class="meta-card">
+    <div class="label">Pages</div>
+    <div class="value">14</div>
+    <div class="sub">7 EN / 7 ID</div>
+  </div>
+  <div class="meta-card">
+    <div class="label">API Status</div>
+    <div class="value" style="color:#28a745">OK</div>
+    <div class="sub">/api/healthz</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — PRE-TEST VERIFICATION
+═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div>
+      <div class="section-title">Pre-Test Verification</div>
+      <div class="section-desc">Verify system is online before testing any feature</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th class="col-item">Test Item</th>
+        <th class="col-step">Expected Result</th>
+        <th class="col-api">API / Command</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="api-row">
+        <td class="col-num">1.1</td>
+        <td><div class="check-cell"></div></td>
+        <td class="col-item">API Server Health</td>
+        <td>Response: <code style="background:#e8f5e9;padding:1px 5px;border-radius:3px">{"status":"ok"}</code></td>
+        <td><code style="color:#1565c0">GET /api/healthz</code></td>
+      </tr>
+      <tr class="api-row">
+        <td class="col-num">1.2</td>
+        <td><div class="check-cell"></div></td>
+        <td>Datasets count = 11</td>
+        <td>meta.total: 11 datasets returned</td>
+        <td><code style="color:#1565c0">GET /api/datasets</code></td>
+      </tr>
+      <tr class="api-row">
+        <td class="col-num">1.3</td>
+        <td><div class="check-cell"></div></td>
+        <td>Blog posts count = 14</td>
+        <td>meta.total: 14 posts (13 pub, 1 draft)</td>
+        <td><code style="color:#1565c0">GET /api/blog</code></td>
+      </tr>
+      <tr class="api-row">
+        <td class="col-num">1.4</td>
+        <td><div class="check-cell"></div></td>
+        <td>Pages count = 14</td>
+        <td>meta.total: 14 pages</td>
+        <td><code style="color:#1565c0">GET /api/pages</code></td>
+      </tr>
+      <tr class="api-row">
+        <td class="col-num">1.5</td>
+        <td><div class="check-cell"></div></td>
+        <td>Frontend loads (HTTP 200)</td>
+        <td>&lt;title&gt;AndaraLab&lt;/title&gt;</td>
+        <td><code style="color:#1565c0">GET /</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="api-box">curl http://76.13.17.91/api/healthz
+curl http://76.13.17.91/api/datasets | jq '.meta.total'
+curl http://76.13.17.91/api/blog      | jq '.meta.total'
+curl http://76.13.17.91/api/pages     | jq '.meta.total'</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — HOMEPAGE
+═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div>
+      <div class="section-title">Homepage (<code style="font-size:12px">/</code>)</div>
+      <div class="section-desc">URL: http://76.13.17.91/</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th class="col-item">Test Item</th>
+        <th class="col-step">How to Test</th>
+        <th class="col-api">Expected</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="read-row">
+        <td>2.1</td>
+        <td><div class="check-cell"></div></td>
+        <td>Hero section loads</td>
+        <td>Scroll to top of homepage</td>
+        <td>Headline: "Independent Economic Research for Indonesia"</td>
+      </tr>
+      <tr class="read-row">
+        <td>2.2</td>
+        <td><div class="check-cell"></div></td>
+        <td>Stats bar visible</td>
+        <td>Look for stats row below hero</td>
+        <td>24+ Macro Reports, 8 Sectors Covered, 28+ Years of Data</td>
+      </tr>
+      <tr class="read-row">
+        <td>2.3</td>
+        <td><div class="check-cell"></div></td>
+        <td>GDP Growth chart renders</td>
+        <td>Scroll to chart section</td>
+        <td>Line chart with quarterly data, title "PDB Indonesia"</td>
+      </tr>
+      <tr class="read-row">
+        <td>2.4</td>
+        <td><div class="check-cell"></div></td>
+        <td>Featured articles (3 cards)</td>
+        <td>Look between hero and chart</td>
+        <td>3 article cards with title, excerpt, category</td>
+      </tr>
+      <tr class="read-row">
+        <td>2.5</td>
+        <td><div class="check-cell"></div></td>
+        <td>CTA / Subscribe section</td>
+        <td>Scroll to bottom</td>
+        <td>Email form or "Subscribe to Research" button</td>
+      </tr>
+      <tr class="nav-row">
+        <td>2.6</td>
+        <td><div class="check-cell"></div></td>
+        <td>Navbar links work</td>
+        <td>Click each nav link</td>
+        <td>Home, Data Hub, About, Contact all navigate</td>
+      </tr>
+      <tr class="read-row">
+        <td>2.7</td>
+        <td><div class="check-cell"></div></td>
+        <td>No loading spinner stuck</td>
+        <td>Wait 5 seconds after load</td>
+        <td>All content renders, no spinner</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — DATA HUB
+═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div>
+      <div class="section-title">Data Hub — Charts & Datasets</div>
+      <div class="section-desc">URL: http://76.13.17.91/data</div>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Dataset Title</th>
+        <th>Type</th>
+        <th>Category</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Produksi Minyak Bumi & Gas Alam</td><td><span class="badge badge-read">Line</span></td><td>Sectoral Intelligence</td><td><div class="check-cell"></div></td><td>28 rows (1996–2024)</td></tr>
+      <tr><td>2</td><td>Indonesia GDP Growth Rate</td><td><span class="badge badge-read">Line</span></td><td>Macro Foundations</td><td><div class="check-cell"></div></td><td>Quarterly 2023–2024</td></tr>
+      <tr><td>3</td><td>Indonesia Inflation Rate</td><td><span class="badge badge-read">Area</span></td><td>Macro Foundations</td><td><div class="check-cell"></div></td><td>CPI + Core Inflation</td></tr>
+      <tr><td>4</td><td>Bank Indonesia Policy Rate</td><td><span class="badge badge-read">Bar</span></td><td>Macro Foundations</td><td><div class="check-cell"></div></td><td>BI Rate vs Fed Funds</td></tr>
+      <tr><td>5</td><td>Indonesia Trade Balance</td><td><span class="badge badge-read">Bar</span></td><td>Sectoral Intelligence</td><td><div class="check-cell"></div></td><td>Exports/Imports/Balance</td></tr>
+      <tr><td>6</td><td>IDR/USD Exchange Rate</td><td><span class="badge badge-read">Line</span></td><td>Market Dashboard</td><td><div class="check-cell"></div></td><td>Monthly 2024</td></tr>
+      <tr><td>7</td><td>Produksi Nikel Indonesia</td><td><span class="badge badge-read">Area</span></td><td>Sectoral Intelligence</td><td><div class="check-cell"></div></td><td>2015–2024 + global share</td></tr>
+      <tr><td>8</td><td>Ekonomi Digital Indonesia</td><td><span class="badge badge-read">Line</span></td><td>Market Dashboard</td><td><div class="check-cell"></div></td><td>GMV 2019–2026</td></tr>
+      <tr><td>9</td><td>Imbal Hasil SBN Indonesia</td><td><span class="badge badge-read">Line</span></td><td>Financial Markets</td><td><div class="check-cell"></div></td><td>Yield 5Y, 10Y, 15Y</td></tr>
+      <tr><td>10</td><td>Produksi Batu Bara Indonesia</td><td><span class="badge badge-read">Bar</span></td><td>Sectoral Intelligence</td><td><div class="check-cell"></div></td><td>Production + Exports</td></tr>
+      <tr><td>11</td><td>Foreign Direct Investment</td><td><span class="badge badge-read">Bar</span></td><td>Macro Foundations</td><td><div class="check-cell"></div></td><td>Quarterly FDI inflow</td></tr>
+    </tbody>
+  </table>
+
+  <table style="margin-top:12px">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th class="col-item">Test Item</th>
+        <th class="col-step">How to Test</th>
+        <th class="col-api">Expected</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="read-row">
+        <td>3.12</td>
+        <td><div class="check-cell"></div></td>
+        <td>All 11 cards visible</td>
+        <td>Load /data page</td>
+        <td>11 cards in grid/list</td>
+      </tr>
+      <tr class="read-row">
+        <td>3.13</td>
+        <td><div class="check-cell"></div></td>
+        <td>Click card → chart opens</td>
+        <td>Click "Produksi Minyak Bumi"</td>
+        <td>Chart modal/panel opens with data table</td>
+      </tr>
+      <tr class="read-row">
+        <td>3.14</td>
+        <td><div class="check-cell"></div></td>
+        <td>Chart type matches dataset</td>
+        <td>Compare chart type to dataset list</td>
+        <td>Line = line chart, Bar = bar chart, Area = area chart</td>
+      </tr>
+      <tr class="read-row">
+        <td>3.15</td>
+        <td><div class="check-cell"></div></td>
+        <td>Data table shows correct rows</td>
+        <td>Scroll data table in chart view</td>
+        <td>28 rows for oil/gas dataset</td>
+      </tr>
+      <tr class="read-row">
+        <td>3.16</td>
+        <td><div class="check-cell"></div></td>
+        <td>Category filter works</td>
+        <td>Click "Macro Foundations" filter</td>
+        <td>Only 4 datasets shown</td>
+      </tr>
+      <tr class="read-row">
+        <td>3.17</td>
+        <td><div class="check-cell"></div></td>
+        <td>Close chart returns to list</td>
+        <td>Click X or outside chart</td>
+        <td>Data Hub list visible again</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="api-box"># Filter by category
+curl "http://76.13.17.91/api/datasets?category=Macro%20Foundations" | jq '.meta.total'  → 4
+curl "http://76.13.17.91/api/datasets?category=Sectoral%20Intelligence" | jq '.meta.total' → 4
+curl "http://76.13.17.91/api/datasets?category=Market%20Dashboard" | jq '.meta.total'  → 2</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — BLOG
+═══════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div>
+      <div class="section-title">Blog Posts</div>
+      <div class="section-desc">URL: http://76.13.17.91/blog</div>
+    </div>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Locale</th>
+        <th>Category</th>
+        <th>Status</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>What Is a Current Account Deficit…</td><td>EN</td><td><span class="badge badge-read">economics-101</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>2</td><td>CPI vs. Core Inflation: Why Central Banks…</td><td>EN</td><td><span class="badge badge-read">economics-101</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>3</td><td>JCI at 7,200: Why BI's Rate Hold…</td><td>EN</td><td><span class="badge badge-read">market-pulse</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>4</td><td>How We Build Our Macro Models…</td><td>EN</td><td><span class="badge badge-read">lab-notes</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>5</td><td>Indonesia's Nickel Dominance…</td><td>EN</td><td><span class="badge badge-read">sectoral-analysis</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>6</td><td>Indonesia's Digital Economy: Why 2026…</td><td>EN</td><td><span class="badge badge-read">sectoral-analysis</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>7</td><td>G20's New Bank Capital Rules…</td><td>EN</td><td><span class="badge badge-read">financial-markets</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>8</td><td>Omnibus Law Two Years Later…</td><td>EN</td><td><span class="badge badge-read">policy-analysis</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>9</td><td>Indonesia Government Bond Market…</td><td>EN</td><td><span class="badge badge-read">financial-markets</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>10</td><td>Tax Reform 2026 Indonesia…</td><td>EN</td><td><span class="badge badge-read">policy-analysis</span></td><td><span class="badge badge-crud">Draft</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>11</td><td>Prospek Makro Indonesia 2026…</td><td>ID</td><td><span class="badge badge-read">economics-101</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>12</td><td>Downstreaming Nikel Indonesia…</td><td>ID</td><td><span class="badge badge-read">sectoral-analysis</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>13</td><td>Menggenggam Inflasi Harga Pangan…</td><td>ID</td><td><span class="badge badge-read">economics-101</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+      <tr><td>14</td><td>Ekonomi Digital Indonesia…</td><td>ID</td><td><span class="badge badge-read">sectoral-analysis</span></td><td><span class="badge badge-read">Published</span></td><td><div class="check-cell"></div></td></tr>
+    </tbody>
+  </table>
+
+  <table style="margin-top:12px">
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th class="col-item">Test Item</th>
+        <th class="col-step">How to Test</th>
+        <th class="col-api">Expected</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="read-row">
+        <td>4.15</td>
+        <td><div class="check-cell"></div></td>
+        <td>Blog list page loads</td>
+        <td>Open /blog</td>
+        <td>All 14 posts listed with title, excerpt, category</td>
+      </tr>
+      <tr class="read-row">
+        <td>4.16</td>
+        <td><div class="check-cell"></div></td>
+        <td>Click post → article detail</td>
+        <td>Click first post card</td>
+        <td>Full article body, title, meta info, read time</td>
+      </tr>
+      <tr class="read-row">
+        <td>4.17</td>
+        <td><div class="check-cell"></div></td>
+        <td>Language filter (EN / ID)</td>
+        <td>Toggle language filter</td>
+        <td>Only EN or only ID posts shown</td>
+      </tr>
+      <tr class="read-row">
+        <td>4.18</td>
+        <td><div class="check-cell"></div></td>
+        <td>Category filter</td>
+        <td>Click category badge</td>
+        <td>Only posts in that category shown</td>
+      </tr>
+      <tr class="read-row">
+        <td>4.19</td>
+        <td><div class="check-cell"></div></td>
+        <td>Draft post NOT visible (published filter)</td>
+        <td>Check if Tax Reform post (#10) hidden</td>
+        <td>Draft post does not appear in published list</td>
+      </tr>
+      <tr class="read-row">
+        <td>4.20</td>
+        <td><div class="check-cell"></div></td>
+        <td>Back to blog list works</td>
+        <td>Click back button / breadcrumb</td>
+        <td>Returns to blog list</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="api-box"># Published posts only
+curl "http://76.13.17.91/api/blog?status=published" | jq '.meta.total'  → 13
+# Indonesian posts
+curl "http://76.13.17.91/api/blog?locale=id" | jq '.meta.total'       → 4
+# By category
+curl "http://76.13.17.91/api/blog?category=economics-101" | jq '.meta.total' → 4</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — PAGES
+═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div>
+      <div class="section-title">Pages & Navigation</div>
+      <div class="section-desc">Test all static pages</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th class="col-item">Page URL</th>
+        <th class="col-step">What to Verify</th>
+        <th class="col-api">Content Expected</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="nav-row"><td>5.1</td><td><div class="check-cell"></div></td><td><code>/</code> (Home EN)</td><td>Open homepage</td><td>Hero, stats, chart, featured posts</td></tr>
+      <tr class="read-row"><td>5.2</td><td><div class="check-cell"></div></td><td><code>/about</code></td><td>About EN page</td><td>"Who We Are" section, stats</td></tr>
+      <tr class="read-row"><td>5.3</td><td><div class="check-cell"></div></td><td><code>/about?lang=id</code></td><td>About ID page</td><td>"Siapa Kami" hero section</td></tr>
+      <tr class="read-row"><td>5.4</td><td><div class="check-cell"></div></td><td><code>/data</code></td><td>Data Hub page</td><td>11 dataset cards with charts</td></tr>
+      <tr class="read-row"><td>5.5</td><td><div class="check-cell"></div></td><td><code>/sectors/energy</code></td><td>Energy sector EN</td><td>Oil, Gas, Coal, Nickel charts</td></tr>
+      <tr class="read-row"><td>5.6</td><td><div class="check-cell"></div></td><td><code>/sectors/finance</code></td><td>Finance sector EN</td><td>SBN Yield + IDR/USD charts</td></tr>
+      <tr class="read-row"><td>5.7</td><td><div class="check-cell"></div></td><td><code>/contact</code></td><td>Contact page</td><td>Email CTA / contact info</td></tr>
+      <tr class="read-row"><td>5.8</td><td><div class="check-cell"></div></td><td><code>/macro/macro-outlooks</code></td><td>Macro outlooks EN</td><td>Featured posts on macro research</td></tr>
+      <tr class="nav-row"><td>5.9</td><td><div class="check-cell"></div></td><td>Navbar sticky / scroll</td><td>Scroll down homepage</td><td>Navbar stays visible</td></tr>
+      <tr class="nav-row"><td>5.10</td><td><div class="check-cell"></div></td><td>Active page highlighted</td><td>Click "Data Hub", look at navbar</td><td>Data Hub nav item highlighted</td></tr>
+    </tbody>
+  </table>
+
+  <div class="api-box"># Pages by locale
+curl "http://76.13.17.91/api/pages?locale=en&status=published" | jq '.meta.total' → 7
+curl "http://76.13.17.91/api/pages?locale=id&status=published" | jq '.meta.total'  → 7
+# By section
+curl "http://76.13.17.91/api/pages?section=Sectoral%20Intelligence" | jq '.meta.total' → 2</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — CMS ADMIN PANEL
+═══════════════════════════════════════════ -->
+<div class="section page-break">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div>
+      <div class="section-title">CMS Admin Panel</div>
+      <div class="section-desc">URL: http://76.13.17.91/admin — Full CRUD testing</div>
+    </div>
+  </div>
+
+  <div style="background:#f8f9fc;border:1px solid #e0e0e0;border-radius:8px;padding:12px 16px;margin-bottom:12px;font-size:11px">
+    <strong style="color:#1a3a5c">Tab Navigation:</strong>
+    <span class="badge badge-crud">Tab 1: Data Hub</span>
+    <span class="badge badge-read">Tab 2: Pages</span>
+    <span class="badge badge-read">Tab 3: Blog</span>
+    &nbsp;|&nbsp;
+    <strong>Pre-condition:</strong> All data must load without error when tab is opened
+  </div>
+
+  <!-- Tab 1: Data Hub -->
+  <div style="margin-bottom:16px">
+    <strong style="color:#1565c0;font-size:12px">TAB 1 — DATA HUB CRUD</strong>
+    <table style="margin-top:8px">
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="col-check"><div class="check-cell"></div></th>
+          <th>Test Item</th>
+          <th>Steps</th>
+          <th>Expected Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="read-row"><td>6.1</td><td><div class="check-cell"></div></td><td>Tab 1 loads datasets</td><td>Open /admin → Tab 1</td><td>11 dataset cards in grid</td></tr>
+        <tr class="read-row"><td>6.2</td><td><div class="check-cell"></div></td><td>Card shows title, category, type</td><td>Look at any card</td><td>Title, badge, chart type icon visible</td></tr>
+        <tr class="crud-row"><td>6.3</td><td><div class="check-cell"></div></td><td>CREATE — New Dataset</td><td>Click "+ New Dataset" → fill form → Save</td><td>New card appears; API count +1</td></tr>
+        <tr class="crud-row"><td>6.4</td><td><div class="check-cell"></div></td><td>EDIT — Update Dataset</td><td>Click edit on any card → change title → Save</td><td>Card updated; API returns new value</td></tr>
+        <tr class="crud-row"><td>6.5</td><td><div class="check-cell"></div></td><td>EDIT — Add data row</td><td>Edit dataset → add row in table → Save</td><td>Row count increases</td></tr>
+        <tr class="crud-row"><td>6.6</td><td><div class="check-cell"></div></td><td>DELETE — Remove Dataset</td><td>Click delete on test dataset → Confirm</td><td>Card gone; API count back to 11</td></tr>
+        <tr class="crud-row"><td>6.7</td><td><div class="check-cell"></div></td><td>RESET — Restore Defaults</td><td>Click "Reset to Default" → Confirm</td><td>All 11 original datasets restored</td></tr>
+        <tr class="read-row"><td>6.8</td><td><div class="check-cell"></div></td><td>Form validation errors</td><td>Submit form with empty title</td><td>Error message shown; not saved</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tab 2: Pages -->
+  <div style="margin-bottom:16px">
+    <strong style="color:#2e7d32;font-size:12px">TAB 2 — PAGES CRUD</strong>
+    <table style="margin-top:8px">
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="col-check"><div class="check-cell"></div></th>
+          <th>Test Item</th>
+          <th>Steps</th>
+          <th>Expected Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="read-row"><td>6.9</td><td><div class="check-cell"></div></td><td>Tab 2 loads pages</td><td>Open /admin → Tab 2</td><td>14 pages listed</td></tr>
+        <tr class="read-row"><td>6.10</td><td><div class="check-cell"></div></td><td>Status badge visible</td><td>Look at page list</td><td>Published (green) / Draft (gray) badge</td></tr>
+        <tr class="read-row"><td>6.11</td><td><div class="check-cell"></div></td><td>Locale badge visible</td><td>Look at page list</td><td>EN (blue) / ID (red) badge</td></tr>
+        <tr class="crud-row"><td>6.12</td><td><div class="check-cell"></div></td><td>CREATE — New Page (EN)</td><td>Click "+ New Page (EN)" → fill → Save</td><td>New page in list; count +1</td></tr>
+        <tr class="crud-row"><td>6.13</td><td><div class="check-cell"></div></td><td>EDIT — Update Page content</td><td>Edit About page → change title → Save</td><td>Page updated</td></tr>
+        <tr class="crud-row"><td>6.14</td><td><div class="check-cell"></div></td><td>EDIT — Change status to Draft</td><td>Edit any page → set to Draft → Save</td><td>Badge changes to gray "Draft"</td></tr>
+        <tr class="crud-row"><td>6.15</td><td><div class="check-cell"></div></td><td>DELETE — Remove Page</td><td>Delete test page → Confirm</td><td>Page removed; count back to 14</td></tr>
+        <tr class="crud-row"><td>6.16</td><td><div class="check-cell"></div></td><td>RESET — Restore Defaults</td><td>Click "Reset to Default" → Confirm</td><td>All 14 pages restored</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Tab 3: Blog -->
+  <div>
+    <strong style="color:#e65100;font-size:12px">TAB 3 — BLOG CRUD</strong>
+    <table style="margin-top:8px">
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="col-check"><div class="check-cell"></div></th>
+          <th>Test Item</th>
+          <th>Steps</th>
+          <th>Expected Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="read-row"><td>6.17</td><td><div class="check-cell"></div></td><td>Tab 3 loads posts</td><td>Open /admin → Tab 3</td><td>14 posts listed</td></tr>
+        <tr class="crud-row"><td>6.18</td><td><div class="check-cell"></div></td><td>CREATE — New Post (EN)</td><td>Click "+ New Post (EN)" → fill → Save</td><td>New post in list; count +1</td></tr>
+        <tr class="crud-row"><td>6.19</td><td><div class="check-cell"></div></td><td>CREATE — New Post (ID)</td><td>Click "+ New Post (ID)" → fill → Save</td><td>Indonesian post in list</td></tr>
+        <tr class="crud-row"><td>6.20</td><td><div class="check-cell"></div></td><td>EDIT — Change status to Published</td><td>Edit draft post → set Published → Save</td><td>Status badge changes to Published</td></tr>
+        <tr class="crud-row"><td>6.21</td><td><div class="check-cell"></div></td><td>EDIT — Update body paragraphs</td><td>Edit post → add body text → Save</td><td>Body count increases in API</td></tr>
+        <tr class="crud-row"><td>6.22</td><td><div class="check-cell"></div></td><td>LINK — Connect EN/ID version</td><td>Open EN post → "Link to ID" → select post</td><td>Linked icon appears</td></tr>
+        <tr class="crud-row"><td>6.23</td><td><div class="check-cell"></div></td><td>DELETE — Remove Post</td><td>Delete test post → Confirm</td><td>Post removed; count back to 14</td></tr>
+        <tr class="crud-row"><td>6.24</td><td><div class="check-cell"></div></td><td>RESET — Restore Defaults</td><td>Click "Reset to Default" → Confirm</td><td>All 14 posts restored</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="api-box"># CRUD API tests
+curl -X POST http://76.13.17.91/api/datasets -H "Content-Type: application/json" -d '{"title":"Test","category":"Test","chartType":"line","columns":["A"],"color":"#000"}'  # Create
+curl -X PUT  http://76.13.17.91/api/datasets/TEST_ID -H "Content-Type: application/json" -d '{"title":"Updated"}'  # Update
+curl -X DELETE http://76.13.17.91/api/datasets/TEST_ID  # Delete
+curl -X POST http://76.13.17.91/api/datasets/reset -d '{}'  # Reset all</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7 — ERROR HANDLING
+═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <div>
+      <div class="section-title">Error Handling</div>
+      <div class="section-desc">Test edge cases and error responses</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th class="col-item">Test</th>
+        <th class="col-step">Command / Action</th>
+        <th class="col-api">Expected Response</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="perf-row"><td>7.1</td><td><div class="check-cell"></div></td><td>404 — Non-existent dataset</td><td><code>GET /api/datasets/xyz123</code></td><td>404 + error JSON</td></tr>
+      <tr class="perf-row"><td>7.2</td><td><div class="check-cell"></div></td><td>400 — Validation error (empty title)</td><td><code>POST /api/datasets {"title":""}</code></td><td>400 + validation message</td></tr>
+      <tr class="perf-row"><td>7.3</td><td><div class="check-cell"></div></td><td>404 — Delete non-existent</td><td><code>DELETE /api/datasets/xyz123</code></td><td>404 Not Found</td></tr>
+      <tr class="perf-row"><td>7.4</td><td><div class="check-cell"></div></td><td>Invalid JSON body</td><td><code>POST /api/datasets</code> with invalid JSON</td><td>400 Bad Request</td></tr>
+      <tr class="perf-row"><td>7.5</td><td><div class="check-cell"></div></td><td>CORS — wrong origin rejected</td><td>Request from unknown domain</td><td>CORS error in browser console</td></tr>
+      <tr class="read-row"><td>7.6</td><td><div class="check-cell"></div></td><td>Empty category filter</td><td><code>GET /api/datasets?category=nonexistent</code></td><td>Empty array, meta.total: 0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="api-box">curl -X DELETE http://76.13.17.91/api/datasets/nonexistent-id
+# → 404 {"type":"...","title":"Not Found","status":404,"detail":"Dataset 'nonexistent-id' does not exist"}
+
+curl -X POST http://76.13.17.91/api/datasets -H "Content-Type: application/json" -d '{"title":""}'
+# → 400 {"type":"...","title":"Validation Error","status":400,"detail":"..."}</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECTION 8 — PERFORMANCE
+═══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <div>
+      <div class="section-title">Performance</div>
+      <div class="section-desc">Response time benchmarks</div>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="col-num">#</th>
+        <th class="col-check"><div class="check-cell"></div></th>
+        <th class="col-item">Endpoint</th>
+        <th class="col-step">Command</th>
+        <th class="col-api">Target</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="perf-row"><td>8.1</td><td><div class="check-cell"></div></td><td>GET /api/healthz</td><td><code>time curl -s http://76.13.17.91/api/healthz</code></td><td>&lt; 100ms</td></tr>
+      <tr class="perf-row"><td>8.2</td><td><div class="check-cell"></div></td><td>GET /api/datasets</td><td><code>time curl -s http://76.13.17.91/api/datasets -o /dev/null</code></td><td>&lt; 500ms</td></tr>
+      <tr class="perf-row"><td>8.3</td><td><div class="check-cell"></div></td><td>GET /api/blog (14 posts)</td><td><code>time curl -s http://76.13.17.91/api/blog -o /dev/null</code></td><td>&lt; 500ms</td></tr>
+      <tr class="perf-row"><td>8.4</td><td><div class="check-cell"></div></td><td>GET /api/pages (14 pages)</td><td><code>time curl -s http://76.13.17.91/api/pages -o /dev/null</code></td><td>&lt; 500ms</td></tr>
+      <tr class="perf-row"><td>8.5</td><td><div class="check-cell"></div></td><td>GET /api/datasets/oil-gas (28 rows)</td><td><code>time curl -s http://76.13.17.91/api/datasets/oil-gas-production -o /dev/null</code></td><td>&lt; 500ms</td></tr>
+      <tr class="perf-row"><td>8.6</td><td><div class="check-cell"></div></td><td>Frontend homepage load</td><td>Lighthouse / DevTools Network tab</td><td>FCP &lt; 2s, LCP &lt; 4s</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SUMMARY
+═══════════════════════════════════════════ -->
+<div class="summary">
+  <div class="summary-item">
+    <div class="s-num" id="count-pass">0</div>
+    <div class="s-label">Passed</div>
+  </div>
+  <div class="summary-item">
+    <div class="s-num fail" id="count-fail">0</div>
+    <div class="s-label">Failed</div>
+  </div>
+  <div class="summary-item">
+    <div class="s-num">52</div>
+    <div class="s-label">Total Tests</div>
+  </div>
+  <div class="summary-item">
+    <div class="s-num" id="pass-rate">—</div>
+    <div class="s-label">Pass Rate</div>
+  </div>
+</div>
+
+<script>
+// Auto-set date
+document.getElementById('test-date').textContent =
+  'Test Date: ' + new Date().toLocaleDateString('id-ID', {
+    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  });
+
+// Count checked items on print
+const observer = new MutationObserver(updateCount);
+observer.observe(document.body, { attributes: false, childList: true, subtree: true });
+
+function updateCount() {
+  const pass = document.querySelectorAll('.check-cell.pass').length;
+  const fail = document.querySelectorAll('.check-cell.fail').length;
+  document.getElementById('count-pass').textContent = pass;
+  document.getElementById('count-fail').textContent = fail;
+  const total = pass + fail;
+  const rate = total > 0 ? Math.round((pass / total) * 100) + '%' : '—';
+  document.getElementById('pass-rate').textContent = rate;
+}
+
+// Click to toggle check cell
+document.querySelectorAll('.check-cell').forEach(cell => {
+  cell.style.cursor = 'pointer';
+  cell.addEventListener('click', function() {
+    if (this.classList.contains('pass')) {
+      this.classList.remove('pass');
+      this.textContent = '';
+    } else if (this.classList.contains('fail')) {
+      this.classList.remove('fail');
+      this.textContent = '';
+    } else {
+      this.classList.add('pass');
+      this.textContent = '✓';
+    }
+    updateCount();
+  });
+});
+
+// Right-click to mark as fail
+document.querySelectorAll('.check-cell').forEach(cell => {
+  cell.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+    if (this.classList.contains('fail')) {
+      this.classList.remove('fail');
+      this.textContent = '';
+    } else {
+      this.classList.remove('pass');
+      this.classList.add('fail');
+      this.textContent = '✗';
+    }
+    updateCount();
+  });
+});
+</script>
+
+<!-- ═══════════════════════════════════════════
+     SIGNATURES
+═══════════════════════════════════════════ -->
+<div class="signatures">
+  <div class="sig-box">
+    <div class="sig-line"></div>
+    <div class="sig-label">Tester / QC</div>
+    <div class="sig-date">Date: _______________</div>
+  </div>
+  <div class="sig-box">
+    <div class="sig-line"></div>
+    <div class="sig-label">Reviewed By</div>
+    <div class="sig-date">Date: _______________</div>
+  </div>
+  <div class="sig-box">
+    <div class="sig-line"></div>
+    <div class="sig-label">Approved By</div>
+    <div class="sig-date">Date: _______________</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <span>AndaraLab CMS — Test Checklist | Auto-generated</span>
+  <span>http://76.13.17.91 | VPS: 76.13.17.91</span>
+  <span>Print / Save as PDF untuk dokumentasi testing</span>
+</div>
+
+</body>
+</html>
