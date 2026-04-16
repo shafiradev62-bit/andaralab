@@ -8,6 +8,7 @@ import { ChartDataset } from "@/lib/cms-store";
 import { formatValue } from "@/lib/utils";
 import { useLocale } from "@/lib/locale";
 import { useState } from "react";
+import { useChartZoom } from "@/hooks/useChartZoom";
 
 // Andara Lab professional palette — data visualization colors
 export const CHART_PALETTE = [
@@ -132,9 +133,6 @@ const BRUSH_STYLE = {
 
 export default function InteractiveChart({ dataset, height = 280 }: Props) {
   const { locale } = useLocale();
-  const [brushRange, setBrushRange] = useState<{ startIndex?: number; endIndex?: number }>(() => ({
-    startIndex: Math.max(0, dataset.rows.length - 24) // Default show less but we will add timeframe buttons
-  }));
   const [activeTimeframe, setActiveTimeframe] = useState<string | null>(null);
 
   const dataKeys = dataset.columns.slice(1);
@@ -145,6 +143,11 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     for (const c of dataset.columns) obj[c] = r[c];
     return obj;
   });
+
+  const { brushRange, setBrushRange, zoomProps } = useChartZoom(
+    data.length,
+    Math.max(0, data.length - 24)
+  );
 
   const handleTimeframeChange = (years: number | null, label: string) => {
     setActiveTimeframe(label);
@@ -160,7 +163,6 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     
     if (lastYearStr) {
       const targetYear = Number(lastYearStr) - years;
-      // find first index where year >= targetYear
       const startIndex = data.findIndex(d => {
         const y = parseXLabel(String(d[xKey])).year;
         return y !== null && Number(y) >= targetYear;
@@ -172,42 +174,10 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
       }
     }
 
-    // fallback
-    const approxPoints = years * 12; // Assuming monthly
+    const approxPoints = years * 12;
     setBrushRange({
       startIndex: Math.max(0, data.length - approxPoints),
       endIndex: data.length - 1
-    });
-  };
-
-  const handleWheel = (e: React.WheelEvent) => {
-    if (!data.length) return;
-    
-    // Determine if it's a vertical scroll for zoom
-    if (Math.abs(e.deltaY) < 1) return;
-
-    // Zoom speed based on data size
-    const zoomFactor = 0.08; 
-    const step = Math.max(1, Math.floor(data.length * zoomFactor));
-    
-    setBrushRange(prev => {
-      const start = prev.startIndex ?? 0;
-      const end = prev.endIndex ?? data.length - 1;
-      const range = end - start;
-      const isZoomIn = e.deltaY < 0;
-
-      if (isZoomIn) {
-        if (range <= 4) return prev; // Limit max zoom
-        return {
-          startIndex: Math.min(end - 4, start + step),
-          endIndex: Math.max(start + 4, end - step)
-        };
-      } else {
-        return {
-          startIndex: Math.max(0, start - step),
-          endIndex: Math.min(data.length - 1, end + step)
-        };
-      }
     });
   };
 
@@ -223,12 +193,6 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
   for (const col of dataset.columns) {
     columnNameMap[col] = getColumnLabel(dataset, col);
   }
-
-  const data = dataset.rows.map((r) => {
-    const obj: Record<string, any> = {};
-    for (const c of dataset.columns) obj[c] = r[c];
-    return obj;
-  });
 
   const commonProps = {
     data,
@@ -287,7 +251,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
 
   if (dataset.chartType === "bar") {
     return (
-      <div className="w-full flex flex-col" onWheel={handleWheel}>
+      <div className="w-full flex flex-col" {...zoomProps}>
         {renderTimeframeSelector()}
         <ResponsiveContainer width="100%" height={height + 30}>
           <BarChart {...commonProps}>
@@ -329,7 +293,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
 
   if (dataset.chartType === "area") {
     return (
-      <div className="w-full flex flex-col" onWheel={handleWheel}>
+      <div className="w-full flex flex-col" {...zoomProps}>
         {renderTimeframeSelector()}
         <ResponsiveContainer width="100%" height={height + 30}>
           <AreaChart {...commonProps}>
@@ -407,7 +371,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     const rightLabel = dataset.comboConfig?.rightLabel ?? "(%)";
 
     return (
-      <div className="space-y-0 w-full flex flex-col" onWheel={handleWheel}>
+      <div className="space-y-0 w-full flex flex-col" {...zoomProps}>
         {renderTimeframeSelector()}
         <ResponsiveContainer width="100%" height={height + 30}>
           <ComposedChart {...commonProps}>
@@ -593,7 +557,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
   }
 
   return (
-    <div className="w-full flex flex-col" onWheel={handleWheel}>
+    <div className="w-full flex flex-col" {...zoomProps}>
       {renderTimeframeSelector()}
       <ResponsiveContainer width="100%" height={height + 30}>
         <LineChart {...commonProps}>
@@ -638,3 +602,4 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     </div>
   );
 }
+

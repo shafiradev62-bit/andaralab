@@ -4,6 +4,7 @@ import {
 } from "recharts";
 import { useState } from "react";
 import { X, ZoomIn } from "lucide-react";
+import { useChartZoom } from "@/hooks/useChartZoom";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -51,6 +52,8 @@ function ExpandedChart({ series, onClose }: { series: IPRSeries; onClose: () => 
   const yMin = Math.floor((min - pad) / 5) * 5;
   const yMax = Math.ceil((max + pad) / 5) * 5;
 
+  const { brushRange, setBrushRange, zoomProps } = useChartZoom(series.data.length);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
@@ -66,18 +69,30 @@ function ExpandedChart({ series, onClose }: { series: IPRSeries; onClose: () => 
             <X className="w-4 h-4" />
           </button>
         </div>
-        <p className="text-[10px] text-gray-400 mb-3">Drag slider di bawah untuk zoom in/out timeline</p>
-        <ResponsiveContainer width="100%" height={260}>
-          <LineChart data={series.data} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="2 2" stroke="#F0F0F0" vertical={false} />
-            <XAxis dataKey="period" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={{ stroke: "#E5E7EB" }} tickLine={false} />
-            <YAxis domain={[yMin, yMax]} tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => v.toFixed(0)} />
-            <ReferenceLine y={0} stroke="#9CA3AF" strokeWidth={0.8} strokeDasharray="3 3" />
-            <Tooltip content={<MiniTooltip />} />
-            <Line type="monotone" dataKey="value" stroke="#C0392B" strokeWidth={2} dot={{ r: 3, fill: "#C0392B", strokeWidth: 0 }} activeDot={{ r: 5, fill: "#C0392B", stroke: "#fff", strokeWidth: 1 }} />
-            <Brush dataKey="period" height={22} stroke="#E5E7EB" fill="#F9FAFB" travellerWidth={6} tickFormatter={() => ""} />
-          </LineChart>
-        </ResponsiveContainer>
+        <p className="text-[10px] text-gray-400 mb-3">Scroll / pinch untuk zoom · drag slider untuk navigasi</p>
+        <div {...zoomProps}>
+          <ResponsiveContainer width="100%" height={260}>
+            <LineChart data={series.data} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
+              <CartesianGrid strokeDasharray="2 2" stroke="#F0F0F0" vertical={false} />
+              <XAxis dataKey="period" tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={{ stroke: "#E5E7EB" }} tickLine={false} />
+              <YAxis domain={[yMin, yMax]} tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => v.toFixed(0)} />
+              <ReferenceLine y={0} stroke="#9CA3AF" strokeWidth={0.8} strokeDasharray="3 3" />
+              <Tooltip content={<MiniTooltip />} />
+              <Line type="monotone" dataKey="value" stroke="#C0392B" strokeWidth={2} dot={{ r: 3, fill: "#C0392B", strokeWidth: 0 }} activeDot={{ r: 5, fill: "#C0392B", stroke: "#fff", strokeWidth: 1 }} />
+              <Brush
+                dataKey="period"
+                height={22}
+                stroke="#E5E7EB"
+                fill="#F9FAFB"
+                travellerWidth={6}
+                tickFormatter={() => ""}
+                startIndex={brushRange.startIndex}
+                endIndex={brushRange.endIndex}
+                onChange={(r) => setBrushRange({ startIndex: r.startIndex, endIndex: r.endIndex })}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
@@ -97,6 +112,8 @@ function MiniLineChart({ series, onExpand }: { series: IPRSeries; onExpand: () =
   const yMin = Math.floor((min - pad) / 5) * 5;
   const yMax = Math.ceil((max + pad) / 5) * 5;
 
+  const { brushRange, setBrushRange, zoomProps } = useChartZoom(series.data.length);
+
   return (
     <div className="flex flex-col relative group" style={{ minWidth: 0 }}>
       <button
@@ -106,55 +123,67 @@ function MiniLineChart({ series, onExpand }: { series: IPRSeries; onExpand: () =
       >
         <ZoomIn className="w-2.5 h-2.5 text-gray-500" />
       </button>
-      <ResponsiveContainer width="100%" height={120}>
-        <LineChart
-          data={series.data}
-          margin={{ top: 14, right: 18, left: 0, bottom: 0 }}
-        >
-          <CartesianGrid strokeDasharray="2 2" stroke="#F0F0F0" vertical={false} />
-          <XAxis
-            dataKey="period"
-            tick={{ fontSize: 8, fill: "#9CA3AF" }}
-            axisLine={{ stroke: "#E5E7EB" }}
-            tickLine={false}
-            interval="preserveStartEnd"
-          />
-          <YAxis
-            domain={[yMin, yMax]}
-            tick={{ fontSize: 8, fill: "#9CA3AF" }}
-            axisLine={false}
-            tickLine={false}
-            width={28}
-            tickFormatter={(v) => v.toFixed(0)}
-          />
-          <ReferenceLine y={0} stroke="#9CA3AF" strokeWidth={0.8} strokeDasharray="3 3" />
-          <Tooltip content={<MiniTooltip />} />
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke="#C0392B"
-            strokeWidth={1.5}
-            dot={(props: any) => {
-              const { cx, cy, index } = props;
-              const isLast = index === series.data.length - 1;
-              if (!isLast) return <circle key={`dot-${index}`} cx={cx} cy={cy} r={2} fill="#C0392B" stroke="none" />;
-              // Titik terakhir lebih besar
-              return (
-                <circle
-                  key={`dot-last-${index}`}
-                  cx={cx}
-                  cy={cy}
-                  r={3.5}
-                  fill="#C0392B"
-                  stroke="#fff"
-                  strokeWidth={1}
-                />
-              );
-            }}
-            activeDot={{ r: 4, fill: "#C0392B", stroke: "#fff", strokeWidth: 1 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <div {...zoomProps}>
+        <ResponsiveContainer width="100%" height={120}>
+          <LineChart
+            data={series.data}
+            margin={{ top: 14, right: 18, left: 0, bottom: 0 }}
+          >
+            <CartesianGrid strokeDasharray="2 2" stroke="#F0F0F0" vertical={false} />
+            <XAxis
+              dataKey="period"
+              tick={{ fontSize: 8, fill: "#9CA3AF" }}
+              axisLine={{ stroke: "#E5E7EB" }}
+              tickLine={false}
+              interval="preserveStartEnd"
+            />
+            <YAxis
+              domain={[yMin, yMax]}
+              tick={{ fontSize: 8, fill: "#9CA3AF" }}
+              axisLine={false}
+              tickLine={false}
+              width={28}
+              tickFormatter={(v) => v.toFixed(0)}
+            />
+            <ReferenceLine y={0} stroke="#9CA3AF" strokeWidth={0.8} strokeDasharray="3 3" />
+            <Tooltip content={<MiniTooltip />} />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#C0392B"
+              strokeWidth={1.5}
+              dot={(props: any) => {
+                const { cx, cy, index } = props;
+                const isLast = index === series.data.length - 1;
+                if (!isLast) return <circle key={`dot-${index}`} cx={cx} cy={cy} r={2} fill="#C0392B" stroke="none" />;
+                return (
+                  <circle
+                    key={`dot-last-${index}`}
+                    cx={cx}
+                    cy={cy}
+                    r={3.5}
+                    fill="#C0392B"
+                    stroke="#fff"
+                    strokeWidth={1}
+                  />
+                );
+              }}
+              activeDot={{ r: 4, fill: "#C0392B", stroke: "#fff", strokeWidth: 1 }}
+            />
+            <Brush
+              dataKey="period"
+              height={14}
+              stroke="#E5E7EB"
+              fill="#F9FAFB"
+              travellerWidth={4}
+              tickFormatter={() => ""}
+              startIndex={brushRange.startIndex}
+              endIndex={brushRange.endIndex}
+              onChange={(r) => setBrushRange({ startIndex: r.startIndex, endIndex: r.endIndex })}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
 
       {/* Label nilai terakhir */}
       {lastValue !== undefined && (

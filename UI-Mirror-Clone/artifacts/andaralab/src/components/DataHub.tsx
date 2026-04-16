@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Brush } from "recharts";
 import { useDatasets, usePosts } from "../lib/cms-store";
 import { formatValue } from "../lib/utils";
+import { useChartZoom } from "../hooks/useChartZoom";
 
 function SparkTooltip({ active, payload }: any) {
   if (!active || !payload?.length) return null;
@@ -62,6 +63,8 @@ export default function DataHub() {
     : [];
 
   const marketItems = [idrUsd, biRate, tradeBalance];
+
+  const { brushRange: sparkBrush, setBrushRange: setSparkBrush, zoomProps: sparkZoomProps } = useChartZoom(jciSpark.length);
 
   const recentPosts = [...posts]
     .sort((a, b) => new Date(b.publishedAt || b.createdAt).getTime() - new Date(a.publishedAt || a.createdAt).getTime())
@@ -155,15 +158,27 @@ export default function DataHub() {
                     {idrUsd.change}
                   </span>
                 </div>
-                <ResponsiveContainer width="100%" height={80}>
-                  <LineChart data={jciSpark} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
-                    <Line type="monotone" dataKey="v" stroke="#00205B" strokeWidth={1.5} dot={false} activeDot={{ r: 3, fill: "#00205B" }} />
-                    <XAxis dataKey="t" hide />
-                    <YAxis domain={["auto", "auto"]} hide />
-                    <Tooltip content={<SparkTooltip />} />
-                    <Brush dataKey="t" height={18} stroke="#E5E7EB" fill="#F9FAFB" travellerWidth={5} tickFormatter={() => ""} />
-                  </LineChart>
-                </ResponsiveContainer>
+                <div {...sparkZoomProps}>
+                  <ResponsiveContainer width="100%" height={80}>
+                    <LineChart data={jciSpark} margin={{ top: 2, right: 0, left: 0, bottom: 0 }}>
+                      <Line type="monotone" dataKey="v" stroke="#00205B" strokeWidth={1.5} dot={false} activeDot={{ r: 3, fill: "#00205B" }} />
+                      <XAxis dataKey="t" hide />
+                      <YAxis domain={["auto", "auto"]} hide />
+                      <Tooltip content={<SparkTooltip />} />
+                      <Brush
+                        dataKey="t"
+                        height={18}
+                        stroke="#E5E7EB"
+                        fill="#F9FAFB"
+                        travellerWidth={5}
+                        tickFormatter={() => ""}
+                        startIndex={sparkBrush.startIndex}
+                        endIndex={sparkBrush.endIndex}
+                        onChange={(r) => setSparkBrush({ startIndex: r.startIndex, endIndex: r.endIndex })}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             )}
 
