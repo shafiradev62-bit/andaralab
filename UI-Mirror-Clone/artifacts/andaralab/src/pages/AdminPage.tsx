@@ -682,9 +682,23 @@ function DatasetEditor({
                         const sample = effective.rows[0];
                         const labelKey = Object.keys(sample ?? {}).find(k => typeof sample[k] === 'string') ?? effective.columns[0];
                         const valKey = effective.columns[1] ?? "";
-                        patch({ donutConfig: { ...effective.donutConfig, labelColumn: effective.columns[0], valueColumn: valKey, breakdownRows: effective.rows.slice(), breakdownLabelCol: labelKey, breakdownValueCol: valKey } });
+                        patch({ donutConfig: { 
+                          labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                          valueColumn: effective.donutConfig?.valueColumn ?? valKey,
+                          ...effective.donutConfig, 
+                          breakdownRows: effective.rows.slice(), 
+                          breakdownLabelCol: labelKey, 
+                          breakdownValueCol: valKey 
+                        } });
                       } else {
-                        patch({ donutConfig: { ...effective.donutConfig, breakdownRows: undefined, breakdownLabelCol: undefined, breakdownValueCol: undefined } });
+                        patch({ donutConfig: {
+                          labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                          valueColumn: effective.donutConfig?.valueColumn ?? (effective.columns[1] ?? ""),
+                          ...effective.donutConfig,
+                          breakdownRows: undefined, 
+                          breakdownLabelCol: undefined, 
+                          breakdownValueCol: undefined 
+                        } });
                       }
                     }}
                     className="w-3.5 h-3.5 accent-blue-600" />
@@ -695,16 +709,26 @@ function DatasetEditor({
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-[10.5px] text-gray-500 mb-1">Breakdown Label Column</label>
-                        <select value={effective.donutConfig.breakdownLabelCol ?? effective.columns[0]}
-                          onChange={(e) => patch({ donutConfig: { ...effective.donutConfig, breakdownLabelCol: e.target.value } })}
+                        <select value={effective.donutConfig?.breakdownLabelCol ?? effective.columns[0]}
+                          onChange={(e) => patch({ donutConfig: { 
+                            labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                            valueColumn: effective.donutConfig?.valueColumn ?? (effective.columns[1] ?? ""),
+                            ...effective.donutConfig, 
+                            breakdownLabelCol: e.target.value 
+                          } })}
                           className="w-full border border-gray-200 px-2 py-1.5 text-[12px] rounded focus:outline-none focus:border-blue-400 bg-white">
                           {effective.columns.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                       </div>
                       <div>
                         <label className="block text-[10.5px] text-gray-500 mb-1">Breakdown Value Column</label>
-                        <select value={effective.donutConfig.breakdownValueCol ?? effective.columns[1] ?? ""}
-                          onChange={(e) => patch({ donutConfig: { ...effective.donutConfig, breakdownValueCol: e.target.value } })}
+                        <select value={effective.donutConfig?.breakdownValueCol ?? effective.columns[1] ?? ""}
+                          onChange={(e) => patch({ donutConfig: { 
+                            labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                            valueColumn: effective.donutConfig?.valueColumn ?? (effective.columns[1] ?? ""),
+                            ...effective.donutConfig, 
+                            breakdownValueCol: e.target.value 
+                          } })}
                           className="w-full border border-gray-200 px-2 py-1.5 text-[12px] rounded focus:outline-none focus:border-blue-400 bg-white">
                           {effective.columns.slice(1).map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
@@ -791,9 +815,23 @@ function DatasetEditor({
                       if (e.target.checked) {
                         const labelKey = Object.keys(effective.rows[0] ?? {}).find(k => typeof effective.rows[0][k] === 'string') ?? effective.columns[0];
                         const valKey = effective.donutConfig?.valueColumn ?? effective.columns[1] ?? "";
-                        patch({ donutConfig: { ...effective.donutConfig, breakdownRows: effective.rows.slice(), breakdownLabelCol: labelKey, breakdownValueCol: valKey } });
+                        patch({ donutConfig: { 
+                          labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                          valueColumn: valKey,
+                          ...effective.donutConfig, 
+                          breakdownRows: effective.rows.slice(), 
+                          breakdownLabelCol: labelKey, 
+                          breakdownValueCol: valKey 
+                        } });
                       } else {
-                        patch({ donutConfig: { ...effective.donutConfig, breakdownRows: undefined, breakdownLabelCol: undefined, breakdownValueCol: undefined } });
+                        patch({ donutConfig: {
+                          labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                          valueColumn: effective.donutConfig?.valueColumn ?? (effective.columns[1] ?? ""),
+                          ...effective.donutConfig,
+                          breakdownRows: undefined, 
+                          breakdownLabelCol: undefined, 
+                          breakdownValueCol: undefined 
+                        } });
                       }
                     }}
                     className="w-3.5 h-3.5 accent-purple-600" />
@@ -803,16 +841,26 @@ function DatasetEditor({
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <label className="block text-[10.5px] text-gray-500 mb-1">Breakdown Label Column</label>
-                      <select value={effective.donutConfig.breakdownLabelCol ?? effective.columns[0]}
-                        onChange={(e) => patch({ donutConfig: { ...effective.donutConfig, breakdownLabelCol: e.target.value } })}
+                      <select value={effective.donutConfig?.breakdownLabelCol ?? effective.columns[0]}
+                        onChange={(e) => patch({ donutConfig: { 
+                          labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                          valueColumn: effective.donutConfig?.valueColumn ?? (effective.columns[1] ?? ""),
+                          ...effective.donutConfig, 
+                          breakdownLabelCol: e.target.value 
+                        } })}
                         className="w-full border border-gray-200 px-2 py-1.5 text-[12px] rounded focus:outline-none focus:border-purple-400 bg-white">
                         {effective.columns.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="block text-[10.5px] text-gray-500 mb-1">Breakdown Value Column</label>
-                      <select value={effective.donutConfig.breakdownValueCol ?? effective.columns[1] ?? ""}
-                        onChange={(e) => patch({ donutConfig: { ...effective.donutConfig, breakdownValueCol: e.target.value } })}
+                      <select value={effective.donutConfig?.breakdownValueCol ?? effective.columns[1] ?? ""}
+                        onChange={(e) => patch({ donutConfig: { 
+                          labelColumn: effective.donutConfig?.labelColumn ?? effective.columns[0],
+                          valueColumn: effective.donutConfig?.valueColumn ?? (effective.columns[1] ?? ""),
+                          ...effective.donutConfig, 
+                          breakdownValueCol: e.target.value 
+                        } })}
                         className="w-full border border-gray-200 px-2 py-1.5 text-[12px] rounded focus:outline-none focus:border-purple-400 bg-white">
                         {effective.columns.slice(1).map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
@@ -1457,8 +1505,19 @@ function PageEditor({
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           {isSaving ? "Saving…" : "Save Page"}
         </button>
+        {(!isNew || savedSlug) && (
+          <a
+            href={viewHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-[13px] font-medium text-blue-600 hover:text-blue-800 underline ml-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            View Live Page
+          </a>
+        )}
         {(updateMut.isSuccess || createMut.isSuccess) && !savedSlug && (
-          <span className="text-[12px] text-gray-500">Saved</span>
+          <span className="text-[12px] text-green-600 ml-2 flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5"/> Saved</span>
         )}
       </div>
 
@@ -1797,8 +1856,19 @@ function PostEditor({
           {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           {isSaving ? "Saving…" : "Save Post"}
         </button>
+        {(!isNew || savedSlug) && (
+          <a
+            href={articleHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 text-[13px] font-medium text-blue-600 hover:text-blue-800 underline ml-2"
+          >
+            <ExternalLink className="w-4 h-4" />
+            View Live Post
+          </a>
+        )}
         {(updateMut.isSuccess || createMut.isSuccess) && !savedSlug && (
-          <span className="text-[12px] text-gray-500">Saved</span>
+          <span className="text-[12px] text-green-600 ml-2 flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5"/> Saved</span>
         )}
       </div>
 

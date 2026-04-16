@@ -47,21 +47,24 @@ function getColumnLabel(dataset: ChartDataset, colKey: string): string {
 }
 
 /** 
- * Parse period labels like "2020 I" or "Jan 2024" 
+ * Parse period labels like "2020 I" or "Jan 2024" or "2024"
  * Returns { year: string, period: string } 
  */
 function parseXLabel(val: string) {
-  const parts = String(val).trim().split(/\s+/);
-  if (parts.length === 2) {
-    const yearIdx = parts.findIndex(p => /^\d{4}$/.test(p));
-    if (yearIdx !== -1) {
-      return {
-        year: parts[yearIdx],
-        period: parts[yearIdx === 0 ? 1 : 0]
-      };
+  const str = String(val).trim();
+  const match = str.match(/\b(19|20)\d{2}\b/);
+  const year = match ? match[0] : null;
+
+  let period = str;
+  if (year) {
+    if (str === year) {
+      period = year;
+    } else {
+      period = str.replace(year, "").trim().replace(/^[-/]|[-/]$/g, "").trim();
     }
   }
-  return { year: null, period: val };
+
+  return { year, period: period || year || str };
 }
 
 function CustomTooltip({ active, payload, label, dataset, columnNames }: { active?: boolean; payload?: any[]; label?: string; dataset: ChartDataset; columnNames?: Record<string, string> }) {
@@ -121,18 +124,69 @@ const CustomXAxisTick = (props: any) => {
   );
 };
 
-// Brush styling shared across all chart types
 const BRUSH_STYLE = {
-  stroke: "#E5E7EB",
-  fill: "#F9FAFB",
-  height: 24,
+  stroke: "#CBD5E1",
+  fill: "#F8FAFC",
+  height: 48,
 };
 
 export default function InteractiveChart({ dataset, height = 280 }: Props) {
   const { locale } = useLocale();
-  const [brushRange, setBrushRange] = useState<{ startIndex?: number; endIndex?: number }>({});
+  const [brushRange, setBrushRange] = useState<{ startIndex?: number; endIndex?: number }>(() => ({
+    startIndex: Math.max(0, dataset.rows.length - 24) // Default show less but we will add timeframe buttons
+  }));
+  const [activeTimeframe, setActiveTimeframe] = useState<string | null>(null);
+
   const dataKeys = dataset.columns.slice(1);
   const xKey = dataset.columns[0];
+
+  const data = dataset.rows.map((r) => {
+    const obj: Record<string, any> = {};
+    for (const c of dataset.columns) obj[c] = r[c];
+    return obj;
+  });
+
+  const handleTimeframeChange = (years: number | null, label: string) => {
+    setActiveTimeframe(label);
+    if (!data.length) return;
+
+    if (years === null) {
+      setBrushRange({ startIndex: 0, endIndex: data.length - 1 });
+      return;
+    }
+
+    const lastRow = data[data.length - 1];
+    const lastYearStr = parseXLabel(String(lastRow[xKey])).year;
+    
+    if (lastYearStr) {
+      const targetYear = Number(lastYearStr) - years;
+      // find first index where year >= targetYear
+      const startIndex = data.findIndex(d => {
+        const y = parseXLabel(String(d[xKey])).year;
+        return y !== null && Number(y) >= targetYear;
+      });
+
+      if (startIndex !== -1) {
+        setBrushRange({ startIndex, endIndex: data.length - 1 });
+        return;
+      }
+    }
+
+    // fallback
+    const approxPoints = years * 12; // Assuming monthly
+    setBrushRange({
+      startIndex: Math.max(0, data.length - approxPoints),
+      endIndex: data.length - 1
+    });
+  };
+
+  const timeframes = [
+    { label: locale === 'en' ? '1Y' : '1T', years: 1 },
+    { label: locale === 'en' ? '3Y' : '3T', years: 3 },
+    { label: locale === 'en' ? '5Y' : '5T', years: 5 },
+    { label: locale === 'en' ? '10Y' : '10T', years: 10 },
+    { label: locale === 'en' ? 'Max' : 'Max', years: null },
+  ];
 
   const columnNameMap: Record<string, string> = {};
   for (const col of dataset.columns) {
@@ -181,10 +235,31 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
 
   const xAxis = hasYearGroup ? renderXAxis() : renderDefaultXAxis();
 
+  const renderTimeframeSelector = () => (
+    <div className="flex justify-end gap-1 mb-2 px-2">
+      <span className="text-[11px] text-gray-500 my-auto mr-2">Zoom:</span>
+      {timeframes.map(tf => (
+        <button
+          key={tf.label}
+          onClick={() => handleTimeframeChange(tf.years, tf.label)}
+          className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors ${
+            activeTimeframe === tf.label 
+              ? "bg-[#1a3a5c] text-white" 
+              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+          }`}
+        >
+          {tf.label}
+        </button>
+      ))}
+    </div>
+  );
+
   if (dataset.chartType === "bar") {
     return (
-      <ResponsiveContainer width="100%" height={height + 30}>
-        <BarChart {...commonProps}>
+      <div className="w-full flex flex-col">
+        {renderTimeframeSelector()}
+        <ResponsiveContainer width="100%" height={height + 30}>
+          <BarChart {...commonProps}>
           <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
           {xAxis}
           <YAxis {...axisStyle} width={45} domain={yAxisDomain} />
@@ -198,28 +273,35 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
             iconSize={12}
           />
           {dataKeys.map((key, i) => (
-            <Bar key={key} dataKey={key} fill={getColor(dataset, i)} radius={[2, 2, 0, 0]} maxBarSize={40} name={columnNameMap[key] ?? key} />
+            <Bar key={key} dataKey={key} fill={getColor(dataset, i)} radius={[2, 2, 0, 0]} maxBarSize={40} name={columnNameMap[key] ?? key} isAnimationActive={false} />
           ))}
           <Brush
             dataKey={xKey}
             height={BRUSH_STYLE.height}
             stroke={BRUSH_STYLE.stroke}
             fill={BRUSH_STYLE.fill}
-            travellerWidth={6}
+            travellerWidth={10}
             startIndex={brushRange.startIndex}
             endIndex={brushRange.endIndex}
             onChange={(range) => setBrushRange({ startIndex: range.startIndex, endIndex: range.endIndex })}
             tickFormatter={() => ""}
-          />
+          >
+            <LineChart data={data}>
+              <Line type="monotone" dataKey={dataKeys[0]} stroke="#9CA3AF" strokeWidth={1} dot={false} isAnimationActive={false} />
+            </LineChart>
+          </Brush>
         </BarChart>
       </ResponsiveContainer>
+      </div>
     );
   }
 
   if (dataset.chartType === "area") {
     return (
-      <ResponsiveContainer width="100%" height={height + 30}>
-        <AreaChart {...commonProps}>
+      <div className="w-full flex flex-col">
+        {renderTimeframeSelector()}
+        <ResponsiveContainer width="100%" height={height + 30}>
+          <AreaChart {...commonProps}>
           <defs>
             {dataKeys.map((key, i) => (
               <linearGradient key={key} id={`grad-${i}`} x1="0" y1="0" x2="0" y2="1">
@@ -251,6 +333,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
               dot={{ r: 3, strokeWidth: 0, fill: getColor(dataset, i) }}
               activeDot={{ r: 5, strokeWidth: 0 }}
               name={columnNameMap[key] ?? key}
+              isAnimationActive={false}
             />
           ))}
           <Brush
@@ -266,6 +349,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
           />
         </AreaChart>
       </ResponsiveContainer>
+      </div>
     );
   }
 
@@ -292,7 +376,8 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     const rightLabel = dataset.comboConfig?.rightLabel ?? "(%)";
 
     return (
-      <div className="space-y-0">
+      <div className="space-y-0 w-full flex flex-col">
+        {renderTimeframeSelector()}
         <ResponsiveContainer width="100%" height={height + 30}>
           <ComposedChart {...commonProps}>
             <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
@@ -325,6 +410,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
                 radius={[1, 1, 0, 0]}
                 maxBarSize={40}
                 name={columnNameMap[key] ?? key}
+                isAnimationActive={false}
               />
             ))}
 
@@ -339,6 +425,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
                 dot={i === 0 ? { r: 3.5, strokeWidth: 1.5, fill: "#fff", stroke: getColor(dataset, finalBarKeys.length + i) } : { r: 3, strokeWidth: 0, fill: getColor(dataset, finalBarKeys.length + i) }}
                 activeDot={{ r: 5, strokeWidth: 1, stroke: "#fff" }}
                 name={columnNameMap[key] ?? key}
+                isAnimationActive={false}
               />
             ))}
             <Brush
@@ -475,8 +562,10 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height={height + 30}>
-      <LineChart {...commonProps}>
+    <div className="w-full flex flex-col">
+      {renderTimeframeSelector()}
+      <ResponsiveContainer width="100%" height={height + 30}>
+        <LineChart {...commonProps}>
         <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
         {xAxis}
         <YAxis {...axisStyle} width={45} />
@@ -499,6 +588,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
             dot={{ r: 3, strokeWidth: 0, fill: getColor(dataset, i) }}
             name={columnNameMap[key] ?? key}
             activeDot={{ r: 5, strokeWidth: 1, stroke: "#fff" }}
+            isAnimationActive={false}
           />
         ))}
         <Brush
@@ -514,5 +604,6 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
         />
       </LineChart>
     </ResponsiveContainer>
+    </div>
   );
 }
