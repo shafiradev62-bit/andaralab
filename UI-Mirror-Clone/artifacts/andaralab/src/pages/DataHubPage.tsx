@@ -6,7 +6,6 @@ import { applyDocumentSeo } from "@/lib/document-meta";
 import { formatValue } from "@/lib/utils";
 import InteractiveChart from "@/components/InteractiveChart";
 import CalendarWidget from "@/components/CalendarWidget";
-import IPRGroupChart, { type IPRSeries } from "@/components/IPRGroupChart";
 import { BarChart2, LineChart as LineChartIcon, TrendingUp, Calendar, Table as TableIcon, ArrowRight, ExternalLink, AlertCircle, Loader2, Search, X, Filter, SortAsc, Layers } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -119,72 +118,6 @@ export default function DataHubPage() {
     setSortBy("latest");
   };
 
-  // ─── Data IPR (Indeks Penjualan Riil) per kelompok ─────────────────────────
-  // Sumber: Tabel Series SPE, format: { period, value } yoy %
-  const iprSeries: IPRSeries[] = [
-    {
-      label: "IPR Suku Cadang dan Aksesori",
-      data: [
-        { period: "8", value: 10.2 }, { period: "9", value: 11.5 }, { period: "10", value: 12.0 },
-        { period: "11", value: 11.8 }, { period: "12", value: 13.1 }, { period: "1", value: 11.3 },
-        { period: "2", value: 9.8 }, { period: "3*", value: 9.8 },
-      ],
-    },
-    {
-      label: "IPR Makanan, Minuman & Tembakau",
-      data: [
-        { period: "8", value: 7.2 }, { period: "9", value: 6.8 }, { period: "10", value: 7.5 },
-        { period: "11", value: 6.9 }, { period: "12", value: 8.8 }, { period: "1", value: 4.0 },
-        { period: "2", value: 3.5 }, { period: "3*", value: 3.5 },
-      ],
-    },
-    {
-      label: "IPR Bahan Bakar Kendaraan Bermotor",
-      data: [
-        { period: "8", value: 5.1 }, { period: "9", value: 3.2 }, { period: "10", value: 2.8 },
-        { period: "11", value: 1.5 }, { period: "12", value: -0.6 }, { period: "1", value: -9.3 },
-        { period: "2", value: -8.0 }, { period: "3*", value: -8.0 },
-      ],
-      isPrakiraan: true,
-    },
-    {
-      label: "IPR Peralatan Informasi dan Komunikasi",
-      data: [
-        { period: "8", value: -28.0 }, { period: "9", value: -27.5 }, { period: "10", value: -26.8 },
-        { period: "11", value: -27.0 }, { period: "12", value: -28.3 }, { period: "1", value: -25.0 },
-        { period: "2", value: -24.0 }, { period: "3*", value: -24.0 },
-      ],
-      isPrakiraan: true,
-    },
-    {
-      label: "IPR Perlengkapan Rumah Tangga dan Lainnya",
-      data: [
-        { period: "8", value: 2.1 }, { period: "9", value: 1.8 }, { period: "10", value: 0.9 },
-        { period: "11", value: 0.5 }, { period: "12", value: 0.5 }, { period: "1", value: -4.1 },
-        { period: "2", value: -3.5 }, { period: "3*", value: -3.5 },
-      ],
-      isPrakiraan: true,
-    },
-    {
-      label: "IPR Barang Budaya dan Rekreasi",
-      data: [
-        { period: "8", value: 8.5 }, { period: "9", value: 9.2 }, { period: "10", value: 10.1 },
-        { period: "11", value: 9.8 }, { period: "12", value: 1.7 }, { period: "1", value: -5.4 },
-        { period: "2", value: 5.7 }, { period: "3*", value: 5.7 },
-      ],
-      isPrakiraan: true,
-    },
-    {
-      label: "IPR Sub Kel. Sandang",
-      data: [
-        { period: "8", value: 3.2 }, { period: "9", value: 2.8 }, { period: "10", value: 3.5 },
-        { period: "11", value: 4.9 }, { period: "12", value: 4.9 }, { period: "1", value: -8.3 },
-        { period: "2", value: -7.0 }, { period: "3*", value: -7.0 },
-      ],
-      isPrakiraan: true,
-    },
-  ];
-
   return (
     <div className="bg-white">
       <section className="border-b border-[#E5E7EB] py-12">
@@ -224,19 +157,6 @@ export default function DataHubPage() {
       {/* Charts Tab */}
       {activeTab === "charts" && (
         <div className="max-w-[1200px] mx-auto px-6 py-10">
-
-          {/* IPR Group Chart — Grafik 3 style */}
-          {!selectedDataset && (
-            <div className="mb-10">
-              <IPRGroupChart
-                chartNumber="Grafik 3"
-                title="Pertumbuhan IPR Menurut Kelompok (%, yoy)"
-                unit="%, yoy"
-                footnote="*) Angka Prakiraan"
-                series={iprSeries}
-              />
-            </div>
-          )}
 
           {!selectedDataset && (
             <motion.div 
@@ -564,7 +484,7 @@ export default function DataHubPage() {
                   </div>
                 )}
                 <p className="text-[11px] text-gray-400 mt-4">
-                  {t("unit_label")}: {selectedDataset.unit} · {t("updated_label")}: {selectedDataset.updatedAt}
+                  {t("unit_label")}: {selectedDataset.unit?.trim() ? selectedDataset.unit : "—"} · {t("updated_label")}: {selectedDataset.updatedAt}
                 </p>
               </div>
             </div>

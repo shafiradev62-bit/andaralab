@@ -127,6 +127,81 @@ function nextId(map: Map<number, unknown>): number {
   return map.size === 0 ? 1 : Math.max(...[...map.keys()]) + 1;
 }
 
+// ─── Dataset X-axis normalizer ────────────────────────────────────────────────
+// Handles BPS-style tables where only the first period of a year has the year
+// written out, e.g.: "2025 Jan", "Feb", "Mar", ..., "2026 Jan", "Feb", ...
+// or: "2012 Q1", "Q2", "Q3", "Q4", "2013 Q1", ...
+// After normalization every label is fully qualified: "2025 Jan", "2025 Feb", ...
+
+const YEAR_RE = /\b(19|20)\d{2}\b/;
+
+function fillYears(xvals: string[]): string[] {
+  let currentYear: string | null = null;
+  return xvals.map((v) => {
+    // Clean noise: _1 _2 duplicate suffixes, keep * for prakiraan display
+    const cleaned = String(v).trim().replace(/_\d+$/g, "");
+    const m = cleaned.match(YEAR_RE);
+    if (m) {
+      currentYear = m[0];
+      return cleaned;
+    }
+    return currentYear ? `${currentYear} ${cleaned}` : cleaned;
+  });
+}
+
+/** Exported so GET /api/datasets can return the same X-axis + Y-range fixes as create/update. */
+export function normalizeDataset<T extends { columns?: string[]; rows?: Record<string, unknown>[]; yAxisMin?: number; yAxisMax?: number }>(ds: T): T {
+  const cols = ds.columns;
+  const rows = ds.rows;
+  if (!cols?.length || !rows?.length) return ds;
+
+  // ── 1. Fix X axis labels (fill missing years) ──────────────────────────────
+  const xkey = cols[0];
+  const xvals = rows.map((r) => String(r[xkey] ?? ""));
+  const hasYear = xvals.some((v) => YEAR_RE.test(v));
+  const noYear  = xvals.some((v) => !YEAR_RE.test(v));
+  const newRows = (hasYear && noYear)
+    ? rows.map((r, i) => ({ ...r, [xkey]: fillYears(xvals)[i] }))
+    : rows;
+
+  // ── 2. Compute actual data range from numeric value columns ─────────────────
+  const numericVals: number[] = [];
+  for (const col of cols.slice(1)) {
+    for (const r of newRows) {
+      const v = r[col];
+      if (v !== null && v !== undefined && v !== "") {
+        const n = typeof v === "number" ? v : parseFloat(String(v));
+        if (isFinite(n)) numericVals.push(n);
+      }
+    }
+  }
+
+  let result: T = { ...ds, rows: newRows };
+
+  if (numericVals.length > 0) {
+    const dataMin = Math.min(...numericVals);
+    const dataMax = Math.max(...numericVals);
+    const range   = Math.abs(dataMax - dataMin) || 1;
+
+    // ── 3. Strip yAxisMin/yAxisMax if they are outside a sane range ───────────
+    //    "sane" = within 2x the data range from the actual min/max
+    if (result.yAxisMin !== undefined && result.yAxisMin !== null) {
+      if (result.yAxisMin > dataMin || result.yAxisMin < dataMin - range * 2) {
+        const { yAxisMin: _, ...rest } = result as any;
+        result = rest as T;
+      }
+    }
+    if (result.yAxisMax !== undefined && result.yAxisMax !== null) {
+      if (result.yAxisMax < dataMax || result.yAxisMax > dataMax + range * 2) {
+        const { yAxisMax: _, ...rest } = result as any;
+        result = rest as T;
+      }
+    }
+  }
+
+  return result;
+}
+
 // ─── File persistence helpers ─────────────────────────────────────────────────
 
 const DATA_DIR = process.env.DATA_DIR || "/data";
@@ -143,10 +218,15 @@ function readJson<T>(filename: string, fallback: T): T {
   try {
     if (fs.existsSync(filepath)) {
       const raw = fs.readFileSync(filepath, "utf-8");
-      return JSON.parse(raw) as T;
+      const parsed = JSON.parse(raw) as T;
+      console.log(`[store] ✓ Loaded ${filename} from disk (${Array.isArray(parsed) ? parsed.length : 'object'} items)`);
+      return parsed;
+    } else {
+      console.warn(`[store] ⚠ ${filepath} not found, using seed data`);
     }
-  } catch {
-    console.warn(`[store] Failed to read ${filepath}, using fallback`);
+  } catch (err) {
+    console.error(`[store] ✗ Failed to read ${filepath}:`, err);
+    console.warn(`[store] Using fallback seed data`);
   }
   return fallback;
 }
@@ -155,9 +235,23 @@ function writeJson<T>(filename: string, data: T): void {
   ensureDataDir();
   const filepath = path.join(DATA_DIR, filename);
   try {
-    fs.writeFileSync(filepath, JSON.stringify(data, null, 2), "utf-8");
+    const jsonStr = JSON.stringify(data, null, 2);
+    fs.writeFileSync(filepath, jsonStr, "utf-8");
+    console.log(`[store] ✓ Saved ${filename} to disk`);
   } catch (e) {
-    console.error(`[store] Failed to write ${filepath}:`, e);
+    console.error(`[store] ✗ Failed to write ${filepath}:`, e);
+    // Try backup location if primary fails
+    try {
+      const backupPath = path.join(process.cwd(), 'data-backup', filename);
+      const backupDir = path.dirname(backupPath);
+      if (!fs.existsSync(backupDir)) {
+        fs.mkdirSync(backupDir, { recursive: true });
+      }
+      fs.writeFileSync(backupPath, JSON.stringify(data, null, 2), "utf-8");
+      console.log(`[store] ✓ Saved backup to ${backupPath}`);
+    } catch (backupErr) {
+      console.error(`[store] ✗ Backup also failed:`, backupErr);
+    }
   }
 }
 
@@ -205,16 +299,19 @@ class PersistentDatasetStore implements DatasetStore {
   }
 
   list(filter?: { category?: string }): SeedDataset[] {
-    const all = [...this.datasets.values()];
+    const all = [...this.datasets.values()].map((d) => normalizeDataset(cloneDeep(d)));
     if (filter?.category) return all.filter((d) => d.category === filter.category);
     return all;
   }
 
-  get(id: string): SeedDataset | undefined { return this.datasets.get(id); }
+  get(id: string): SeedDataset | undefined {
+    const d = this.datasets.get(id);
+    return d ? normalizeDataset(cloneDeep(d)) : undefined;
+  }
 
   create(data: Omit<SeedDataset, "id" | "createdAt" | "updatedAt">): SeedDataset {
     const id = `ds-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-    const record: SeedDataset = { ...cloneDeep(data), id, createdAt: now(), updatedAt: now() };
+    const record: SeedDataset = { ...cloneDeep(normalizeDataset(data)), id, createdAt: now(), updatedAt: now() };
     this.datasets.set(id, record);
     this.save();
     return record;
@@ -223,7 +320,7 @@ class PersistentDatasetStore implements DatasetStore {
   update(id: string, data: Partial<Omit<SeedDataset, "id" | "createdAt" | "updatedAt">>): SeedDataset | null {
     const existing = this.datasets.get(id);
     if (!existing) return null;
-    const updated: SeedDataset = { ...existing, ...cloneDeep(data), updatedAt: now() };
+    const updated: SeedDataset = { ...existing, ...cloneDeep(normalizeDataset(data)), updatedAt: now() };
     this.datasets.set(id, updated);
     this.save();
     return updated;
@@ -239,7 +336,7 @@ class PersistentDatasetStore implements DatasetStore {
     const records: SeedDataset[] = [];
     for (const data of items) {
       const id = `ds-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-      const record: SeedDataset = { ...cloneDeep(data), id, createdAt: now(), updatedAt: now() };
+      const record: SeedDataset = { ...cloneDeep(normalizeDataset(data)), id, createdAt: now(), updatedAt: now() };
       this.datasets.set(id, record);
       records.push(record);
     }
