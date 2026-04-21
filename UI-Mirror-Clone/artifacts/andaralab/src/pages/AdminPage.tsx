@@ -680,9 +680,9 @@ function DatasetEditor({
               </div>
 
               {/* Axis Range (Min/Max) */}
-              <div className="border-t border-blue-200 pt-4 space-y-3">
+              <div className="border-t border-gray-200 pt-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wide">Axis Range (Min / Max)</span>
+                  <span className="text-[11px] font-bold text-gray-600 uppercase tracking-wide">Axis Range (Min / Max)</span>
                   {(effective.comboConfig?.leftAxisMin !== undefined || effective.comboConfig?.leftAxisMax !== undefined ||
                     effective.comboConfig?.rightAxisMin !== undefined || effective.comboConfig?.rightAxisMax !== undefined) && (
                     <button
@@ -693,39 +693,39 @@ function DatasetEditor({
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[10.5px] font-semibold text-blue-600 uppercase tracking-wide mb-1">Left Axis Min (Index)</label>
+                    <label className="block text-[10.5px] font-semibold text-gray-600 uppercase tracking-wide mb-1">Left Axis Min (Index)</label>
                     <input type="number"
                       value={effective.comboConfig?.leftAxisMin ?? ""}
-                      onChange={(e) => patch({ comboConfig: { ...effective.comboConfig, leftAxisMin: e.target.value === "" ? undefined : Number(e.target.value) } })}
+                      onChange={(e) => patch({ comboConfig: { barColumns: effective.comboConfig?.barColumns ?? [], lineColumns: effective.comboConfig?.lineColumns ?? [], ...effective.comboConfig, leftAxisMin: e.target.value === "" ? undefined : Number(e.target.value) } })}
                       placeholder="Auto"
-                      className="w-full border border-blue-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-blue-500 bg-white" />
+                      className="w-full border border-gray-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-gray-400 bg-white" />
                   </div>
                   <div>
-                    <label className="block text-[10.5px] font-semibold text-blue-600 uppercase tracking-wide mb-1">Left Axis Max (Index)</label>
+                    <label className="block text-[10.5px] font-semibold text-gray-600 uppercase tracking-wide mb-1">Left Axis Max (Index)</label>
                     <input type="number"
                       value={effective.comboConfig?.leftAxisMax ?? ""}
-                      onChange={(e) => patch({ comboConfig: { ...effective.comboConfig, leftAxisMax: e.target.value === "" ? undefined : Number(e.target.value) } })}
+                      onChange={(e) => patch({ comboConfig: { barColumns: effective.comboConfig?.barColumns ?? [], lineColumns: effective.comboConfig?.lineColumns ?? [], ...effective.comboConfig, leftAxisMax: e.target.value === "" ? undefined : Number(e.target.value) } })}
                       placeholder="Auto"
-                      className="w-full border border-blue-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-blue-500 bg-white" />
+                      className="w-full border border-gray-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-gray-400 bg-white" />
                   </div>
                   <div>
-                    <label className="block text-[10.5px] font-semibold text-orange-600 uppercase tracking-wide mb-1">Right Axis Min (%)</label>
+                    <label className="block text-[10.5px] font-semibold text-gray-600 uppercase tracking-wide mb-1">Right Axis Min (%)</label>
                     <input type="number"
                       value={effective.comboConfig?.rightAxisMin ?? ""}
-                      onChange={(e) => patch({ comboConfig: { ...effective.comboConfig, rightAxisMin: e.target.value === "" ? undefined : Number(e.target.value) } })}
+                      onChange={(e) => patch({ comboConfig: { barColumns: effective.comboConfig?.barColumns ?? [], lineColumns: effective.comboConfig?.lineColumns ?? [], ...effective.comboConfig, rightAxisMin: e.target.value === "" ? undefined : Number(e.target.value) } })}
                       placeholder="Auto"
-                      className="w-full border border-orange-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-orange-500 bg-white" />
+                      className="w-full border border-gray-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-gray-400 bg-white" />
                   </div>
                   <div>
-                    <label className="block text-[10.5px] font-semibold text-orange-600 uppercase tracking-wide mb-1">Right Axis Max (%)</label>
+                    <label className="block text-[10.5px] font-semibold text-gray-600 uppercase tracking-wide mb-1">Right Axis Max (%)</label>
                     <input type="number"
                       value={effective.comboConfig?.rightAxisMax ?? ""}
-                      onChange={(e) => patch({ comboConfig: { ...effective.comboConfig, rightAxisMax: e.target.value === "" ? undefined : Number(e.target.value) } })}
+                      onChange={(e) => patch({ comboConfig: { barColumns: effective.comboConfig?.barColumns ?? [], lineColumns: effective.comboConfig?.lineColumns ?? [], ...effective.comboConfig, rightAxisMax: e.target.value === "" ? undefined : Number(e.target.value) } })}
                       placeholder="Auto"
-                      className="w-full border border-orange-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-orange-500 bg-white" />
+                      className="w-full border border-gray-200 px-3 py-2 text-[12.5px] rounded-lg focus:outline-none focus:border-gray-400 bg-white" />
                   </div>
                 </div>
-                <p className="text-[10px] text-blue-500">Kosongkan untuk auto-scale. Biru = sumbu kiri (Index), Oranye = sumbu kanan (%).</p>
+                <p className="text-[10px] text-gray-400">Kosongkan untuk auto-scale. Left = sumbu kiri (Index), Right = sumbu kanan (%).</p>
               </div>
 
               {/* GDP breakdown section */}
