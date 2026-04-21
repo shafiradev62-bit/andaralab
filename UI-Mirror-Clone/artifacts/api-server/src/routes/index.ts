@@ -9,6 +9,7 @@ import exchangeRatesRouter from "./exchange-rates.js";
 import calendarRouter from "./calendar.js";
 import calendarConfigRouter from "./calendar-config.js";
 import webhookRouter from "./webhook.js";
+import activityRouter from "./activity.js";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use("/exchange-rates", exchangeRatesRouter);
 router.use("/calendar/events", calendarRouter);
 router.use("/calendar/config", calendarConfigRouter);
 router.use("/webhook", webhookRouter);
+router.use("/activity", activityRouter);
 
 export default router;

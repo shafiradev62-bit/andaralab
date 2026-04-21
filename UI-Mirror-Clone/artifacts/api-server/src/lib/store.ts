@@ -1722,3 +1722,67 @@ class PersistentCalendarConfigStore implements CalendarConfigStore {
 
 export const calendarEventStore: CalendarEventStore = new PersistentCalendarEventStore();
 export const calendarConfigStore: CalendarConfigStore = new PersistentCalendarConfigStore();
+
+// ─── Activity Log Store ────────────────────────────────────────────────────────
+
+export type ActivityAction = "create" | "update" | "delete" | "reset" | "bulk_create";
+export type ActivityResource = "dataset" | "page" | "post" | "analisis" | "featured_insights" | "exchange_rate" | "calendar_event" | "calendar_config";
+
+export interface ActivityLogEntry {
+  id: string;
+  timestamp: string;
+  action: ActivityAction;
+  resource: ActivityResource;
+  resourceId?: string;
+  resourceTitle?: string;
+  ip: string;
+  userAgent?: string;
+  detail?: string;
+}
+
+export interface ActivityLogStore {
+  log(entry: Omit<ActivityLogEntry, "id" | "timestamp">): void;
+  list(limit?: number): ActivityLogEntry[];
+  clear(): void;
+}
+
+class PersistentActivityLogStore implements ActivityLogStore {
+  private entries: ActivityLogEntry[] = [];
+  private readonly FILE = "activity-log.json";
+  private readonly MAX = 500;
+
+  constructor() {
+    this.load();
+  }
+
+  private load() {
+    const saved = readJson<ActivityLogEntry[]>(this.FILE, []);
+    this.entries = Array.isArray(saved) ? saved : [];
+  }
+
+  private save() {
+    writeJson(this.FILE, this.entries);
+  }
+
+  log(entry: Omit<ActivityLogEntry, "id" | "timestamp">): void {
+    const record: ActivityLogEntry = {
+      ...entry,
+      id: `log-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      timestamp: now(),
+    };
+    this.entries.unshift(record);
+    if (this.entries.length > this.MAX) this.entries = this.entries.slice(0, this.MAX);
+    this.save();
+  }
+
+  list(limit = 100): ActivityLogEntry[] {
+    return this.entries.slice(0, limit);
+  }
+
+  clear(): void {
+    this.entries = [];
+    this.save();
+  }
+}
+
+export const activityLogStore: ActivityLogStore = new PersistentActivityLogStore();

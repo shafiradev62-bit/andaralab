@@ -59,8 +59,8 @@
       }
     ],
     "id": 1,
-    "createdAt": "2026-04-09T06:53:23.985Z",
-    "updatedAt": "2026-04-09T06:53:23.993Z"
+    "createdAt": "2026-04-15T10:43:47.976Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/",
@@ -122,8 +122,8 @@
       }
     ],
     "id": 2,
-    "createdAt": "2026-04-09T06:53:23.993Z",
-    "updatedAt": "2026-04-09T06:53:23.993Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/about",
@@ -184,8 +184,8 @@
       }
     ],
     "id": 3,
-    "createdAt": "2026-04-09T06:53:23.993Z",
-    "updatedAt": "2026-04-09T06:53:23.993Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/about",
@@ -246,8 +246,8 @@
       }
     ],
     "id": 4,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro/macro-outlooks",
@@ -274,21 +274,14 @@
         "type": "posts",
         "title": "Latest analysis",
         "categories": [
-          "macro-outlooks",
-          "Macro Outlooks",
-          "macro",
-          "Macro",
-          "economics-101",
-          "market-pulse",
-          "lab-notes",
-          "policy-analysis",
-          "financial-markets"
+          "Macro Foundations",
+          "macro-outlooks"
         ]
       }
     ],
     "id": 5,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro/macro-outlooks",
@@ -315,21 +308,14 @@
         "type": "posts",
         "title": "Analisis terbaru",
         "categories": [
-          "macro-outlooks",
-          "Macro Outlooks",
-          "macro",
-          "Macro",
-          "economics-101",
-          "market-pulse",
-          "lab-notes",
-          "policy-analysis",
-          "financial-markets"
+          "Macro Foundations",
+          "macro-outlooks"
         ]
       }
     ],
     "id": 6,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro/policy-monetary",
@@ -349,18 +335,14 @@
         "type": "posts",
         "title": "Latest",
         "categories": [
-          "monetary",
-          "Monetary",
-          "policy-monetary",
-          "Policy & Monetary",
-          "policy-analysis",
-          "financial-markets"
+          "Macro Foundations",
+          "Policy & Monetary"
         ]
       }
     ],
     "id": 7,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro/policy-monetary",
@@ -380,18 +362,14 @@
         "type": "posts",
         "title": "Terbaru",
         "categories": [
-          "monetary",
-          "Monetary",
-          "policy-monetary",
-          "Policy & Monetary",
-          "policy-analysis",
-          "financial-markets"
+          "Macro Foundations",
+          "Policy & Monetary"
         ]
       }
     ],
     "id": 8,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro/geopolitical",
@@ -419,8 +397,8 @@
       }
     ],
     "id": 9,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro/geopolitical",
@@ -448,8 +426,8 @@
       }
     ],
     "id": 10,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectoral/deep-dives",
@@ -469,16 +447,14 @@
         "type": "posts",
         "title": "Latest",
         "categories": [
-          "sectoral",
           "Sectoral Intelligence",
-          "deep-dives",
           "sectoral-analysis"
         ]
       }
     ],
     "id": 11,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectoral/deep-dives",
@@ -498,16 +474,14 @@
         "type": "posts",
         "title": "Terbaru",
         "categories": [
-          "sectoral",
           "Sectoral Intelligence",
-          "deep-dives",
           "sectoral-analysis"
         ]
       }
     ],
     "id": 12,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectoral/regional",
@@ -536,8 +510,8 @@
       }
     ],
     "id": 13,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectoral/regional",
@@ -566,8 +540,8 @@
       }
     ],
     "id": 14,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectoral/esg",
@@ -595,8 +569,8 @@
       }
     ],
     "id": 15,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectoral/esg",
@@ -624,8 +598,8 @@
       }
     ],
     "id": 16,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog",
@@ -665,8 +639,8 @@
       }
     ],
     "id": 17,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog",
@@ -706,8 +680,8 @@
       }
     ],
     "id": 18,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog/economics-101",
@@ -732,8 +706,8 @@
       }
     ],
     "id": 19,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog/economics-101",
@@ -758,8 +732,8 @@
       }
     ],
     "id": 20,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog/market-pulse",
@@ -784,8 +758,8 @@
       }
     ],
     "id": 21,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog/market-pulse",
@@ -810,8 +784,8 @@
       }
     ],
     "id": 22,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog/lab-notes",
@@ -836,8 +810,8 @@
       }
     ],
     "id": 23,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/blog/lab-notes",
@@ -862,8 +836,8 @@
       }
     ],
     "id": 24,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/data",
@@ -880,8 +854,8 @@
       }
     ],
     "id": 25,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/data",
@@ -898,8 +872,8 @@
       }
     ],
     "id": 26,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectors/energy",
@@ -936,8 +910,8 @@
       }
     ],
     "id": 27,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectors/energy",
@@ -970,8 +944,8 @@
       }
     ],
     "id": 28,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectors/finance",
@@ -999,8 +973,8 @@
       }
     ],
     "id": 29,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/sectors/finance",
@@ -1028,8 +1002,8 @@
       }
     ],
     "id": 30,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/contact",
@@ -1054,8 +1028,8 @@
       }
     ],
     "id": 31,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/contact",
@@ -1080,8 +1054,8 @@
       }
     ],
     "id": 32,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro",
@@ -1104,8 +1078,8 @@
       }
     ],
     "id": 33,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.977Z",
+    "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
     "slug": "/macro",
@@ -1128,7 +1102,7 @@
       }
     ],
     "id": 34,
-    "createdAt": "2026-04-09T06:53:23.994Z",
-    "updatedAt": "2026-04-09T06:53:23.994Z"
+    "createdAt": "2026-04-15T10:43:47.978Z",
+    "updatedAt": "2026-04-15T10:43:47.978Z"
   }
 ]

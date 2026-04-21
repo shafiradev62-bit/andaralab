@@ -6,75 +6,80 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-/** Thousands with `.`, decimal with `.` (Indonesian thousands + ASCII decimal). */
+/**
+ * Global formatter following Indonesian standard:
+ * DOT (.) as thousand separator, COMMA (,) as decimal separator.
+ * Example: 480.116 (for 480k)
+ */
+export function formatNumberID(value: number, decimals: number = 2): string {
+  if (!Number.isFinite(value)) return String(value);
+  return value.toLocaleString('id-ID', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
+/** Thousands with `.`, decimal with `,` (Full Indonesian format). */
 export function formatIdNumber(value: number, maxFractionDigits = 2): string {
-  if (!Number.isFinite(value)) return String(value)
-  const sign = value < 0 ? "-" : ""
-  const abs = Math.abs(value)
-  if (maxFractionDigits === 0) {
-    const n = Math.round(abs)
-    return sign + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-  }
-  const fixed = abs.toFixed(maxFractionDigits)
-  const [intPart, decPart] = fixed.split(".")
-  const intDots = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-  return sign + intDots + "." + decPart
+  return formatNumberID(value, maxFractionDigits);
 }
 
 function appendDisplayUnit(base: string, unitType: DataUnitType, unit: string): string {
-  const u = unit.trim()
-  if (!u) return base
-  if (unitType === "currency_idr" || unitType === "currency_usd") return base
-  if (unitType === "percent" && u === "%") return base
-  return `${base} ${u}`
+  const u = unit.trim();
+  if (!u) return base;
+  
+  // Rule: If unit is already in base (e.g. currency labels), don't append again.
+  // But for "number" or "custom", we strictly append the unit.
+  if (unitType === "percent" && (u === "%" || base.endsWith("%"))) return base;
+  if (unitType === "currency_idr" && (base.startsWith("Rp") || u === "Rp" || u === "IDR")) return base;
+  if (unitType === "currency_usd" && (base.startsWith("USD") || u === "USD" || u === "$")) return base;
+
+  return `${base} ${u}`;
 }
 
 /**
  * Format a numeric value according to its unit type.
- * Uses dot as thousands separator; optional `unit` is appended for number/custom (e.g. "Ribu USD").
+ * Uses dot as thousands separator; unit is appended consistently.
  */
 export function formatValue(value: number, unitType: DataUnitType, unit: string = ""): string {
-  if (!Number.isFinite(value)) return String(value)
+  if (!Number.isFinite(value)) return String(value);
 
-  const fmtInt = (n: number) => formatIdNumber(n, 0)
-  const fmt = (n: number, decimals = 2) => formatIdNumber(n, decimals)
+  // For chart values, we often want fewer decimals if they are large
+  const fmt = (n: number, decimals = 2) => formatNumberID(n, decimals);
+  const fmtInt = (n: number) => formatNumberID(n, 0);
 
   switch (unitType) {
     case "percent":
-      return appendDisplayUnit(`${fmt(value)}%`, unitType, unit)
+      return `${fmt(value)}%`;
 
     case "currency_idr": {
-      let base: string
-      if (Math.abs(value) >= 1_000_000_000_000) base = `Rp ${fmt(value / 1_000_000_000_000)} T`
-      else if (Math.abs(value) >= 1_000_000_000) base = `Rp ${fmt(value / 1_000_000_000)} M`
-      else if (Math.abs(value) >= 1_000_000) base = `Rp ${fmt(value / 1_000_000)}Jt`
-      else base = `Rp ${fmtInt(value)}`
-      return appendDisplayUnit(base, unitType, unit)
+      let base: string;
+      const abs = Math.abs(value);
+      if (abs >= 1_000_000_000_000) base = `Rp ${fmt(value / 1_000_000_000_000)} T`;
+      else if (abs >= 1_000_000_000) base = `Rp ${fmt(value / 1_000_000_000)} M`;
+      else if (abs >= 1_000_000) base = `Rp ${fmt(value / 1_000_000)} Jt`;
+      else base = `Rp ${fmtInt(value)}`;
+      return appendDisplayUnit(base, unitType, unit);
     }
 
     case "currency_usd": {
-      let base: string
-      if (Math.abs(value) >= 1_000_000_000_000) base = `USD ${fmt(value / 1_000_000_000_000)} T`
-      else if (Math.abs(value) >= 1_000_000_000) base = `USD ${fmt(value / 1_000_000_000)} B`
-      else if (Math.abs(value) >= 1_000_000) base = `USD ${fmt(value / 1_000_000)} M`
-      else base = `USD ${fmtInt(value)}`
-      return appendDisplayUnit(base, unitType, unit)
+      let base: string;
+      const abs = Math.abs(value);
+      if (abs >= 1_000_000_000_000) base = `USD ${fmt(value / 1_000_000_000_000)} T`;
+      else if (abs >= 1_000_000_000) base = `USD ${fmt(value / 1_000_000_000)} B`;
+      else if (abs >= 1_000_000) base = `USD ${fmt(value / 1_000_000)} M`;
+      else base = `USD ${fmtInt(value)}`;
+      return appendDisplayUnit(base, unitType, unit);
     }
 
     case "number":
-      return appendDisplayUnit(
-        Number.isInteger(value) ? fmtInt(value) : fmt(value),
-        unitType,
-        unit
-      )
-
     case "custom":
     default:
       return appendDisplayUnit(
         Number.isInteger(value) ? fmtInt(value) : fmt(value),
         unitType,
         unit
-      )
+      );
   }
 }
 

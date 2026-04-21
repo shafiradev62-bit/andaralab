@@ -26,6 +26,7 @@ export interface ChartDataset {
   chartType: "line" | "bar" | "area" | "combo" | "donut";
   color: string;
   unit: string;       // raw label stored here (used for display in legacy/custom)
+  custom_unit_label?: string; // explicitly defined unit label (single source of truth)
   unitType: DataUnitType; // structured type for formatting
   // CMS-editable chart metadata
   chartTitle?: string;
@@ -50,6 +51,10 @@ export interface ChartDataset {
     lineColumns: string[]; // columns to render as lines (right Y-axis)
     leftLabel?: string;     // label for left Y-axis, e.g. "Indeks"
     rightLabel?: string;   // label for right Y-axis, e.g. "(%)"
+    leftAxisMin?: number;   // custom min for left Y-axis
+    leftAxisMax?: number;   // custom max for left Y-axis
+    rightAxisMin?: number;  // custom min for right Y-axis (growth/%)
+    rightAxisMax?: number;  // custom max for right Y-axis (growth/%)
   };
   // Donut chart config
   donutConfig?: {
@@ -64,6 +69,8 @@ export interface ChartDataset {
     breakdownValueCol?: string;
     breakdownBorderColor?: string; // custom border color for breakdown section
   };
+  // Rendering behavior
+  preserveInputOrder?: boolean; // If true, do not attempt to sort or group chronologically
   // Y-Axis range customization
   yAxisMin?: number;
   yAxisMax?: number;
@@ -1919,5 +1926,45 @@ export function useUpdateCalendarConfig() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["calendar-config"] });
     },
+  });
+}
+
+// ─── Activity Log ─────────────────────────────────────────────────────────────
+
+export interface ActivityLogEntry {
+  id: string;
+  timestamp: string;
+  action: "create" | "update" | "delete" | "reset" | "bulk_create";
+  resource: string;
+  resourceId?: string;
+  resourceTitle?: string;
+  ip: string;
+  userAgent?: string;
+  detail?: string;
+}
+
+async function fetchActivity(limit = 100): Promise<ActivityLogEntry[]> {
+  const res = await apiGet<{ data: ActivityLogEntry[] }>(`/activity?limit=${limit}`);
+  return res.data;
+}
+
+async function clearActivity(): Promise<void> {
+  await apiDelete("/activity");
+}
+
+export function useActivity(limit = 100) {
+  return useQuery({
+    queryKey: ["activity", limit] as const,
+    queryFn: () => fetchActivity(limit),
+    refetchInterval: 5000, // auto-poll every 5s
+    staleTime: 0,
+  });
+}
+
+export function useClearActivity() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: clearActivity,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["activity"] }),
   });
 }

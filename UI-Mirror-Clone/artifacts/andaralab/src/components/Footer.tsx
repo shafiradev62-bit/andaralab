@@ -16,7 +16,6 @@ export default function Footer() {
       { label: t("economic_calendar"), href: "/data/economic-calendar" },
       { label: t("nav_market_dashboard"), href: "/data/market-dashboard" },
       { label: t("nav_blog"), href: "/blog/economics-101" },
-      { label: t("nav_lab_notes"), href: "/blog/lab-notes" },
     ],
     [t("company")]: [
       { label: t("about_us"), href: "/about" },

@@ -22,7 +22,9 @@ function getLastTwo(rows: Record<string, string | number>[], key: string) {
 function fmtChange(last: number, prev: number, unchangedLabel: string = "Unchanged"): { label: string; positive: boolean | null } {
   const diff = last - prev;
   if (Math.abs(diff) < 0.001) return { label: unchangedLabel, positive: null };
-  return { label: `${diff > 0 ? "+" : ""}${diff.toFixed(2)}`, positive: diff > 0 };
+  const sign = diff > 0 ? "+" : "";
+  // Use Indonesian dot-format for change values too
+  return { label: `${sign}${formatNumberID(diff, 2)}`, positive: diff > 0 };
 }
 
 export default function DataHubPage() {
@@ -472,11 +474,18 @@ export default function DataHubPage() {
                       <tbody>
                         {selectedDataset.rows.map((row, i) => (
                           <tr key={i} className="border-b border-[#F3F4F6] hover:bg-gray-50">
-                            {selectedDataset.columns.map((col) => (
-                              <td key={col} className="py-2.5 px-3 text-gray-700">
-                                {row[col] ?? "—"}
-                              </td>
-                            ))}
+                            {selectedDataset.columns.map((col, colIdx) => {
+                              const val = row[col];
+                              const isNumeric = colIdx > 0 && typeof val === 'number';
+                              
+                              return (
+                                <td key={col} className={`py-2.5 px-3 text-gray-700 ${isNumeric ? 'font-mono' : ''}`}>
+                                  {isNumeric 
+                                    ? formatValue(val as number, selectedDataset.unitType, "") 
+                                    : (val ?? "—")}
+                                </td>
+                              );
+                            })}
                           </tr>
                         ))}
                       </tbody>

@@ -5,7 +5,7 @@ import {
   Label, PieChart, Pie, Cell, Brush
 } from "recharts";
 import { ChartDataset } from "@/lib/cms-store";
-import { formatValue, formatIdNumber } from "@/lib/utils";
+import { formatValue, formatNumberID } from "@/lib/utils";
 import { fillMissingYearsOnRows } from "@/lib/chart-x-axis";
 import { useLocale } from "@/lib/locale";
 import { useState, useEffect, useMemo } from "react";
@@ -46,43 +46,62 @@ function getColumnLabel(dataset: ChartDataset, colKey: string): string {
   return colKey;
 }
 
+/**
+ * Robust date parser for BPS/Indonesian styles (Q1 2024, Jan 2024, 2024).
+ */
 function parseXLabel(val: string) {
   const str = String(val).trim();
   // Strip trailing forecast/provisional markers for display
   const clean = str.replace(/[\*\+]+$/, "").trim();
   const match = clean.match(/\b(19|20)\d{2}\b/);
-  const year = match ? match[0] : null;
+  const year = match ? Number(match[0]) : null;
 
   let period = clean;
   if (year) {
-    if (clean === year) {
-      period = year;
+    const yearStr = String(year);
+    if (clean === yearStr) {
+      period = yearStr;
     } else {
-      period = clean.replace(year, "").trim().replace(/^[-/]|[-/]$/g, "").trim();
+      period = clean.replace(yearStr, "").trim().replace(/^[-/]|[-/]$/g, "").trim();
     }
   }
 
-  return { year, period: period || year || clean };
+  // Determine sort index for sub-periods
+  let periodIndex = 0;
+  const p = period.toLowerCase();
+  if (p.includes('q1') || p.includes('i')) periodIndex = 1;
+  else if (p.includes('q2') || p.includes('ii')) periodIndex = 2;
+  else if (p.includes('q3') || p.includes('iii')) periodIndex = 3;
+  else if (p.includes('q4') || p.includes('iv')) periodIndex = 4;
+  else {
+    const months = ['jan', 'feb', 'mar', 'apr', 'may', 'mei', 'jun', 'jul', 'aug', 'agt', 'sep', 'oct', 'okt', 'nov', 'dec', 'des'];
+    const idx = months.findIndex(m => p.includes(m));
+    if (idx !== -1) periodIndex = Math.floor(idx / 2) + 1; // Normalize bilingual month indices
+  }
+
+  return { year, period: period || String(year) || clean, periodIndex };
 }
 
 function CustomTooltip({ active, payload, label, dataset, columnNames }: any) {
   if (!active || !payload?.length) return null;
+  // Use unit from custom_unit_label if available, otherwise fallback to unit
+  const effectiveUnit = (dataset.custom_unit_label || dataset.unit || "").trim();
+
   return (
-    <div className="bg-white border border-[#E5E7EB] shadow-lg px-4 py-3 rounded-sm min-w-[160px] z-50">
-      <p className="text-[12px] font-semibold text-gray-700 mb-2">{label}</p>
+    <div className="bg-white border border-[#E5E7EB] shadow-lg px-4 py-3 rounded-sm min-w-[180px] z-50">
+      <p className="text-[12px] font-semibold text-gray-700 mb-2 border-b pb-1.5">{label}</p>
       {payload.map((p: any, i: number) => {
         const displayName = columnNames?.[p.dataKey] ?? p.dataKey;
         const unitType = p.unitType ?? dataset.unitType;
-        const unit = p.unit ?? dataset.unit;
         
         return (
-          <div key={i} className="flex items-center justify-between gap-4 py-0.5">
+          <div key={i} className="flex items-center justify-between gap-4 py-1">
             <div className="flex items-center gap-1.5">
               <span className="inline-block w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: p.color }} />
               <span className="text-[11.5px] text-gray-500">{displayName}</span>
             </div>
-            <span className="text-[12px] font-semibold text-gray-900">
-              {typeof p.value === "number" ? formatValue(p.value, unitType, unit) : p.value}
+            <span className="text-[12px] font-bold text-gray-900">
+              {typeof p.value === "number" ? formatValue(p.value, unitType, effectiveUnit) : p.value}
             </span>
           </div>
         );
@@ -94,7 +113,7 @@ function CustomTooltip({ active, payload, label, dataset, columnNames }: any) {
 const CustomXAxisTick = (props: any) => {
   const { x, y, payload } = props;
   const { year, period } = parseXLabel(payload.value);
-  const yearOnly = period === year;
+  const yearOnly = period === String(year);
 
   // Format: "Q1 (2014)" for sub-period data, plain year for annual data
   const label = (!yearOnly && year) ? `${period} (${year})` : (year ?? period);
@@ -122,14 +141,30 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
   const xKey = dataset.columns[0];
 
   const data = useMemo(() => {
-    const rows = dataset.rows.map((r) => {
-      const obj: Record<string, any> = {};
+    let rows = dataset.rows.map((r, index) => {
+      const obj: Record<string, any> = { _original_index: index };
       for (const c of dataset.columns) obj[c] = r[c];
       return obj;
     });
-    // Preserve CMS/table row order (top → bottom); only fill implicit years on the X column.
-    return fillMissingYearsOnRows(rows, xKey);
-  }, [dataset.rows, dataset.columns, xKey]);
+
+    // 1. Fill implicit years (e.g. Q1, Q2, Q3 under a 2024 header)
+    rows = fillMissingYearsOnRows(rows, xKey);
+
+    // 2. Ordering Logic
+    if (dataset.preserveInputOrder) {
+      // Respect exactly what's in the CMS table (Top -> Bottom)
+      return rows;
+    } else {
+      // Attempt chronological sort if possible
+      return [...rows].sort((a, b) => {
+        const da = parseXLabel(String(a[xKey]));
+        const db = parseXLabel(String(b[xKey]));
+        if (da.year !== db.year) return (da.year ?? 0) - (db.year ?? 0);
+        if (da.periodIndex !== db.periodIndex) return da.periodIndex - db.periodIndex;
+        return a._original_index - b._original_index;
+      });
+    }
+  }, [dataset.rows, dataset.columns, xKey, dataset.preserveInputOrder]);
 
   const { brushRange, setBrushRange, zoomProps } = useChartZoom(
     data.length,
@@ -185,16 +220,18 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     columnNameMap[col] = getColumnLabel(dataset, col);
   }
 
+  // Single Source of Truth for Units
+  const effectiveUnit = (dataset.custom_unit_label || dataset.unit || "").trim();
+
   const yAxisUnitLabel = (() => {
-    const u = (dataset.unit ?? "").trim();
-    if (u) return u;
+    if (effectiveUnit) return effectiveUnit;
     const yl = locale === "id" ? dataset.yAxisLabelId : dataset.yAxisLabel;
     return (yl ?? "").trim();
   })();
 
   const commonProps = {
     data,
-    margin: { top: 25, right: 30, left: yAxisUnitLabel ? 16 : 0, bottom: 25 },
+    margin: { top: 35, right: 30, left: yAxisUnitLabel ? 16 : 0, bottom: 25 },
   };
 
   const axisStyle = {
@@ -203,57 +240,112 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     tickLine: false,
   };
 
-  // Y-axis: thousands with `.`, decimals with `.` (matches tooltips / Mba Dinda)
+  /**
+   * Refined Y-Axis tick formatter:
+   * Uses Indonesian DOT separator.
+   * Abbreviates M (Million/Miliar) only if large.
+   */
   const yTickFormatter = (v: number) => {
     if (!Number.isFinite(v)) return String(v);
     if (dataset.unitType === "percent") {
-      return formatIdNumber(v, 2);
+      return formatNumberID(v, 1) + "%";
     }
     const abs = Math.abs(v);
-    if (abs >= 1_000_000) return formatIdNumber(v / 1_000_000, 1) + "M";
-    if (abs >= 1_000) return formatIdNumber(Math.round(v), 0);
-    return formatIdNumber(v, 2);
+    // Use M for Million (Indonesian standard often uses M for Miliar, but let's stay consistent with Jt/M/T if needed)
+    if (abs >= 1_000_000_000) return formatNumberID(v / 1_000_000_000, 1) + "B";
+    if (abs >= 1_000_000) return formatNumberID(v / 1_000_000, 1) + "M";
+    return formatNumberID(v, 0); // Full number with DOT as requested
   };
 
-  // Compute explicit domain to prevent recharts from inverting the Y-axis
-  const allValues = dataKeys.flatMap((key) =>
-    data.map((r) => {
-      const v = r[key];
-      return typeof v === "number" ? v : parseFloat(String(v));
-    }).filter((v) => !isNaN(v))
-  );
-  const computedMin = allValues.length ? Math.min(...allValues) : 0;
-  const computedMax = allValues.length ? Math.max(...allValues) : 1;
-  // Add padding: 5% below min, 5% above max — never invert axis
-  const paddedMin = computedMin >= 0
-    ? Math.floor(computedMin * 0.95)
-    : Math.floor(computedMin * 1.05);
-  const paddedMax = computedMax >= 0
-    ? Math.ceil(computedMax * 1.05)
-    : Math.ceil(computedMax * 0.95);
+  // ─── DYNAMIC Y-AXIS SCALING ──────────────────────────────────────────────────
+  const yAxisDomain = useMemo(() => {
+    const allValues = dataKeys.flatMap((key) =>
+      data.map((r) => {
+        const v = r[key];
+        return typeof v === "number" ? v : parseFloat(String(v));
+      }).filter((v) => !isNaN(v))
+    );
 
-  // Manual min/max may extend the axis but must never clip the data (bad max caused wrong ticks)
-  const yMin =
-    dataset.yAxisMin !== undefined && Number.isFinite(dataset.yAxisMin)
-      ? Math.min(paddedMin, dataset.yAxisMin)
-      : paddedMin;
-  const yMax =
-    dataset.yAxisMax !== undefined && Number.isFinite(dataset.yAxisMax)
-      ? Math.max(paddedMax, dataset.yAxisMax)
-      : paddedMax;
-  const yAxisDomain: [number | string, number | string] = [yMin, yMax];
+    if (!allValues.length) return [0, 100];
+
+    const actualMin = Math.min(...allValues);
+    const actualMax = Math.max(...allValues);
+    const range = actualMax - actualMin;
+    const padding = range === 0 ? Math.abs(actualMax) * 0.1 || 10 : range * 0.1;
+
+    // Apply dynamic bounds with padding
+    let min = actualMin - padding;
+    let max = actualMax + padding;
+
+    // If data is all positive, don't go below 0 unless requested
+    if (actualMin >= 0 && min < 0) min = 0;
+
+    // Respect CMS Manual Overrides but NEVER clip data
+    const finalMin = dataset.yAxisMin !== undefined && Number.isFinite(dataset.yAxisMin)
+        ? Math.min(actualMin, dataset.yAxisMin)
+        : min;
+    const finalMax = dataset.yAxisMax !== undefined && Number.isFinite(dataset.yAxisMax)
+        ? Math.max(actualMax, dataset.yAxisMax)
+        : max;
+
+    return [finalMin, finalMax];
+  }, [data, dataKeys, dataset.yAxisMin, dataset.yAxisMax]);
+
+  // ─── COMBO CHART: SEPARATE LEFT/RIGHT AXIS DOMAINS ───────────────────────────
+  const comboLeftDomain = useMemo(() => {
+    if (dataset.chartType !== "combo") return undefined;
+    const barKeys = dataset.comboConfig?.barColumns?.filter(k => dataKeys.includes(k)) ?? dataKeys;
+    const vals = barKeys.flatMap(key =>
+      data.map(r => { const v = r[key]; return typeof v === "number" ? v : parseFloat(String(v)); }).filter(v => !isNaN(v))
+    );
+    if (!vals.length) return [0, 100];
+    const actualMin = Math.min(...vals);
+    const actualMax = Math.max(...vals);
+    const range = actualMax - actualMin;
+    const padding = range === 0 ? Math.abs(actualMax) * 0.1 || 10 : range * 0.1;
+    let min = actualMin >= 0 ? 0 : actualMin - padding;
+    let max = actualMax + padding;
+    const cfgMin = dataset.comboConfig?.leftAxisMin;
+    const cfgMax = dataset.comboConfig?.leftAxisMax;
+    return [
+      cfgMin !== undefined && Number.isFinite(cfgMin) ? Math.min(actualMin, cfgMin) : min,
+      cfgMax !== undefined && Number.isFinite(cfgMax) ? Math.max(actualMax, cfgMax) : max,
+    ];
+  }, [data, dataKeys, dataset.chartType, dataset.comboConfig]);
+
+  const comboRightDomain = useMemo(() => {
+    if (dataset.chartType !== "combo") return undefined;
+    const lineKeys = dataset.comboConfig?.lineColumns?.filter(k => dataKeys.includes(k)) ?? [];
+    const vals = lineKeys.flatMap(key =>
+      data.map(r => { const v = r[key]; return typeof v === "number" ? v : parseFloat(String(v)); }).filter(v => !isNaN(v))
+    );
+    if (!vals.length) return ["auto", "auto"];
+    const actualMin = Math.min(...vals);
+    const actualMax = Math.max(...vals);
+    const range = actualMax - actualMin;
+    const padding = range === 0 ? Math.abs(actualMax) * 0.1 || 1 : range * 0.15;
+    let min = actualMin - padding;
+    let max = actualMax + padding;
+    const cfgMin = dataset.comboConfig?.rightAxisMin;
+    const cfgMax = dataset.comboConfig?.rightAxisMax;
+    return [
+      cfgMin !== undefined && Number.isFinite(cfgMin) ? Math.min(actualMin, cfgMin) : min,
+      cfgMax !== undefined && Number.isFinite(cfgMax) ? Math.max(actualMax, cfgMax) : max,
+    ];
+  }, [data, dataKeys, dataset.chartType, dataset.comboConfig]);
 
   const yAxisLabelEl = yAxisUnitLabel ? (
     <Label
       value={yAxisUnitLabel}
       angle={-90}
       position="insideLeft"
+      offset={-10}
       style={{ fill: "#9CA3AF", fontSize: 10, fontWeight: 600 }}
     />
   ) : null;
 
   const hasYearGroup = data.length > 0 && parseXLabel(String(data[0][xKey])).year !== null;
-  const xAxisHeight = 30;
+  const xAxisHeight = 35;
 
   const renderXAxis = () => (
     <XAxis
@@ -261,18 +353,18 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
       {...axisStyle}
       interval={0}
       height={xAxisHeight}
-      tick={<CustomXAxisTick rows={data} />}
+      tick={<CustomXAxisTick />}
     />
   );
 
   const renderDefaultXAxis = () => (
-    <XAxis dataKey={xKey} {...axisStyle} />
+    <XAxis dataKey={xKey} {...axisStyle} height={xAxisHeight} />
   );
 
   const xAxis = hasYearGroup ? renderXAxis() : renderDefaultXAxis();
 
   const renderTimeframeSelector = () => (
-    <div className="flex justify-end gap-1 mb-2 px-2">
+    <div className="flex justify-end gap-1 mb-3 px-2">
       <span className="text-[11px] text-gray-500 my-auto mr-2">Zoom:</span>
       {timeframes.map(tf => (
         <button
@@ -280,7 +372,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
           onClick={() => handleTimeframeChange(tf.years, tf.label)}
           className={`px-2.5 py-1 text-[11px] font-medium rounded-md transition-colors ${
             activeTimeframe === tf.label 
-              ? "bg-[#1a3a5c] text-white" 
+              ? "bg-[#1a3a5c] text-white shadow-sm" 
               : "bg-gray-100 text-gray-600 hover:bg-gray-200"
           }`}
         >
@@ -311,7 +403,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
       onChange={(range) => setBrushRange({ startIndex: range.startIndex ?? 0, endIndex: range.endIndex ?? 0 })}
       tickFormatter={() => ""}
     >
-      {dataset.chartType !== 'combo' ? (
+      {dataset.chartType !== 'combo' && dataset.chartType !== 'donut' ? (
         <LineChart data={data}>
           <Line type="monotone" dataKey={dataKeys[0]} stroke="#9CA3AF" strokeWidth={1} dot={false} isAnimationActive={false} />
         </LineChart>
@@ -319,15 +411,37 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     </Brush>
   );
 
+  const commonChartProps = {
+    ...commonProps,
+    children: (
+        <>
+            <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+            {xAxis}
+            <YAxis {...axisStyle} width={75} domain={yAxisDomain} tickFormatter={yTickFormatter}>
+                {yAxisLabelEl}
+            </YAxis>
+            <Tooltip content={<CustomTooltip dataset={dataset} columnNames={columnNameMap} />} />
+            <Legend
+                verticalAlign="bottom"
+                align="left"
+                formatter={(value) => columnNameMap[value] ?? value}
+                wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 20 }}
+                iconSize={10}
+            />
+            {renderBrush()}
+        </>
+    )
+  }
+
   if (dataset.chartType === "bar") {
     return (
       <div className="w-full flex flex-col min-h-0" {...zoomProps}>
         {renderTimeframeSelector()}
-        <ResponsiveContainer width="100%" height={height + 30}>
+        <ResponsiveContainer width="100%" height={height + 50}>
           <BarChart {...commonProps}>
             <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
             {xAxis}
-            <YAxis {...axisStyle} width={70} domain={yAxisDomain} tickFormatter={yTickFormatter}>
+            <YAxis {...axisStyle} width={75} domain={yAxisDomain} tickFormatter={yTickFormatter}>
               {yAxisLabelEl}
             </YAxis>
             <Tooltip content={<CustomTooltip dataset={dataset} columnNames={columnNameMap} />} cursor={{ fill: "rgba(0,0,0,0.04)" }} />
@@ -335,7 +449,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
               verticalAlign="bottom"
               align="left"
               formatter={(value) => columnNameMap[value] ?? value}
-              wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 15 }}
+              wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 20 }}
               iconType="rect"
               iconSize={12}
             />
@@ -353,7 +467,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     return (
       <div className="w-full flex flex-col min-h-0" {...zoomProps}>
         {renderTimeframeSelector()}
-        <ResponsiveContainer width="100%" height={height + 30}>
+        <ResponsiveContainer width="100%" height={height + 50}>
           <AreaChart {...commonProps}>
             <defs>
               {dataKeys.map((key, i) => (
@@ -365,7 +479,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
             {xAxis}
-            <YAxis {...axisStyle} width={70} domain={yAxisDomain} tickFormatter={yTickFormatter}>
+            <YAxis {...axisStyle} width={75} domain={yAxisDomain} tickFormatter={yTickFormatter}>
               {yAxisLabelEl}
             </YAxis>
             <Tooltip content={<CustomTooltip dataset={dataset} columnNames={columnNameMap} />} />
@@ -373,7 +487,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
               verticalAlign="bottom"
               align="left"
               formatter={(value) => columnNameMap[value] ?? value}
-              wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 15 }}
+              wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 20 }}
               iconType="circle"
               iconSize={8}
             />
@@ -411,21 +525,20 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
       finalBarKeys = detectedLines.length > 0 ? detectedBars : dataKeys.slice(0, -1);
       finalLineKeys = detectedLines.length > 0 ? detectedLines : dataKeys.slice(-1);
     }
-    const leftLabel = dataset.comboConfig?.leftLabel ?? "(Indeks)";
+    const leftLabel = dataset.comboConfig?.leftLabel || effectiveUnit || "(Indeks)";
     const rightLabel = dataset.comboConfig?.rightLabel ?? "(%)";
-    const comboLeftTitle = [leftLabel, yAxisUnitLabel].filter(Boolean).join(" · ");
 
     return (
       <div className="space-y-0 w-full flex flex-col min-h-0" {...zoomProps}>
         {renderTimeframeSelector()}
-        <ResponsiveContainer width="100%" height={height + 30}>
+        <ResponsiveContainer width="100%" height={height + 50}>
           <ComposedChart {...commonProps}>
             <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
             {xAxis}
-            <YAxis yAxisId="left" {...axisStyle} width={70} domain={yAxisDomain} tickFormatter={yTickFormatter}>
-              <Label value={comboLeftTitle} offset={15} position="top" style={{ fontSize: 10, fill: '#9CA3AF', fontWeight: 'bold' }} />
+            <YAxis yAxisId="left" {...axisStyle} width={75} domain={comboLeftDomain ?? yAxisDomain} tickFormatter={yTickFormatter}>
+              <Label value={leftLabel} offset={15} position="top" style={{ fontSize: 10, fill: '#9CA3AF', fontWeight: 'bold' }} />
             </YAxis>
-            <YAxis yAxisId="right" orientation="right" {...axisStyle} width={45} tickFormatter={(v) => `${formatIdNumber(v, 2)}%`}>
+            <YAxis yAxisId="right" orientation="right" {...axisStyle} width={50} domain={comboRightDomain ?? ["auto", "auto"]} tickFormatter={(v) => `${formatNumberID(v, 1)}%`}>
                <Label value={rightLabel} offset={15} position="top" style={{ fontSize: 10, fill: '#9CA3AF', fontWeight: 'bold' }} />
             </YAxis>
             <Tooltip content={<CustomTooltip dataset={dataset} columnNames={columnNameMap} />} cursor={{ fill: "rgba(0,0,0,0.04)" }} />
@@ -433,7 +546,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
               verticalAlign="bottom"
               align="left"
               formatter={(value) => columnNameMap[value] ?? value}
-              wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 15 }}
+              wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 20 }}
               iconSize={10}
             />
             {finalBarKeys.map((key, i) => (
@@ -454,7 +567,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
                   <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: getColor(dataset, i) }} />
                   <div className="min-w-0">
                     <div className="text-[11px] text-gray-500 truncate">{String(row[dataset.donutConfig!.breakdownLabelCol!] ?? "")}</div>
-                    <div className="text-[13px] font-bold text-gray-900">{typeof row[dataset.donutConfig!.breakdownValueCol ?? dataset.columns[1]] === 'number' ? (row[dataset.donutConfig!.breakdownValueCol ?? dataset.columns[1]] as number).toLocaleString() : row[dataset.donutConfig!.breakdownValueCol ?? dataset.columns[1]]}{dataset.donutConfig!.showPercentage ? '%' : ''}</div>
+                    <div className="text-[13px] font-bold text-gray-900">{typeof row[dataset.donutConfig!.breakdownValueCol ?? dataset.columns[1]] === 'number' ? formatNumberID(row[dataset.donutConfig!.breakdownValueCol ?? dataset.columns[1]] as number, 0) : row[dataset.donutConfig!.breakdownValueCol ?? dataset.columns[1]]}{dataset.donutConfig!.showPercentage ? '%' : ''}</div>
                   </div>
                 </div>
               ))}
@@ -481,7 +594,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
               <Pie data={pieData} cx="50%" cy="50%" innerRadius={`${innerPct * 0.55}%`} outerRadius="80%" paddingAngle={2} dataKey="value" strokeWidth={0}>
                 {pieData.map((_, i) => <Cell key={i} fill={getColor(dataset, i)} />)}
               </Pie>
-              <Tooltip formatter={(value: number, name: string) => [cfg?.showPercentage ? `${((value / total) * 100).toFixed(1)}%` : value.toLocaleString(), name]} />
+              <Tooltip formatter={(value: number, name: string) => [cfg?.showPercentage ? `${((value / total) * 100).toFixed(1)}%` : formatNumberID(value, 0), name]} />
             </PieChart>
           </ResponsiveContainer>
           <div className="flex-1 space-y-2">
@@ -489,7 +602,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
               <div key={i} className="flex items-center gap-2.5">
                 <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: getColor(dataset, i) }} />
                 <span className="text-[12px] text-gray-600 flex-1 truncate">{item.name}</span>
-                <span className="text-[12.5px] font-bold text-gray-900">{cfg?.showPercentage ? `${total > 0 ? ((item.value / total) * 100).toFixed(1) : "0"}%` : item.value.toLocaleString()}</span>
+                <span className="text-[12.5px] font-bold text-gray-900">{cfg?.showPercentage ? `${total > 0 ? ((item.value / total) * 100).toFixed(1) : "0"}%` : formatNumberID(item.value, 0)}</span>
               </div>
             ))}
           </div>
@@ -503,7 +616,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
                   <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: getColor(dataset, i) }} />
                   <div className="min-w-0">
                     <div className="text-[11px] text-gray-500 truncate">{String(row[cfg!.breakdownLabelCol!] ?? "")}</div>
-                    <div className="text-[13px] font-bold text-gray-900">{typeof row[cfg!.breakdownValueCol ?? valueCol] === 'number' ? (row[cfg!.breakdownValueCol ?? valueCol] as number).toLocaleString() : row[cfg!.breakdownValueCol ?? valueCol]}{cfg!.showPercentage ? '%' : ''}</div>
+                    <div className="text-[13px] font-bold text-gray-900">{typeof row[cfg!.breakdownValueCol ?? valueCol] === 'number' ? formatNumberID(row[cfg!.breakdownValueCol ?? valueCol] as number, 0) : row[cfg!.breakdownValueCol ?? valueCol]}{cfg!.showPercentage ? '%' : ''}</div>
                   </div>
                 </div>
               ))}
@@ -517,11 +630,11 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
   return (
     <div className="w-full flex flex-col min-h-0" {...zoomProps}>
       {renderTimeframeSelector()}
-      <ResponsiveContainer width="100%" height={height + 30}>
+      <ResponsiveContainer width="100%" height={height + 50}>
         <LineChart {...commonProps}>
           <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
           {xAxis}
-          <YAxis {...axisStyle} width={70} domain={yAxisDomain} tickFormatter={yTickFormatter}>
+          <YAxis {...axisStyle} width={75} domain={yAxisDomain} tickFormatter={yTickFormatter}>
             {yAxisLabelEl}
           </YAxis>
           <Tooltip content={<CustomTooltip dataset={dataset} columnNames={columnNameMap} />} />
@@ -529,7 +642,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
             verticalAlign="bottom"
             align="left"
             formatter={(value) => columnNameMap[value] ?? value}
-            wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 15 }}
+            wrapperStyle={{ fontSize: 11, color: "#6B7280", paddingTop: 20 }}
             iconType="circle"
             iconSize={8}
           />

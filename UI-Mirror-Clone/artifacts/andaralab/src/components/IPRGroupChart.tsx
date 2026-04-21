@@ -5,6 +5,7 @@ import {
 import { useState } from "react";
 import { X, ZoomIn } from "lucide-react";
 import { useChartZoom } from "@/hooks/useChartZoom";
+import { formatNumberID } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -37,7 +38,7 @@ function MiniTooltip({ active, payload, label }: any) {
   return (
     <div className="bg-white border border-gray-200 shadow text-[10px] px-2 py-1 rounded-sm">
       <p className="font-semibold text-gray-700 mb-0.5">{label}</p>
-      <p className="text-[#C0392B] font-bold">{payload[0]?.value?.toFixed(1)}</p>
+      <p className="text-[#C0392B] font-bold">{formatNumberID(payload[0]?.value, 1)}</p>
     </div>
   );
 }
@@ -143,7 +144,7 @@ function MiniLineChart({ series, onExpand }: { series: IPRSeries; onExpand: () =
               axisLine={false}
               tickLine={false}
               width={28}
-              tickFormatter={(v) => v.toFixed(0)}
+              tickFormatter={(v) => formatNumberID(v, 0)}
             />
             <ReferenceLine y={0} stroke="#9CA3AF" strokeWidth={0.8} strokeDasharray="3 3" />
             <Tooltip content={<MiniTooltip />} />
@@ -193,7 +194,7 @@ function MiniLineChart({ series, onExpand }: { series: IPRSeries; onExpand: () =
             style={{ color: lastValue >= 0 ? "#1a3a5c" : "#C0392B" }}
           >
             {lastValue > 0 ? "+" : ""}
-            {lastValue.toFixed(1)}
+            {formatNumberID(lastValue, 1)}
           </span>
         </div>
       )}

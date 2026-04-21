@@ -19,6 +19,10 @@ RUN pnpm install --no-frozen-lockfile
 
 RUN pnpm run build
 
+# Create data directory and mark as volume for persistence
+RUN mkdir -p /data
+VOLUME ["/data"]
+
 EXPOSE 8080
 
 ENV NODE_ENV=production

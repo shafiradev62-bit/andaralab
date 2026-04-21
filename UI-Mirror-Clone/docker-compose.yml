@@ -25,9 +25,14 @@ services:
       - NODE_ENV=production
       - PORT=8080
       - DATA_DIR=/data
+      - APP_DIR=/opt/andara-lab
       - DEPLOY_WEBHOOK_SECRET=${DEPLOY_WEBHOOK_SECRET:-}
     volumes:
-      - andaralab-data:/data
+      # PERMANENT bind mount — data lives at /opt/andaralab-data on the host.
+      # Survives container rebuilds, image changes, project renames, domain moves.
+      - /opt/andaralab-data:/data
+      # App dir bind mount — allows webhook to git pull & write .deploy-trigger
+      - /opt/andara-lab:/opt/andara-lab
     networks:
       - andaralab-network
     restart: unless-stopped
@@ -35,6 +40,3 @@ services:
 networks:
   andaralab-network:
     driver: bridge
-
-volumes:
-  andaralab-data:

@@ -1,0 +1,14 @@
+[Unit]
+Description=AndaraLab Deploy Watcher
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/andaralab-watcher
+Restart=always
+RestartSec=5
+Environment=APP_DIR=/opt/andara-lab
+
+[Install]
+WantedBy=multi-user.target

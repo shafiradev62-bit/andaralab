@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api-server:
+    build:
+      context: ../..
+      dockerfile: artifacts/api-server/Dockerfile
+    container_name: andara-api-server
+    ports:
+      - "8080:8080"
+    volumes:
+      # CRITICAL: This volume persists data across container restarts
+      - api-data:/data
+      # Optional: Mount backup directory to host for easy access
+      - ./data-backup:/app/data-backup
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      # Exchange rate sync settings
+      - EXCHANGE_SYNC_ENABLED=true
+      - EXCHANGE_SYNC_INTERVAL_MS=30000
+      - EXCHANGE_SYNC_TIMEOUT_MS=8000
+      - EXCHANGE_SYNC_MAX_RETRIES=2
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  api-data:
+    driver: local
+    name: andara-api-data

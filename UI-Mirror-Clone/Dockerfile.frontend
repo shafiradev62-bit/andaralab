@@ -15,9 +15,20 @@ COPY artifacts/andaralab/ ./artifacts/andaralab/
 WORKDIR /app/artifacts/andaralab
 
 # Install dependencies
-# @tanstack/react-query has devDependency @tanstack/query-test-utils which is NOT on npm.
-# Solution: create a local stub and append override entry (overrides: already exists at line 76).
-RUN mkdir -p /app/stub/@tanstack/query-test-utils &&     printf '{"name":"@tanstack/query-test-utils","version":"0.0.0","main":"index.js"}' > /app/stub/@tanstack/query-test-utils/package.json &&     printf '// stub' > /app/stub/@tanstack/query-test-utils/index.js &&     echo '  "@tanstack/query-test-utils": "file:/app/stub"' >> /app/pnpm-workspace.yaml &&     pnpm install
+# @tanstack/query-test-utils is not on npm — create a local stub and use pnpm overrides
+RUN mkdir -p /app/stub/@tanstack/query-test-utils && \
+    printf '{"name":"@tanstack/query-test-utils","version":"0.0.0","main":"index.js"}' \
+      > /app/stub/@tanstack/query-test-utils/package.json && \
+    printf '// stub' > /app/stub/@tanstack/query-test-utils/index.js && \
+    node -e " \
+      const fs=require('fs'); \
+      const p=JSON.parse(fs.readFileSync('package.json','utf8')); \
+      p.pnpm=p.pnpm||{}; \
+      p.pnpm.overrides=p.pnpm.overrides||{}; \
+      p.pnpm.overrides['@tanstack/query-test-utils']='file:/app/stub/@tanstack/query-test-utils'; \
+      fs.writeFileSync('package.json',JSON.stringify(p,null,2)); \
+    " && \
+    pnpm install --no-frozen-lockfile
 
 # Set API base URL for production
 RUN echo 'VITE_API_BASE_URL=/api' > .env.production

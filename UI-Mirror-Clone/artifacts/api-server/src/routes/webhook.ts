@@ -22,11 +22,16 @@ router.post("/deploy", async (req, res) => {
   }
 
   try {
-    const { stdout, stderr } = await execAsync(
-      "cd /root/andaralab && git fetch origin main && git reset --hard origin/main && docker compose build --no-cache && docker compose up -d",
-      { timeout: 600_000 }
+    const appDir = process.env["APP_DIR"] || "/opt/andara-lab";
+    // Step 1: git pull only (safe inside container via bind-mounted app dir)
+    const { stdout } = await execAsync(
+      `cd ${appDir} && git config --global --add safe.directory ${appDir} 2>/dev/null || true && git fetch origin main && git reset --hard origin/main`,
+      { timeout: 60_000 }
     );
-    res.json({ success: true, output: stdout });
+    // Step 2: signal host to rebuild via a trigger file
+    // The host-side systemd service (andaralab-deploy.service) watches for this file
+    await execAsync(`touch ${appDir}/.deploy-trigger`, { timeout: 5_000 }).catch(() => {});
+    res.json({ success: true, output: stdout, message: "Code updated. Host rebuild triggered." });
   } catch (e: unknown) {
     const execError = e as { message?: string; stderr?: string };
     res.status(500).json({ error: "Deploy failed", detail: execError.stderr || execError.message });

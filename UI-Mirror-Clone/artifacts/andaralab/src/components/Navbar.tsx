@@ -25,7 +25,6 @@ const FIXED_SECTIONS = new Set([
 const FALLBACK_BLOG: NavChild[] = [
   { label: "Economics 101", href: "/blog/economics-101" },
   { label: "Market Pulse", href: "/blog/market-pulse" },
-  { label: "Lab Notes", href: "/blog/lab-notes" },
 ];
 
 export default function Navbar({ dark = false }: { dark?: boolean }) {

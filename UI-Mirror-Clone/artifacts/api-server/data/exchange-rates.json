@@ -21,15 +21,15 @@
     "label": "JCI",
     "labelEn": "JCI",
     "labelId": "IHSG",
-    "value": "143",
-    "change": "+0.48%",
-    "changeValue": 0.47937962636588427,
+    "value": "138",
+    "change": "+0.25%",
+    "changeValue": 0.2477953501931371,
     "up": true,
     "category": "index",
     "order": 2,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-11T01:00:49.520Z"
+    "updatedAt": "2026-04-17T05:05:33.826Z"
   },
   {
     "id": "bi-rate",
@@ -69,15 +69,15 @@
     "label": "Gold",
     "labelEn": "Gold",
     "labelId": "Emas",
-    "value": "$44",
-    "change": "-0.32%",
-    "changeValue": -0.31731640979147907,
-    "up": false,
+    "value": "$47",
+    "change": "+3.67%",
+    "changeValue": 3.6674816625916837,
+    "up": true,
     "category": "commodity",
     "order": 5,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-11T01:00:49.526Z"
+    "updatedAt": "2026-04-17T05:05:33.826Z"
   },
   {
     "id": "brent",
