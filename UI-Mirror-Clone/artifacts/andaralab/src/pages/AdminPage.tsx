@@ -606,12 +606,11 @@ function DatasetEditor({
 
           {/* ─── COMBO CHART CONFIG ───────────────────────────────────── */}
           {effective.chartType === "combo" && (
-            <div className="md:col-span-2 border border-blue-200 bg-blue-50 rounded-xl p-5 space-y-4">
+            <div className="md:col-span-2 border border-gray-200 rounded-xl p-5 space-y-4">
               <div className="flex items-center gap-2 mb-1">
-                <BarChart2 className="w-4 h-4 text-blue-600" />
-                <span className="text-[13px] font-bold text-blue-800">Combo Chart Configuration</span>
+                <BarChart2 className="w-4 h-4 text-gray-500" />
+                <span className="text-[13px] font-bold text-gray-700">Combo Chart Configuration</span>
               </div>
-              <p className="text-[11.5px] text-blue-600 -mt-1">Pilih kolom mana yang jadi <strong>bar</strong> (sumbu kiri) vs <strong>line</strong> (sumbu kanan).</p>
 
               {/* Bar columns */}
               <div>
@@ -729,7 +728,7 @@ function DatasetEditor({
               </div>
 
               {/* GDP breakdown section */}
-              <div className="border-t border-blue-200 pt-4 space-y-3">
+              <div className="border-t border-gray-200 pt-4 space-y-3">
                 <div className="flex items-center gap-2">
                   <input type="checkbox" id="enableBreakdown"
                     checked={!!(effective.donutConfig?.breakdownRows?.length)}
@@ -757,8 +756,8 @@ function DatasetEditor({
                         } });
                       }
                     }}
-                    className="w-3.5 h-3.5 accent-blue-600" />
-                  <label htmlFor="enableBreakdown" className="text-[12px] font-semibold text-blue-700">Add GDP Composition Breakdown Below Chart</label>
+                    className="w-3.5 h-3.5 accent-gray-600" />
+                  <label htmlFor="enableBreakdown" className="text-[12px] font-semibold text-gray-700">Add GDP Composition Breakdown Below Chart</label>
                 </div>
                 {effective.donutConfig?.breakdownRows?.length > 0 && (
                   <div className="space-y-3">
