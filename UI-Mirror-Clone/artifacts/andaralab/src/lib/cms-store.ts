@@ -996,8 +996,9 @@ export function usePages(filter?: { locale?: string; status?: string; section?: 
   return useQuery({
     queryKey: filter ? [...QUERY_KEY.pages, filter] : QUERY_KEY.pages,
     queryFn: () => fetchPages(filter),
-    staleTime: 1000 * 30, // 30s — navbar picks up new pages quickly
+    staleTime: 0, // always fresh — data bisa diupdate dari laptop lain
     refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
 
@@ -1006,7 +1007,9 @@ export function usePage(id: number | null) {
     queryKey: QUERY_KEY.page(id ?? 0),
     queryFn: () => fetchPage(id!),
     enabled: Boolean(id),
-    staleTime: 1000 * 60 * 2,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   });
 }
 
@@ -1046,7 +1049,9 @@ export function usePageBySlug(slug: string, locale?: string) {
       }
     },
     enabled: Boolean(slug),
-    staleTime: 30_000,
+    staleTime: 0,           // always refetch — data bisa diupdate dari laptop lain
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
     retry: false,
   });
 }
