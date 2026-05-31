@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-05-08T08:07:47.432067",
+  "vps": "177.7.55.182",
+  "datasets_count": 63,
+  "data_hash": "b454bdb5725c9ced",
+  "found_datasets": [],
+  "architecture": "bind_mount_from_host",
+  "risk_level": "0%",
+  "rollback_available": true,
+  "monitoring_enabled": true
+}

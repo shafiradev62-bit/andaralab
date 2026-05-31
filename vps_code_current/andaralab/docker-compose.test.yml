@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  backend-test:
+    image: andaralab-backend:new
+    container_name: andaralab-backend-test
+    ports:
+      - "3002:3001"
+    volumes:
+      - /opt/andaralab-data:/data
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    restart: unless-stopped
+
+  frontend-test:
+    image: andaralab-frontend:new
+    container_name: andaralab-frontend-test
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend-test
+    restart: unless-stopped
+

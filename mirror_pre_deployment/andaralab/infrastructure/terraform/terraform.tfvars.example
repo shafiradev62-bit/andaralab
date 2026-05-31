@@ -1,0 +1,23 @@
+# Copy this file to terraform.tfvars and fill in your values
+
+aws_region      = "ap-southeast-1"
+aws_account_id  = "123456789012"
+project_name    = "andaralab"
+environment     = "production"
+
+vpc_cidr               = "10.0.0.0/16"
+allowed_cidr_blocks    = ["10.0.0.0/16", "YOUR_VPN_CIDR_HERE"]
+
+db_engine_version      = "15.4"
+db_instance_class      = "db.t3.micro"
+db_storage             = 20
+db_max_storage         = 100
+db_name                = "andaralab"
+db_username            = "andaralab_admin"
+db_password            = "CHANGE_THIS_STRONG_PASSWORD_123!"
+db_multi_az            = true
+db_backup_retention_days = 35
+
+# Cross-Region Replication
+enable_cross_region_replication = true
+replica_region = "ap-southeast-2"

@@ -1,0 +1,46 @@
+{
+  "en": {
+    "nav_home": "Home",
+    "nav_about": "About Us",
+    "nav_macro": "Macro Foundations",
+    "nav_sectoral": "Sectoral Intelligence",
+    "nav_data": "Data Hub",
+    "nav_blog": "Blog",
+    "nav_contact": "Contact",
+    "data_hub_title": "Economic Data & Market Intelligence",
+    "data_hub_subtitle": "Interactive charts, economic calendar, and live market data for Indonesia and global economies.",
+    "latest_research": "Latest Research",
+    "see_all": "See all",
+    "date": "Date",
+    "title": "Title",
+    "category": "Category",
+    "read_more": "Read More",
+    "loading": "Loading…",
+    "no_results": "No results found"
+  },
+  "id": {
+    "nav_home": "Beranda",
+    "nav_about": "Tentang Kami",
+    "nav_macro": "Fondasi Makro",
+    "nav_sectoral": "Intelijen Sektoral",
+    "nav_data": "Pusat Data",
+    "nav_blog": "Blog",
+    "nav_contact": "Kontak",
+    "data_hub_title": "Data Ekonomi & Intelijen Pasar",
+    "data_hub_subtitle": "Grafik interaktif, kalender ekonomi, dan data pasar live untuk ekonomi Indonesia dan global.",
+    "latest_research": "Riset Terbaru",
+    "see_all": "Lihat semua",
+    "date": "Tanggal",
+    "title": "Judul",
+    "category": "Kategori",
+    "read_more": "Baca Selengkapnya",
+    "loading": "Memuat…",
+    "no_results": "Tidak ada hasil"
+  },
+  "_meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-05-01T00:00:00Z",
+    "editable": true,
+    "description": "Customizable UI text strings for both English and Indonesian. Edit these values in the CMS to change the text displayed throughout the application."
+  }
+}

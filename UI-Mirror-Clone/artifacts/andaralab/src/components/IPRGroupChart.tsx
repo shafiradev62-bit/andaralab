@@ -79,7 +79,7 @@ function ExpandedChart({ series, onClose }: { series: IPRSeries; onClose: () => 
               <YAxis domain={[yMin, yMax]} tick={{ fontSize: 10, fill: "#9CA3AF" }} axisLine={false} tickLine={false} width={32} tickFormatter={(v) => v.toFixed(0)} />
               <ReferenceLine y={0} stroke="#9CA3AF" strokeWidth={0.8} strokeDasharray="3 3" />
               <Tooltip content={<MiniTooltip />} />
-              <Line type="monotone" dataKey="value" stroke="#C0392B" strokeWidth={2} dot={{ r: 3, fill: "#C0392B", strokeWidth: 0 }} activeDot={{ r: 5, fill: "#C0392B", stroke: "#fff", strokeWidth: 1 }} />
+              <Line type="monotone" dataKey="value" stroke="#C0392B" strokeWidth={2} dot={{ r: 3, fill: "#C0392B", strokeWidth: 0 }} activeDot={{ r: 5, fill: "#C0392B", stroke: "#fff", strokeWidth: 1 }} connectNulls={true} />
               <Brush
                 dataKey="period"
                 height={22}
@@ -153,6 +153,7 @@ function MiniLineChart({ series, onExpand }: { series: IPRSeries; onExpand: () =
               dataKey="value"
               stroke="#C0392B"
               strokeWidth={1.5}
+              connectNulls={true}
               dot={(props: any) => {
                 const { cx, cy, index } = props;
                 const isLast = index === series.data.length - 1;

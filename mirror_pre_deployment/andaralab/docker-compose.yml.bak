@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Frontend - Nginx serving Vite build
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - andaralab-network
+    restart: unless-stopped
+
+  # Backend - Express API server
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:8080"
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - DATA_DIR=/data
+      - DEPLOY_WEBHOOK_SECRET=${DEPLOY_WEBHOOK_SECRET:-}
+    volumes:
+      - andaralab-data:/data
+    networks:
+      - andaralab-network
+    restart: unless-stopped
+
+networks:
+  andaralab-network:
+    driver: bridge
+
+volumes:
+  andaralab-data:

@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Clock, Loader2 } from "lucide-react";
 import { usePosts, usePostBySlug } from "@/lib/cms-store";
 import { useLocale } from "@/lib/locale";
 import { applyDocumentSeo, truncateMeta } from "@/lib/document-meta";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return "";
@@ -121,13 +122,13 @@ export default function ArticlePage() {
             </div>
 
             <h1 className="text-[28px] md:text-[34px] font-bold text-gray-900 leading-tight mb-4">
-              {post.title}
+              <MarkdownRenderer content={post.title} inlineOnly />
             </h1>
 
             {post.excerpt && (
-              <p className="text-[15px] text-gray-500 leading-relaxed mb-6 border-l-4 border-gray-900 pl-4">
-                {post.excerpt}
-              </p>
+              <div className="text-[15px] text-gray-500 leading-relaxed mb-6 border-l-4 border-gray-900 pl-4">
+                <MarkdownRenderer content={post.excerpt} inlineOnly />
+              </div>
             )}
 
             {post.image && (
@@ -142,9 +143,7 @@ export default function ArticlePage() {
 
             <div className="prose max-w-none">
               {bodyParagraphs.map((para, i) => (
-                <p key={i} className="text-[14.5px] text-gray-700 leading-[1.8] mb-5">
-                  {para}
-                </p>
+                <MarkdownRenderer key={i} content={para} />
               ))}
             </div>
 
@@ -187,7 +186,7 @@ export default function ArticlePage() {
                           )}
                         </div>
                         <h4 className="text-[13px] font-medium text-gray-900 leading-snug group-hover:text-gray-900 transition-colors">
-                          {r.title}
+                          <MarkdownRenderer content={r.title} inlineOnly />
                         </h4>
                         <p className="text-[11.5px] text-gray-400 mt-1">{formatDate(r.publishedAt || r.createdAt)}</p>
                       </Link>

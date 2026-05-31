@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre-Deploy Backup Viewer - Compare with Production</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .header .info {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .header .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            color: #856404;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .panel h2 {
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+        
+        .panel.pre-deploy h2 {
+            border-bottom-color: #28a745;
+        }
+        
+        .panel.current h2 {
+            border-bottom-color: #dc3545;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .dataset-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .dataset-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .dataset-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .dataset-item.missing {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .dataset-item.modified {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        
+        .dataset-item.new {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        
+        .dataset-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .dataset-id {
+            font-size: 12px;
+            color: #999;
+            font-family: monospace;
+        }
+        
+        .dataset-meta {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        
+        .legend-color.missing { background: #fff3cd; border: 1px solid #ffc107; }
+        .legend-color.modified { background: #f8d7da; border: 1px solid #dc3545; }
+        .legend-color.new { background: #d4edda; border: 1px solid #28a745; }
+        
+        .actions {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 Pre-Deploy Backup Viewer</h1>
+        <div class="info">
+            <strong>Pre-Deploy Backup:</strong> 5 Mei 2026, 7:52 PM (sebelum deploy)<br>
+            <strong>Current Production:</strong> 6 Mei 2026 (setelah deploy + client updates)
+        </div>
+        <div class="warning">
+            ⚠️ <strong>PENTING:</strong> Client sudah update 23 datasets SETELAH deploy. Safe restore akan preserve semua update client!
+        </div>
+    </div>
+    
+    <div class="comparison">
+        <div class="panel pre-deploy">
+            <h2>📦 Pre-Deploy Backup (5 Mei 7:52 PM)</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="pre-datasets">-</div>
+                    <div class="label">Datasets</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="pre-pages">-</div>
+                    <div class="label">Pages</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="pre-posts">-</div>
+                    <div class="label">Posts</div>
+                </div>
+            </div>
+            
+            <input type="text" class="search-box" id="search-pre" placeholder="Search datasets...">
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color missing"></div>
+                    <span>Missing in current</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color modified"></div>
+                    <span>Modified in current</span>
+                </div>
+            </div>
+            
+            <div class="dataset-list" id="pre-list"></div>
+        </div>
+        
+        <div class="panel current">
+            <h2>🔴 Current Production (6 Mei)</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="cur-datasets">-</div>
+                    <div class="label">Datasets</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="cur-pages">-</div>
+                    <div class="label">Pages</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="cur-posts">-</div>
+                    <div class="label">Posts</div>
+                </div>
+            </div>
+            
+            <input type="text" class="search-box" id="search-cur" placeholder="Search datasets...">
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color new"></div>
+                    <span>New (not in pre-deploy)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color modified"></div>
+                    <span>Modified from pre-deploy</span>
+                </div>
+            </div>
+            
+            <div class="dataset-list" id="cur-list"></div>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <h3 style="margin-bottom: 15px;">Next Steps</h3>
+        <button class="btn btn-primary" onclick="window.open('http://andaralab.id', '_blank')">
+            🌐 Open Production Website
+        </button>
+        <button class="btn btn-success" onclick="alert('Run: python create_safe_restore.py')">
+            ✅ Ready to Restore
+        </button>
+    </div>
+
+    <script>
+        let preData = [];
+        let curData = [];
+        let report = {};
+        
+        async function loadData() {
+            try {
+                // Load pre-deploy datasets
+                const preResponse = await fetch('pre_deploy_backup_may5/datasets.json');
+                const preJson = await preResponse.json();
+                preData = Array.isArray(preJson) ? preJson : preJson.data || [];
+                
+                // Load current datasets
+                const curResponse = await fetch('current_production_state/datasets.json');
+                const curJson = await curResponse.json();
+                curData = Array.isArray(curJson) ? curJson : curJson.data || [];
+                
+                // Load comparison report
+                const reportResponse = await fetch('pre_deploy_comparison_report.json');
+                report = await reportResponse.json();
+                
+                // Update stats
+                document.getElementById('pre-datasets').textContent = preData.length;
+                document.getElementById('cur-datasets').textContent = curData.length;
+                
+                // Load pages/posts counts
+                loadPagesPostsCounts();
+                
+                // Render lists
+                renderPreDeployList();
+                renderCurrentList();
+                
+                // Setup search
+                setupSearch();
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                alert('Error loading data. Make sure you run this from the project root directory.');
+            }
+        }
+        
+        async function loadPagesPostsCounts() {
+            try {
+                const prePages = await fetch('pre_deploy_backup_may5/pages.json').then(r => r.json());
+                const prePosts = await fetch('pre_deploy_backup_may5/posts.json').then(r => r.json());
+                const curPages = await fetch('current_production_state/pages.json').then(r => r.json());
+                const curPosts = await fetch('current_production_state/posts.json').then(r => r.json());
+                
+                document.getElementById('pre-pages').textContent = (Array.isArray(prePages) ? prePages : prePages.data || []).length;
+                document.getElementById('pre-posts').textContent = (Array.isArray(prePosts) ? prePosts : prePosts.data || []).length;
+                document.getElementById('cur-pages').textContent = (Array.isArray(curPages) ? curPages : curPages.data || []).length;
+                document.getElementById('cur-posts').textContent = (Array.isArray(curPosts) ? curPosts : curPosts.data || []).length;
+            } catch (error) {
+                console.error('Error loading pages/posts:', error);
+            }
+        }
+        
+        function renderPreDeployList(filter = '') {
+            const list = document.getElementById('pre-list');
+            list.innerHTML = '';
+            
+            const curIds = new Set(curData.map(d => d.id));
+            const modifiedIds = new Set(report.datasets?.modified_ids || []);
+            const missingIds = new Set(report.datasets?.missing_ids || []);
+            
+            preData
+                .filter(d => !filter || d.title?.toLowerCase().includes(filter.toLowerCase()) || d.id?.toLowerCase().includes(filter.toLowerCase()))
+                .forEach(dataset => {
+                    const div = document.createElement('div');
+                    div.className = 'dataset-item';
+                    
+                    if (missingIds.has(dataset.id)) {
+                        div.classList.add('missing');
+                    } else if (modifiedIds.has(dataset.id)) {
+                        div.classList.add('modified');
+                    }
+                    
+                    div.innerHTML = `
+                        <div class="dataset-title">${dataset.title || 'Untitled'}</div>
+                        <div class="dataset-id">${dataset.id}</div>
+                        <div class="dataset-meta">
+                            Updated: ${dataset.updatedAt ? new Date(dataset.updatedAt).toLocaleString() : 'N/A'}
+                            ${missingIds.has(dataset.id) ? ' • <strong>MISSING in current</strong>' : ''}
+                            ${modifiedIds.has(dataset.id) ? ' • <strong>MODIFIED in current</strong>' : ''}
+                        </div>
+                    `;
+                    
+                    list.appendChild(div);
+                });
+        }
+        
+        function renderCurrentList(filter = '') {
+            const list = document.getElementById('cur-list');
+            list.innerHTML = '';
+            
+            const preIds = new Set(preData.map(d => d.id));
+            const modifiedIds = new Set(report.datasets?.modified_ids || []);
+            
+            curData
+                .filter(d => !filter || d.title?.toLowerCase().includes(filter.toLowerCase()) || d.id?.toLowerCase().includes(filter.toLowerCase()))
+                .forEach(dataset => {
+                    const div = document.createElement('div');
+                    div.className = 'dataset-item';
+                    
+                    if (!preIds.has(dataset.id)) {
+                        div.classList.add('new');
+                    } else if (modifiedIds.has(dataset.id)) {
+                        div.classList.add('modified');
+                    }
+                    
+                    div.innerHTML = `
+                        <div class="dataset-title">${dataset.title || 'Untitled'}</div>
+                        <div class="dataset-id">${dataset.id}</div>
+                        <div class="dataset-meta">
+                            Updated: ${dataset.updatedAt ? new Date(dataset.updatedAt).toLocaleString() : 'N/A'}
+                            ${!preIds.has(dataset.id) ? ' • <strong>NEW (not in pre-deploy)</strong>' : ''}
+                            ${modifiedIds.has(dataset.id) ? ' • <strong>MODIFIED from pre-deploy</strong>' : ''}
+                        </div>
+                    `;
+                    
+                    list.appendChild(div);
+                });
+        }
+        
+        function setupSearch() {
+            document.getElementById('search-pre').addEventListener('input', (e) => {
+                renderPreDeployList(e.target.value);
+            });
+            
+            document.getElementById('search-cur').addEventListener('input', (e) => {
+                renderCurrentList(e.target.value);
+            });
+        }
+        
+        // Load data on page load
+        loadData();
+    </script>
+</body>
+</html>

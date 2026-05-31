@@ -1749,7 +1749,7 @@ export interface ActivityLogStore {
 class PersistentActivityLogStore implements ActivityLogStore {
   private entries: ActivityLogEntry[] = [];
   private readonly FILE = "activity-log.json";
-  private readonly MAX = 500;
+  private readonly MAX = 2000;
 
   constructor() {
     this.load();

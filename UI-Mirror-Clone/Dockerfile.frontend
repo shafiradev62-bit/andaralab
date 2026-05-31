@@ -28,10 +28,11 @@ RUN mkdir -p /app/stub/@tanstack/query-test-utils && \
       p.pnpm.overrides['@tanstack/query-test-utils']='file:/app/stub/@tanstack/query-test-utils'; \
       fs.writeFileSync('package.json',JSON.stringify(p,null,2)); \
     " && \
-    pnpm install --no-frozen-lockfile
+    pnpm install --no-frozen-lockfile --ignore-scripts || \
+    (echo "pnpm failed, trying npm..." && npm install --legacy-peer-deps)
 
 # Set API base URL for production
-RUN echo 'VITE_API_BASE_URL=/api' > .env.production
+RUN printf 'VITE_API_BASE_URL=/api\nVITE_API_FALLBACK_BASE_URL=http://76.13.17.91:3001/api\nVITE_ALLOW_API_FALLBACK=false\n' > .env.production
 
 # Build the frontend
 RUN pnpm run build
@@ -67,10 +68,16 @@ server {
         try_files $uri $uri/ /index.html;
     }
 
+    # Allow large file uploads (CSV datasets up to 50MB)
+    client_max_body_size 50m;
+
     # API proxy - route to backend container via Docker service name
     location /api/ {
         resolver 127.0.0.11 valid=30s ipv6=off;
         proxy_pass http://backend:8080;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 300s;
+        proxy_send_timeout 300s;
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';

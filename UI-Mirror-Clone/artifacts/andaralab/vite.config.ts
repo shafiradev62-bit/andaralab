@@ -68,9 +68,10 @@ export default defineConfig({
     allowedHosts: true,
     proxy: {
       "/api": {
-        target: "http://76.13.17.91:3001",
+        target: "https://andaralab.id",
         changeOrigin: true,
-        secure: false,
+        secure: true,
+        rewrite: (path) => path,
       },
     },
     fs: {

@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+set -e
+
+echo "[hook] pre-push: verify deploy contract"
+node scripts/verify-deploy-contract.mjs

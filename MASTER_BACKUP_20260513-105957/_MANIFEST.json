@@ -1,0 +1,47 @@
+{
+  "backup_time": "20260513-105957",
+  "vps_host": "177.7.55.182",
+  "files": {
+    "datasets.json": {
+      "size": 2022553,
+      "count": "?"
+    },
+    "pages.json": {
+      "size": 30811,
+      "count": 32
+    },
+    "posts.json": {
+      "size": 23194,
+      "count": 18
+    },
+    "ui-texts.json": {
+      "size": 1633,
+      "count": "dict"
+    },
+    "analisis.json": {
+      "size": 8459,
+      "count": 1
+    },
+    "activity-log.json": {
+      "size": 265198,
+      "count": 500
+    },
+    "calendar-events.json": {
+      "size": 2560,
+      "count": 5
+    },
+    "exchange-rates.json": {
+      "size": 4426,
+      "count": 12
+    },
+    "featured-insights.json": {
+      "size": 1433,
+      "count": 2
+    },
+    "featured-research-config.json": {
+      "size": 807,
+      "count": "dict"
+    }
+  },
+  "note": "MASTER BACKUP \u2014 jangan hapus folder ini"
+}

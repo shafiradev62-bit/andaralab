@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: andaralab-monitor
+    container_name: andaralab-monitor
+    ports:
+      - "8888:8888"
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1

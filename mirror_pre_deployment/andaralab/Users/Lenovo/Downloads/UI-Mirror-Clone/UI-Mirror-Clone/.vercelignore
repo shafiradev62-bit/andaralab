@@ -1,0 +1,15 @@
+.git
+.local
+.qodo
+.qoder
+.claude
+node_modules
+*.log
+.DS_Store
+attached_assets
+*.xls
+dist
+build
+coverage
+.vscode
+.idea

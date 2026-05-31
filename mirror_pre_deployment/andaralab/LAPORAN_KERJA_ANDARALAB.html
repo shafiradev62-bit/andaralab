@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Kerja — AndaraLab</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Georgia', serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: #1a1a1a;
+    background: #fff;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 56px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 0.02em;
+    margin-bottom: 4px;
+    color: #000;
+  }
+  .subtitle {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 32px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 16px;
+  }
+  h2 {
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: #000;
+    border-left: 3px solid #000;
+    padding-left: 10px;
+  }
+  h3 {
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    color: #222;
+  }
+  ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+  }
+  li {
+    margin-bottom: 5px;
+  }
+  .tag {
+    display: inline-block;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    font-size: 10px;
+    padding: 1px 6px;
+    margin-right: 4px;
+    font-family: monospace;
+    color: #333;
+  }
+  .section-block {
+    margin-bottom: 8px;
+    padding: 12px 14px;
+    border: 1px solid #e0e0e0;
+    background: #fafafa;
+  }
+  .section-block p {
+    margin-bottom: 4px;
+  }
+  .meta {
+    font-size: 11px;
+    color: #888;
+    margin-top: 2px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 12px;
+  }
+  th {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  td {
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  code {
+    font-family: monospace;
+    font-size: 11px;
+    background: #f0f0f0;
+    padding: 1px 4px;
+    border: 1px solid #ddd;
+  }
+  .divider {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 24px 0;
+  }
+  .footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid #ccc;
+    font-size: 11px;
+    color: #888;
+    text-align: center;
+  }
+  @media print {
+    body { padding: 32px 40px; }
+    h2 { page-break-after: avoid; }
+    .section-block { page-break-inside: avoid; }
+    table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<h1>AndaraLab — Laporan Pekerjaan Mingguan</h1>
+<div class="subtitle">
+  Periode: 24 April — 1 Mei 2026 &nbsp;|&nbsp; Platform: andaralab.id &nbsp;|&nbsp; VPS: 76.13.17.91 &nbsp;|&nbsp; Stack: React + Express + Docker + Nginx
+</div>
+
+
+<h2>1. Infrastruktur dan Deployment</h2>
+
+<div class="section-block">
+  <h3>VPS Production Setup</h3>
+  <ul>
+    <li>Deploy ulang ke VPS (76.13.17.91) menggunakan Docker Compose dengan bind mount permanen di <code>/opt/andaralab-data</code></li>
+    <li>Data tidak pernah hilang saat rebuild container — semua JSON tersimpan di host, bukan di image</li>
+    <li>Nginx sebagai reverse proxy: port 80 ke frontend, <code>/api/</code> di-proxy ke backend port 8080</li>
+    <li>Fix critical bug: nginx <code>proxy_pass</code> strip prefix <code>/api/</code> sehingga backend return 404 — diperbaiki ke <code>proxy_pass http://backend:8080/api/</code></li>
+    <li>Fix port conflict: PM2 (process manager) di VPS auto-restart node process dan rebut port 3001, menyebabkan Docker networking error. Diselesaikan dengan kill PM2 + reset iptables + restart Docker daemon</li>
+    <li>Backup otomatis harian via cron ke <code>/opt/andaralab-backups/</code> dengan retensi 14 hari</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Restore 106 Datasets</h3>
+  <ul>
+    <li>Data sempat turun ke 22 dataset setelah deploy. Ditemukan backup dengan 106 dataset di <code>andaralab-data-20260430-123008.tar.gz</code></li>
+    <li>Restore berhasil — 106 dataset live dan terverifikasi via API</li>
+    <li>Semua data lain (pages, posts, exchange rates, calendar) ikut terjaga</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<h2>2. Frontend — Fitur dan Perbaikan</h2>
+
+<div class="section-block">
+  <h3>Locale Switching (EN/ID)</h3>
+  <ul>
+    <li>Fix bug locale "kedip-kedip": <code>LocaleUrlSync</code> dan <code>LocaleNavigator</code> saling trigger loop tak terbatas saat user klik EN/ID</li>
+    <li>Solusi: <code>LocaleNavigator</code> cek apakah URL sudah punya locale yang benar sebelum navigate. Kalau iya, skip — berarti perubahan datang dari URL bukan dari klik user</li>
+    <li>Fix initial load: <code>LocaleProvider</code> sekarang baca URL slug (<code>/id/...</code> atau <code>/en/...</code>) saat pertama render, bukan hanya dari localStorage</li>
+    <li>Hasil: klik EN/ID langsung switch tanpa flicker, tanpa loop</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Navbar</h3>
+  <ul>
+    <li>Hapus "LLM Model Comparison" dari dropdown Data Hub</li>
+    <li>Hapus "Lab Notes" dari dropdown Blog</li>
+    <li>Blog dropdown sekarang hanya: Economics 101, Market Pulse</li>
+    <li>Data Hub dropdown: Interactive Charts, Economic Calendar, Market Dashboard</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Halaman Blog — Market Pulse</h3>
+  <ul>
+    <li>Fix blank page di <code>/id/blog/market-pulse</code>: komponen <code>BlogPage</code> tidak punya config untuk <code>market-pulse</code>, menyebabkan crash saat akses <code>undefined.sectionEn</code></li>
+    <li>Tambah config "Market Pulse" / "Pulsa Pasar" ke <code>BlogPage</code></li>
+    <li>Tambah fallback guard untuk sub-category yang tidak dikenal</li>
+    <li>Buat artikel Market Pulse versi Indonesia: "IHSG di 7.200: Mengapa Keputusan BI Tahan Suku Bunga Mengubah Strategi Pasar"</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Hero Image Homepage</h3>
+  <ul>
+    <li>Ganti CSS <code>background</code> property ke <code>&lt;img&gt;</code> tag dengan <code>object-fit: cover</code></li>
+    <li>Gambar: <code>IMG-20260424-WA0029 (1).jpg</code> — foto kota malam hari</li>
+    <li>Sebelumnya gambar ter-zoom karena CSS background-size cover tidak handle resolusi asli dengan baik</li>
+    <li>Sekarang gambar tampil proporsional dengan crop ke tengah</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Halaman Analisis — Highlight Widget</h3>
+  <ul>
+    <li>Hapus kotak background berwarna di semua widget type <code>highlight</code> di halaman Analisis</li>
+    <li>Sebelumnya: kotak dengan background color 5% opacity + border kiri berwarna</li>
+    <li>Sekarang: bullet kecil + teks biasa, tanpa kotak</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<h2>3. CMS Admin Panel</h2>
+
+<div class="section-block">
+  <h3>Fix Data Sinkronisasi Antar Device</h3>
+  <ul>
+    <li>Client hanya lihat 1 page di admin, padahal VPS punya 36 pages</li>
+    <li>Root cause: <code>fetchPages</code> merge data API dengan localStorage lama, sehingga data stale override data baru</li>
+    <li>Fix: admin clear localStorage saat pertama load (<code>andara_pages</code>, <code>andara_posts</code>, <code>andara_datasets</code>)</li>
+    <li>Fix: <code>fetchPages</code> tidak lagi merge dengan cache lama — selalu replace dengan data dari API</li>
+    <li>Hasil: semua device yang buka <code>andaralab.id/admin</code> selalu lihat data yang sama dari VPS</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Tab AWS Lambda / Cloudflare Monitor</h3>
+  <ul>
+    <li>Tambah tab baru "AWS Lambda" di sebelah tab Activity di CMS admin</li>
+    <li>Style identik dengan Activity tab: tabel dengan header, badge level berwarna, hover row</li>
+    <li>4 status cards: Connection, Function Name, Total Invocations, Avg Duration</li>
+    <li>Filter log by level: All / INFO / WARN / ERROR / DEBUG</li>
+    <li>Auto-refresh toggle (setiap 10 detik) + manual refresh</li>
+    <li>Tidak ada kotak merah error — pesan error ditampilkan sebagai teks biasa</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Hapus Duplicate Pages</h3>
+  <ul>
+    <li>Hapus 2 halaman recovery internal (<code>/apr21-recovery-datasets</code>) dari pages.json</li>
+    <li>Hapus halaman Lab Notes (<code>/blog/lab-notes</code> EN + ID) dari CMS</li>
+    <li>Total pages: dari 36 turun ke 32 (bersih, tanpa duplikat)</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<h2>4. Backend API</h2>
+
+<div class="section-block">
+  <h3>Endpoint Baru: Lambda / Cloudflare Logs</h3>
+  <ul>
+    <li><code>GET /api/lambda/logs</code> — return status koneksi + log entries terbaru</li>
+    <li><code>POST /api/lambda/ingest</code> — Cloudflare Worker push logs ke backend (dilindungi <code>X-Log-Secret</code>)</li>
+    <li><code>DELETE /api/lambda/logs</code> — clear log buffer</li>
+    <li>In-memory buffer max 500 entries, FIFO</li>
+    <li>Jika <code>CF_ACCOUNT_ID</code> + <code>CF_API_TOKEN</code> di-set, otomatis fetch dari Cloudflare API</li>
+  </ul>
+</div>
+
+<hr class="divider">
+
+<h2>5. Integrasi AWS MCP (awslabs/mcp)</h2>
+
+<div class="section-block">
+  <h3>Apa itu AWS MCP</h3>
+  <ul>
+    <li>MCP = Model Context Protocol — protokol open source dari Anthropic</li>
+    <li>awslabs/mcp = kumpulan MCP server resmi AWS Labs (open source)</li>
+    <li>Menghubungkan AI assistant dengan layanan AWS secara real-time</li>
+    <li>Tersedia 40+ server: CloudWatch, Lambda, DynamoDB, S3, IAM, Bedrock, dll</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Server yang Relevan untuk AndaraLab</h3>
+  <table>
+    <tr>
+      <th>MCP Server</th>
+      <th>Fungsi</th>
+      <th>Relevansi</th>
+    </tr>
+    <tr>
+      <td><code>cloudwatch-mcp-server</code></td>
+      <td>Query metrics, alarms, logs</td>
+      <td>Monitor Lambda/Worker logs di admin panel</td>
+    </tr>
+    <tr>
+      <td><code>lambda-tool-mcp-server</code></td>
+      <td>Execute Lambda functions sebagai AI tools</td>
+      <td>Trigger function dari admin, akses private resources</td>
+    </tr>
+    <tr>
+      <td><code>aws-documentation-mcp-server</code></td>
+      <td>Akses dokumentasi AWS terbaru</td>
+      <td>Developer reference saat coding</td>
+    </tr>
+    <tr>
+      <td><code>iam-mcp-server</code></td>
+      <td>Manage user, role, policy</td>
+      <td>Security management infrastruktur</td>
+    </tr>
+    <tr>
+      <td><code>core-mcp-server</code></td>
+      <td>Starting point semua interaksi AWS</td>
+      <td>Koordinasi antar MCP server</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section-block">
+  <h3>Arsitektur Log Pipeline</h3>
+  <ul>
+    <li>Opsi A (Pull): Admin panel fetch <code>GET /api/lambda/logs</code> → backend call Cloudflare API → return logs</li>
+    <li>Opsi B (Push): Cloudflare Worker POST ke <code>/api/lambda/ingest</code> → buffer di backend → admin baca real-time</li>
+    <li>Auto-refresh 10 detik, atau push langsung dari Worker untuk zero latency</li>
+  </ul>
+</div>
+
+<div class="section-block">
+  <h3>Environment Variables yang Dibutuhkan</h3>
+  <table>
+    <tr><th>Variable</th><th>Keterangan</th></tr>
+    <tr><td><code>CF_ACCOUNT_ID</code></td><td>Cloudflare Account ID</td></tr>
+    <tr><td><code>CF_API_TOKEN</code></td><td>Cloudflare API Token (read logs)</td></tr>
+    <tr><td><code>CF_WORKER_NAME</code></td><td>Nama Cloudflare Worker</td></tr>
+    <tr><td><code>CF_LOG_SECRET</code></td><td>Secret untuk push endpoint</td></tr>
+    <tr><td><code>AWS_REGION</code></td><td>AWS Region (ap-southeast-1)</td></tr>
+  </table>
+</div>
+
+<hr class="divider">
+
+<h2>6. Ringkasan Status Akhir</h2>
+
+<table>
+  <tr>
+    <th>Item</th>
+    <th>Status</th>
+    <th>Keterangan</th>
+  </tr>
+  <tr>
+    <td>VPS Production</td>
+    <td>Live</td>
+    <td>andaralab.id — frontend + backend running</td>
+  </tr>
+  <tr>
+    <td>Datasets</td>
+    <td>106 dataset</td>
+    <td>Tersimpan permanen di bind mount</td>
+  </tr>
+  <tr>
+    <td>Pages CMS</td>
+    <td>32 pages</td>
+    <td>EN + ID, published, tanpa duplikat</td>
+  </tr>
+  <tr>
+    <td>Blog Posts</td>
+    <td>18 posts</td>
+    <td>Termasuk Market Pulse versi Indonesia</td>
+  </tr>
+  <tr>
+    <td>Locale EN/ID</td>
+    <td>Fixed</td>
+    <td>Switch tanpa flicker, URL slug detect otomatis</td>
+  </tr>
+  <tr>
+    <td>Admin Panel</td>
+    <td>Sinkron</td>
+    <td>Semua device lihat data yang sama dari VPS</td>
+  </tr>
+  <tr>
+    <td>AWS Lambda Tab</td>
+    <td>Live</td>
+    <td>Siap terima credentials Cloudflare/AWS</td>
+  </tr>
+  <tr>
+    <td>AWS MCP Integration</td>
+    <td>Configured</td>
+    <td>Backend endpoint ready, MCP config tersedia</td>
+  </tr>
+  <tr>
+    <td>Hero Image</td>
+    <td>Fixed</td>
+    <td>Tidak ter-zoom, object-fit cover proporsional</td>
+  </tr>
+  <tr>
+    <td>Backup Otomatis</td>
+    <td>Active</td>
+    <td>Daily cron, retensi 14 hari</td>
+  </tr>
+</table>
+
+<hr class="divider">
+
+<h2>7. Next Steps</h2>
+
+<ul>
+  <li>Set environment variables <code>CF_ACCOUNT_ID</code>, <code>CF_API_TOKEN</code>, <code>CF_WORKER_NAME</code> di docker-compose.yml VPS untuk aktivasi log monitoring</li>
+  <li>Install <code>uv</code> (Python package manager) untuk menjalankan AWS MCP servers di IDE</li>
+  <li>Tambah artikel blog versi Indonesia untuk kategori lain (economics-101, sectoral-analysis)</li>
+  <li>Setup Cloudflare Worker untuk push logs ke <code>POST /api/lambda/ingest</code></li>
+  <li>Konfigurasi AWS credentials untuk CloudWatch integration</li>
+</ul>
+
+<div class="footer">
+  AndaraLab — PT. Andara Investasi Cerdas &nbsp;|&nbsp; andaralab.id &nbsp;|&nbsp; Laporan periode 24 April — 1 Mei 2026
+</div>
+
+</body>
+</html>

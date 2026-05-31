@@ -6,7 +6,7 @@ import { activityLogStore } from "../lib/store.js";
 const router = Router();
 
 router.get("/", (req: Request, res: Response) => {
-  const limit = Math.min(parseInt(String(req.query.limit ?? "100"), 10) || 100, 500);
+  const limit = Math.min(parseInt(String(req.query.limit ?? "500"), 10) || 500, 2000);
   res.json({ data: activityLogStore.list(limit) });
 });
 

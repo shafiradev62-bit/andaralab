@@ -1,0 +1,45 @@
+{
+  "timestamp": "20260513-111251",
+  "vps_host": "177.7.55.182",
+  "files": {
+    "datasets.json": {
+      "md5": "6bfd776e26793ef1d0507132a64a612c",
+      "size": "2022553",
+      "count": "72"
+    },
+    "pages.json": {
+      "md5": "40fde1f73a0c12377aa082cbdcf90f0e",
+      "size": "30811",
+      "count": "32"
+    },
+    "posts.json": {
+      "md5": "2dc0e8cb21dc164d91e559dea436e4ad",
+      "size": "23194",
+      "count": "18"
+    },
+    "ui-texts.json": {
+      "md5": "c6c4ce61894456c812d85ffa19ddfc85",
+      "size": "1633"
+    },
+    "analisis.json": {
+      "md5": "86c3b4451fd390e97e6dec070117bbbe",
+      "size": "8459"
+    },
+    "featured-insights.json": {
+      "md5": "5216d42721811f0f8a298fcc5cc1f57d",
+      "size": "1433"
+    },
+    "featured-research-config.json": {
+      "md5": "99c278223de3cc884bb39177dbca7131",
+      "size": "807"
+    },
+    "calendar-events.json": {
+      "md5": "e672332ea07413476b2e953f6084098d",
+      "size": "2560"
+    },
+    "exchange-rates.json": {
+      "md5": "a57d929d42f479a1bc8f25b8fd9ade8e",
+      "size": "4426"
+    }
+  }
+}

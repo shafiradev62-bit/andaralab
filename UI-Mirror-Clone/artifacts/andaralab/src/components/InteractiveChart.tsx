@@ -168,7 +168,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
 
   const { brushRange, setBrushRange, zoomProps } = useChartZoom(
     data.length,
-    Math.max(0, data.length - 24)
+    0
   );
 
   useEffect(() => {
@@ -259,7 +259,24 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
 
   // ─── DYNAMIC Y-AXIS SCALING ──────────────────────────────────────────────────
   const yAxisDomain = useMemo(() => {
-    const allValues = dataKeys.flatMap((key) =>
+    // Calculate max per key first to detect outliers
+    const maxPerKey = dataKeys.map(key => {
+      const vals = data.map(r => {
+        const v = r[key];
+        return typeof v === "number" ? v : parseFloat(String(v));
+      }).filter(v => !isNaN(v));
+      return { key, max: vals.length ? Math.max(...vals) : 0, min: vals.length ? Math.min(...vals) : 0 };
+    }).sort((a, b) => b.max - a.max); // descending by max
+
+    // Detect dominant outlier: if largest series > 50x the 2nd largest,
+    // exclude it from scale calculation so smaller series are visible
+    let keysForScale = dataKeys;
+    if (maxPerKey.length >= 2 && maxPerKey[0].max > maxPerKey[1].max * 50) {
+      keysForScale = dataKeys.filter(k => k !== maxPerKey[0].key);
+    }
+
+    // Calculate domain using only non-outlier keys
+    const allValues = keysForScale.flatMap((key) =>
       data.map((r) => {
         const v = r[key];
         return typeof v === "number" ? v : parseFloat(String(v));
@@ -271,21 +288,19 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     const actualMin = Math.min(...allValues);
     const actualMax = Math.max(...allValues);
     const range = actualMax - actualMin;
-    const padding = range === 0 ? Math.abs(actualMax) * 0.1 || 10 : range * 0.1;
+    const padding = range === 0 ? Math.abs(actualMax) * 0.1 || 10 : range * 0.15;
 
-    // Apply dynamic bounds with padding
     let min = actualMin - padding;
     let max = actualMax + padding;
 
-    // If data is all positive, don't go below 0 unless requested
     if (actualMin >= 0 && min < 0) min = 0;
 
-    // Respect CMS Manual Overrides but NEVER clip data
+    // Respect CMS Manual Overrides — hard cap
     const finalMin = dataset.yAxisMin !== undefined && Number.isFinite(dataset.yAxisMin)
         ? Math.min(actualMin, dataset.yAxisMin)
         : min;
     const finalMax = dataset.yAxisMax !== undefined && Number.isFinite(dataset.yAxisMax)
-        ? Math.max(actualMax, dataset.yAxisMax)
+        ? dataset.yAxisMax
         : max;
 
     return [finalMin, finalMax];
@@ -347,18 +362,22 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
   const hasYearGroup = data.length > 0 && parseXLabel(String(data[0][xKey])).year !== null;
   const xAxisHeight = 35;
 
+  // Dynamic interval: show ~12 labels max to avoid crowding
+  const visibleCount = brushRange.endIndex - brushRange.startIndex + 1;
+  const xInterval = Math.max(0, Math.ceil(visibleCount / 12) - 1);
+
   const renderXAxis = () => (
     <XAxis
       dataKey={xKey}
       {...axisStyle}
-      interval={0}
+      interval={xInterval}
       height={xAxisHeight}
       tick={<CustomXAxisTick />}
     />
   );
 
   const renderDefaultXAxis = () => (
-    <XAxis dataKey={xKey} {...axisStyle} height={xAxisHeight} />
+    <XAxis dataKey={xKey} {...axisStyle} interval={xInterval} height={xAxisHeight} />
   );
 
   const xAxis = hasYearGroup ? renderXAxis() : renderDefaultXAxis();
@@ -405,7 +424,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
     >
       {dataset.chartType !== 'combo' && dataset.chartType !== 'donut' ? (
         <LineChart data={data}>
-          <Line type="monotone" dataKey={dataKeys[0]} stroke="#9CA3AF" strokeWidth={1} dot={false} isAnimationActive={false} />
+          <Line type="monotone" dataKey={dataKeys[0]} stroke="#9CA3AF" strokeWidth={1} dot={false} isAnimationActive={false} connectNulls={true} />
         </LineChart>
       ) : null}
     </Brush>
@@ -498,6 +517,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
                 dataKey={key}
                 stroke={getColor(dataset, i)}
                 strokeWidth={2}
+                connectNulls={true}
                 fill={`url(#grad-${i})`}
                 dot={{ r: 3, strokeWidth: 0, fill: getColor(dataset, i) }}
                 activeDot={{ r: 5, strokeWidth: 0 }}
@@ -553,7 +573,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
               <Bar key={key} yAxisId="left" dataKey={key} fill={getColor(dataset, i)} radius={[1, 1, 0, 0]} maxBarSize={40} name={columnNameMap[key] ?? key} isAnimationActive={false} />
             ))}
             {finalLineKeys.map((key, i) => (
-              <Line key={key} yAxisId="right" type="monotone" dataKey={key} stroke={getColor(dataset, finalBarKeys.length + i)} strokeWidth={2.5} dot={i === 0 ? { r: 3.5, strokeWidth: 1.5, fill: "#fff", stroke: getColor(dataset, finalBarKeys.length + i) } : { r: 3, strokeWidth: 0, fill: getColor(dataset, finalBarKeys.length + i) }} activeDot={{ r: 5, strokeWidth: 1, stroke: "#fff" }} name={columnNameMap[key] ?? key} isAnimationActive={false} />
+              <Line key={key} yAxisId="right" type="monotone" dataKey={key} stroke={getColor(dataset, finalBarKeys.length + i)} strokeWidth={2.5} dot={i === 0 ? { r: 3.5, strokeWidth: 1.5, fill: "#fff", stroke: getColor(dataset, finalBarKeys.length + i) } : { r: 3, strokeWidth: 0, fill: getColor(dataset, finalBarKeys.length + i) }} activeDot={{ r: 5, strokeWidth: 1, stroke: "#fff" }} name={columnNameMap[key] ?? key} isAnimationActive={false} connectNulls={true} />
             ))}
             {renderBrush()}
           </ComposedChart>
@@ -647,7 +667,7 @@ export default function InteractiveChart({ dataset, height = 280 }: Props) {
             iconSize={8}
           />
           {dataKeys.map((key, i) => (
-            <Line key={key} type="monotone" dataKey={key} stroke={getColor(dataset, i)} strokeWidth={2} dot={{ r: 3, strokeWidth: 0, fill: getColor(dataset, i) }} name={columnNameMap[key] ?? key} activeDot={{ r: 5, strokeWidth: 1, stroke: "#fff" }} isAnimationActive={false} />
+            <Line key={key} type="monotone" dataKey={key} stroke={getColor(dataset, i)} strokeWidth={2} dot={{ r: 3, strokeWidth: 0, fill: getColor(dataset, i) }} name={columnNameMap[key] ?? key} activeDot={{ r: 5, strokeWidth: 1, stroke: "#fff" }} isAnimationActive={false} connectNulls={true} />
           ))}
           {renderBrush()}
         </LineChart>

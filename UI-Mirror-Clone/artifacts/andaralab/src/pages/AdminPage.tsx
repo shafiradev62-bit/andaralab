@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
+import { AdminAuthGate, useAdminToken } from "@/lib/admin-auth-gate";
 import {
   useDatasets, useCreateDataset, useUpdateDataset,
   useDeleteDataset, useResetDatasets, useBulkCreateDatasets, useDeployToVPS,
@@ -5042,7 +5043,7 @@ function timeAgo(iso: string): string {
 }
 
 function ActivityTab() {
-  const { data: entries = [], isLoading, dataUpdatedAt } = useActivity(200);
+  const { data: entries = [], isLoading, dataUpdatedAt } = useActivity(500);
   const clearMut = useClearActivity();
   const [lastUpdate, setLastUpdate] = useState<string>("");
 
@@ -5121,7 +5122,7 @@ function ActivityTab() {
 
 // ─── Main AdminPage ────────────────────────────────────────────────────────────
 
-export default function AdminPage() {
+function AdminPageContent() {
   const [activeTab, setActiveTab] = useState<"data" | "pages" | "blog" | "analisis" | "featured" | "exchange-rates" | "calendar" | "activity">("data");
   const deployMut = useDeployToVPS();
 
@@ -5189,5 +5190,15 @@ export default function AdminPage() {
         {activeTab === "activity"  && <ActivityTab />}
       </div>
     </div>
+  );
+}
+
+// ─── Export with Auth Gate ─────────────────────────────────────────────────────
+
+export default function AdminPage() {
+  return (
+    <AdminAuthGate>
+      <AdminPageContent />
+    </AdminAuthGate>
   );
 }

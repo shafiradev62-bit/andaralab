@@ -1,0 +1,29 @@
+---
+description: Lindungi data produksi, dataset CMS, dan persistence backend dari edit AI yang tidak diminta
+alwaysApply: true
+---
+
+# Integritas data & backend
+
+Gunakan aturan ini untuk **semua** perubahan kode di repo ini.
+
+## Larangan (kecuali user meminta eksplisit)
+
+- Jangan mengubah **skema database**, migrasi Drizzle/SQL, atau bentuk JSON persistensi di `artifacts/api-server` / `lib/db` / folder `data/` **untuk menghapus atau mengosongkan** konten produksi.
+- Jangan **menghapus, mengganti massal, atau menormalisasi ulang** baris `rows` dataset, halaman CMS, atau posting — itu bisa mengubah makna bisnis atau menghilangkan data.
+- Jangan menjalankan script yang **overwrite** `datasets.json` / store tanpa backup dan tanpa instruksi tegas dari maintainer.
+- Jangan mengedit **seed default** agar “menyesuaikan” produksi — seed untuk dev/fallback, bukan mirror paksa ke live.
+
+## UI / frontend saja
+
+- Preview tabel, chart, dan formatter bersifat **read-only** terhadap API: hanya **tampilan**, bukan sumber kebenaran data.
+- Styling (sticky header, scroll body) **tidak** mengubah payload dataset.
+
+## Refactor aman
+
+- Kalau musti menyentuh tipe/schema, pertahankan **kompatibilitas mundur** dengan JSON dataset yang sudah ada di CMS/API.
+- Prefer **additive** fields (optional) daripada rename field tanpa migrasi.
+
+## Ringkas
+
+**Jangan ngusik database / persistence untuk “bersih-bersih”. Jangan hilangkan data. UI boleh diperhalus; data jangan diacak.**

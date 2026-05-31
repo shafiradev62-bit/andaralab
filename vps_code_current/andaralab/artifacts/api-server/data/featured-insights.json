@@ -1,0 +1,52 @@
+[
+  {
+    "id": "featured-en",
+    "locale": "en",
+    "slugs": [
+      {
+        "slug": "nickel-ev-indonesia",
+        "order": 1
+      },
+      {
+        "slug": "digital-economy-indonesia-2026",
+        "order": 2
+      },
+      {
+        "slug": "bank-mandatory-ratio-q1-2026",
+        "order": 3
+      }
+    ],
+    "title": "Featured Insights",
+    "subtitle": "Latest research and analysis from AndaraLab",
+    "sectionLabel": "Featured Research",
+    "limit": 3,
+    "showOnHomepage": true,
+    "createdAt": "2026-01-01",
+    "updatedAt": "2026-04-06"
+  },
+  {
+    "id": "featured-id",
+    "locale": "id",
+    "slugs": [
+      {
+        "slug": "ri-transmigration-nickel-downstreaming",
+        "order": 1
+      },
+      {
+        "slug": "prospeks-makro-indonesia-2026-id",
+        "order": 2
+      },
+      {
+        "slug": "food-inflation-handling-indonesia",
+        "order": 3
+      }
+    ],
+    "title": "Wawasan Pilihan",
+    "subtitle": "Riset dan analisis terbaru dari AndaraLab",
+    "sectionLabel": "Riset Pilihan",
+    "limit": 3,
+    "showOnHomepage": true,
+    "createdAt": "2026-01-01",
+    "updatedAt": "2026-04-06"
+  }
+]

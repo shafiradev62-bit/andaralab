@@ -9,7 +9,6 @@ import HomePage from "@/pages/HomePage";
 import AboutPage from "@/pages/AboutPage";
 import ContactPage from "@/pages/ContactPage";
 import DataHubPage from "@/pages/DataHubPage";
-import ModelsPage from "@/pages/ModelsPage";
 import AdminPage from "@/pages/AdminPage";
 import ArticlePage from "@/pages/ArticlePage";
 import AnalysisPage from "@/pages/AnalysisPage";
@@ -106,9 +105,6 @@ export default function App() {
           <Layout><CmsPage slug="/sectoral/esg" /></Layout>
         </Route>
 
-        <Route path="/data/models">
-          <Layout withNewsletter={false}><ModelsPage /></Layout>
-        </Route>
         <Route path="/data/economic-calendar">
           <Layout withNewsletter={false}><DataHubPage /></Layout>
         </Route>

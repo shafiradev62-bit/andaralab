@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { usePosts } from "../lib/cms-store";
 import { useLocale } from "../lib/locale";
 import { RESEARCH_TAG_PILL } from "../lib/research-tag-styles";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return "";
@@ -62,12 +63,12 @@ export default function LatestInsights() {
                 </span>
               </div>
               <h3 className="text-[14.5px] font-semibold text-gray-900 leading-snug mb-2.5 group-hover:text-gray-900 transition-colors flex-1">
-                {post.title}
+                <MarkdownRenderer content={post.title} inlineOnly />
               </h3>
               {post.excerpt && (
-                <p className="text-[12.5px] text-gray-500 leading-relaxed mb-4 line-clamp-3">
-                  {post.excerpt}
-                </p>
+                <div className="text-[12.5px] text-gray-500 leading-relaxed mb-4 line-clamp-3">
+                  <MarkdownRenderer content={post.excerpt} inlineOnly />
+                </div>
               )}
               <div className="flex items-center justify-between mt-auto pt-3 border-t border-[#F3F4F6]">
                 <div className="flex items-center gap-2 text-[11px] text-gray-400">

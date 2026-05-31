@@ -1,0 +1,31 @@
+# API Server Dockerfile — builds and runs the Express API
+# Deploy this separately on Railway/Render/Fly.io
+
+FROM node:20-slim
+
+WORKDIR /app
+
+RUN npm install -g pnpm@latest
+
+# Copy entire monorepo so workspace:* references resolve
+COPY package.json          ./
+COPY pnpm-lock.yaml        ./
+COPY tsconfig.base.json ./
+COPY pnpm-workspace.yaml   ./
+COPY lib/                  ./lib/
+COPY artifacts/api-server/ ./artifacts/api-server/
+
+WORKDIR /app/artifacts/api-server
+
+# --no-frozen-lockfile: lockfile generated on Windows with platform-specific overrides
+# that differ from Linux Docker environment
+RUN pnpm install --no-frozen-lockfile
+
+RUN pnpm run build
+
+EXPOSE 8080
+
+ENV NODE_ENV=production
+ENV PORT=8080
+
+CMD ["sh", "-c", "node --enable-source-maps ./dist/index.mjs"]

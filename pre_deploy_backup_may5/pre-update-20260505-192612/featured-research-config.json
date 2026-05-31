@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "title": {
+    "en": "Latest Research",
+    "id": "Riset Terbaru"
+  },
+  "subtitle": {
+    "en": "Recent insights and analysis from our research team",
+    "id": "Wawasan dan analisis terbaru dari tim riset kami"
+  },
+  "featuredPostIds": [],
+  "maxDisplay": 6,
+  "showInCards": 3,
+  "showInList": 3,
+  "showCategory": true,
+  "showReadTime": true,
+  "showExcerpt": true,
+  "autoSelect": true,
+  "sortBy": "publishedAt",
+  "sortOrder": "desc",
+  "_meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-05-01T00:00:00Z",
+    "description": "Configuration for the Featured Research section on the homepage. If featuredPostIds is empty and autoSelect is true, the system will automatically select the most recent posts based on sortBy and sortOrder."
+  }
+}

@@ -20,6 +20,7 @@ function isSectoralSection(section?: string) {
 const FIXED_SECTIONS = new Set([
   "root", "Macro Foundations", "Fondasi Makro",
   "Sectoral Intelligence", "Intelijen Sektoral",
+  "Financial Markets", "Pasar Keuangan",
 ]);
 
 const FALLBACK_BLOG: NavChild[] = [
@@ -99,7 +100,6 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
         label: t("nav_data"),
         children: [
           { label: t("nav_interactive_charts"), href: "/data" },
-          { label: t("nav_model_comparison"), href: "/data/models" },
           { label: t("nav_economic_calendar"), href: "/data/economic-calendar" },
           { label: t("nav_market_dashboard"), href: "/data/market-dashboard" },
         ],

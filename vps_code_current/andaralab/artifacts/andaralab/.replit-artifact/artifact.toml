@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "AndaraLab"
+version = "1.0.0"
+id = "artifacts/andaralab"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18965
+
+[services.development]
+run = "pnpm --filter @workspace/andaralab run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/andaralab", "run", "build" ]
+publicDir = "artifacts/andaralab/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18965"
+BASE_PATH = "/"
