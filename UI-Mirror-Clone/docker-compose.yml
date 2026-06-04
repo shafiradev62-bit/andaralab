@@ -26,6 +26,7 @@ services:
       - PORT=8080
       - DATA_DIR=/data
       - APP_DIR=/opt/andara-lab
+      - CORS_ALLOW_ALL=true
       - DEPLOY_WEBHOOK_SECRET=${DEPLOY_WEBHOOK_SECRET:-}
     volumes:
       # PERMANENT bind mount — data lives at /opt/andaralab-data on the host.

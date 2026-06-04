@@ -7,10 +7,10 @@ import { useLocale } from "../lib/locale";
 import { usePosts, useFeaturedInsights } from "../lib/cms-store";
 import { RESEARCH_TAG_PILL } from "../lib/research-tag-styles";
 
-function formatDate(dateStr?: string) {
+function formatDate(dateStr: string | undefined, locale: string) {
   if (!dateStr) return "";
   try {
-    return new Date(dateStr).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    return new Date(dateStr).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { month: "long", day: "numeric", year: "numeric" });
   } catch {
     return dateStr;
   }
@@ -117,6 +117,9 @@ export default function FeaturedInsights() {
                 <span className={`text-[10.5px] font-semibold px-2 py-0.5 uppercase tracking-wide ${RESEARCH_TAG_PILL}`}>
                   {hero.category}
                 </span>
+                {locale === "id" && hero.locale === "en" && (
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-sm">EN</span>
+                )}
               </div>
               <h3 className="text-[17px] font-bold text-gray-900 leading-snug mb-3 group-hover:text-gray-900 transition-colors flex-1">
                 {hero.title}
@@ -127,7 +130,7 @@ export default function FeaturedInsights() {
                 </p>
               )}
               <div className="flex items-center gap-2 text-[11px] text-gray-400 mt-auto pt-4 border-t border-[#F3F4F6]">
-                <span>{formatDate(hero.publishedAt || hero.createdAt)}</span>
+                <span>{formatDate(hero.publishedAt || hero.createdAt, locale)}</span>
                 {hero.readTime && (
                   <>
                     <span>·</span>
@@ -152,12 +155,15 @@ export default function FeaturedInsights() {
                   <span className={`text-[10.5px] font-semibold px-2 py-0.5 uppercase tracking-wide ${RESEARCH_TAG_PILL}`}>
                     {post.category}
                   </span>
+                  {locale === "id" && post.locale === "en" && (
+                    <span className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-sm">EN</span>
+                  )}
                 </div>
                 <h3 className="text-[13.5px] font-semibold text-gray-900 leading-snug mb-2 group-hover:text-gray-900 transition-colors flex-1">
                   {post.title}
                 </h3>
                 <div className="flex items-center gap-2 text-[11px] text-gray-400 mt-auto pt-3 border-t border-[#F3F4F6]">
-                  <span>{formatDate(post.publishedAt || post.createdAt)}</span>
+                  <span>{formatDate(post.publishedAt || post.createdAt, locale)}</span>
                   {post.readTime && (
                     <>
                       <span>·</span>

@@ -23,15 +23,21 @@ router.post("/deploy", async (req, res) => {
 
   try {
     const appDir = process.env["APP_DIR"] || "/opt/andara-lab";
-    // Step 1: git pull only (safe inside container via bind-mounted app dir)
+
+    // Aman: ff-only pull (bukan reset --hard). Backup + build di host script.
     const { stdout } = await execAsync(
-      `cd ${appDir} && git config --global --add safe.directory ${appDir} 2>/dev/null || true && git fetch origin main && git reset --hard origin/main`,
-      { timeout: 60_000 }
+      `cd ${appDir} && git config --global --add safe.directory ${appDir} 2>/dev/null || true && git fetch origin main && git checkout main && git pull --ff-only origin main`,
+      { timeout: 120_000 },
     );
-    // Step 2: signal host to rebuild via a trigger file
-    // The host-side systemd service (andaralab-deploy.service) watches for this file
+
     await execAsync(`touch ${appDir}/.deploy-trigger`, { timeout: 5_000 }).catch(() => {});
-    res.json({ success: true, output: stdout, message: "Code updated. Host rebuild triggered." });
+    await execAsync(`bash ${appDir}/scripts/vps-deploy-on-server.sh`, { timeout: 900_000 }).catch(() => {});
+
+    res.json({
+      success: true,
+      output: stdout,
+      message: "Safe deploy triggered (backup + ff-only pull + vps-deploy-on-server.sh).",
+    });
   } catch (e: unknown) {
     const execError = e as { message?: string; stderr?: string };
     res.status(500).json({ error: "Deploy failed", detail: execError.stderr || execError.message });

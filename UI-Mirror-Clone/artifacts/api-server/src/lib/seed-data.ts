@@ -3,7 +3,12 @@
 
 // ─── Chart Dataset ─────────────────────────────────────────────────────────────
 
-export type SeedDataUnitType = "percent" | "currency_idr" | "currency_usd" | "number" | "custom";
+export type SeedDataUnitType =
+  | "percent"
+  | "currency_idr"
+  | "currency_usd"
+  | "number"
+  | "custom";
 
 export interface SeedDataset {
   id: string;
@@ -40,16 +45,48 @@ export interface SeedDataset {
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export type ContentSection =
-  | { type: "text";      content: string }
-  | { type: "hero";      headline: string; subheadline?: string; ctaText?: string; ctaHref?: string }
-  | { type: "stats";     items: { label: string; value: string; unit?: string }[] }
-  | { type: "featured";  slugs: string[]; limit?: number }
-  | { type: "posts";     categories: string[]; title?: string }
-  | { type: "chart";     datasetId: string; title?: string }
-  | { type: "cta";       heading: string; body: string; buttonText: string; buttonHref: string }
+  | { type: "text"; content: string }
+  | {
+      type: "hero";
+      headline: string;
+      subheadline?: string;
+      ctaText?: string;
+      ctaHref?: string;
+    }
+  | { type: "stats"; items: { label: string; value: string; unit?: string }[] }
+  | { type: "featured"; slugs: string[]; limit?: number }
+  | { type: "posts"; categories: string[]; title?: string }
+  | { type: "chart"; datasetId: string; title?: string }
+  | {
+      type: "cta";
+      heading: string;
+      body: string;
+      buttonText: string;
+      buttonHref: string;
+    }
   | { type: "divider" }
-  | { type: "about";     headline?: string; items?: { label: string; value: string }[]; description?: string }
-  | { type: "calendar";  title?: string; titleId?: string; subtitle?: string; subtitleId?: string; impactFilter?: string[]; regionFilter?: string; categoryFilter?: string; defaultDays?: number; showTimezone?: boolean; showActual?: boolean; showPrevious?: boolean; showConsensus?: boolean; showForecast?: boolean };
+  | {
+      type: "about";
+      headline?: string;
+      items?: { label: string; value: string }[];
+      description?: string;
+    }
+  | {
+      type: "calendar";
+      title?: string;
+      titleId?: string;
+      subtitle?: string;
+      subtitleId?: string;
+      impactFilter?: string[];
+      regionFilter?: string;
+      categoryFilter?: string;
+      defaultDays?: number;
+      showTimezone?: boolean;
+      showActual?: boolean;
+      showPrevious?: boolean;
+      showConsensus?: boolean;
+      showForecast?: boolean;
+    };
 
 export interface SeedPage {
   slug: string;
@@ -61,6 +98,7 @@ export interface SeedPage {
   linkedId?: string;
   navLabel?: string;
   section?: string;
+  navOrder?: number;
 }
 
 // ─── Blog Post ─────────────────────────────────────────────────────────────────
@@ -87,7 +125,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "oil-gas-production",
     title: "Produksi Minyak Bumi & Gas Alam",
-    description: "Produksi minyak mentah, kondensat, dan gas alam Indonesia 1996\u20132024 (ribuan barel & MMscf)",
+    description:
+      "Produksi minyak mentah, kondensat, dan gas alam Indonesia 1996\u20132024 (ribuan barel & MMscf)",
     category: "Sectoral Intelligence",
     subcategory: "Strategic Industry Deep-dives",
     chartType: "line",
@@ -100,34 +139,146 @@ export const SEED_DATASETS: SeedDataset[] = [
     subtitle: "Sumber: SKK Migas / Ministry of Energy and Mineral Resources",
     columns: ["Tahun", "Minyak & Kondensat (000 Barel)", "Gas Alam (MMscf)"],
     rows: [
-      { Tahun: "1996", "Minyak & Kondensat (000 Barel)": 548648.3,  "Gas Alam (MMscf)": 3164016.2 },
-      { Tahun: "1997", "Minyak & Kondensat (000 Barel)": 543752.6,  "Gas Alam (MMscf)": 3166034.9 },
-      { Tahun: "1998", "Minyak & Kondensat (000 Barel)": 534892.0,   "Gas Alam (MMscf)": 2978851.9 },
-      { Tahun: "1999", "Minyak & Kondensat (000 Barel)": 494643.0,   "Gas Alam (MMscf)": 3068349.1 },
-      { Tahun: "2000", "Minyak & Kondensat (000 Barel)": 484393.3,   "Gas Alam (MMscf)": 2845532.9 },
-      { Tahun: "2001", "Minyak & Kondensat (000 Barel)": 480116.1,   "Gas Alam (MMscf)": 3762828.5 },
-      { Tahun: "2002", "Minyak & Kondensat (000 Barel)": 397308.5,   "Gas Alam (MMscf)": 2279373.9 },
-      { Tahun: "2003", "Minyak & Kondensat (000 Barel)": 383700.0,   "Gas Alam (MMscf)": 2142605.0 },
-      { Tahun: "2004", "Minyak & Kondensat (000 Barel)": 404992.9,   "Gas Alam (MMscf)": 3026069.3 },
-      { Tahun: "2005", "Minyak & Kondensat (000 Barel)": 387653.5,   "Gas Alam (MMscf)": 2985341.0 },
-      { Tahun: "2006", "Minyak & Kondensat (000 Barel)": 357477.4,   "Gas Alam (MMscf)": 2948021.6 },
-      { Tahun: "2007", "Minyak & Kondensat (000 Barel)": 348348.0,   "Gas Alam (MMscf)": 2805540.3 },
-      { Tahun: "2008", "Minyak & Kondensat (000 Barel)": 358718.7,   "Gas Alam (MMscf)": 2790988.0 },
-      { Tahun: "2009", "Minyak & Kondensat (000 Barel)": 346313.0,   "Gas Alam (MMscf)": 2887892.2 },
-      { Tahun: "2010", "Minyak & Kondensat (000 Barel)": 344888.0,   "Gas Alam (MMscf)": 3407592.3 },
-      { Tahun: "2011", "Minyak & Kondensat (000 Barel)": 329249.3,   "Gas Alam (MMscf)": 3256378.9 },
-      { Tahun: "2012", "Minyak & Kondensat (000 Barel)": 314665.9,   "Gas Alam (MMscf)": 2982753.5 },
-      { Tahun: "2013", "Minyak & Kondensat (000 Barel)": 301191.9,   "Gas Alam (MMscf)": 2969210.8 },
-      { Tahun: "2014", "Minyak & Kondensat (000 Barel)": 287902.2,   "Gas Alam (MMscf)": 2999524.4 },
-      { Tahun: "2015", "Minyak & Kondensat (000 Barel)": 286814.2,   "Gas Alam (MMscf)": 2948365.8 },
-      { Tahun: "2017", "Minyak & Kondensat (000 Barel)": 292373.8,   "Gas Alam (MMscf)": 2781154.0 },
-      { Tahun: "2018", "Minyak & Kondensat (000 Barel)": 281826.61, "Gas Alam (MMscf)": 2833783.51 },
-      { Tahun: "2019", "Minyak & Kondensat (000 Barel)": 273494.8,  "Gas Alam (MMscf)": 2647985.9 },
-      { Tahun: "2020", "Minyak & Kondensat (000 Barel)": 259246.8,  "Gas Alam (MMscf)": 2442830.7 },
-      { Tahun: "2021", "Minyak & Kondensat (000 Barel)": 240324.5,  "Gas Alam (MMscf)": 2433364.0 },
-      { Tahun: "2022", "Minyak & Kondensat (000 Barel)": 223532.5,  "Gas Alam (MMscf)": 1962929.0 },
-      { Tahun: "2023", "Minyak & Kondensat (000 Barel)": 221088.9,  "Gas Alam (MMscf)": 2420059.5 },
-      { Tahun: "2024*","Minyak & Kondensat (000 Barel)": 211756.18, "Gas Alam (MMscf)": 2483498.15 },
+      {
+        Tahun: "1996",
+        "Minyak & Kondensat (000 Barel)": 548648.3,
+        "Gas Alam (MMscf)": 3164016.2,
+      },
+      {
+        Tahun: "1997",
+        "Minyak & Kondensat (000 Barel)": 543752.6,
+        "Gas Alam (MMscf)": 3166034.9,
+      },
+      {
+        Tahun: "1998",
+        "Minyak & Kondensat (000 Barel)": 534892.0,
+        "Gas Alam (MMscf)": 2978851.9,
+      },
+      {
+        Tahun: "1999",
+        "Minyak & Kondensat (000 Barel)": 494643.0,
+        "Gas Alam (MMscf)": 3068349.1,
+      },
+      {
+        Tahun: "2000",
+        "Minyak & Kondensat (000 Barel)": 484393.3,
+        "Gas Alam (MMscf)": 2845532.9,
+      },
+      {
+        Tahun: "2001",
+        "Minyak & Kondensat (000 Barel)": 480116.1,
+        "Gas Alam (MMscf)": 3762828.5,
+      },
+      {
+        Tahun: "2002",
+        "Minyak & Kondensat (000 Barel)": 397308.5,
+        "Gas Alam (MMscf)": 2279373.9,
+      },
+      {
+        Tahun: "2003",
+        "Minyak & Kondensat (000 Barel)": 383700.0,
+        "Gas Alam (MMscf)": 2142605.0,
+      },
+      {
+        Tahun: "2004",
+        "Minyak & Kondensat (000 Barel)": 404992.9,
+        "Gas Alam (MMscf)": 3026069.3,
+      },
+      {
+        Tahun: "2005",
+        "Minyak & Kondensat (000 Barel)": 387653.5,
+        "Gas Alam (MMscf)": 2985341.0,
+      },
+      {
+        Tahun: "2006",
+        "Minyak & Kondensat (000 Barel)": 357477.4,
+        "Gas Alam (MMscf)": 2948021.6,
+      },
+      {
+        Tahun: "2007",
+        "Minyak & Kondensat (000 Barel)": 348348.0,
+        "Gas Alam (MMscf)": 2805540.3,
+      },
+      {
+        Tahun: "2008",
+        "Minyak & Kondensat (000 Barel)": 358718.7,
+        "Gas Alam (MMscf)": 2790988.0,
+      },
+      {
+        Tahun: "2009",
+        "Minyak & Kondensat (000 Barel)": 346313.0,
+        "Gas Alam (MMscf)": 2887892.2,
+      },
+      {
+        Tahun: "2010",
+        "Minyak & Kondensat (000 Barel)": 344888.0,
+        "Gas Alam (MMscf)": 3407592.3,
+      },
+      {
+        Tahun: "2011",
+        "Minyak & Kondensat (000 Barel)": 329249.3,
+        "Gas Alam (MMscf)": 3256378.9,
+      },
+      {
+        Tahun: "2012",
+        "Minyak & Kondensat (000 Barel)": 314665.9,
+        "Gas Alam (MMscf)": 2982753.5,
+      },
+      {
+        Tahun: "2013",
+        "Minyak & Kondensat (000 Barel)": 301191.9,
+        "Gas Alam (MMscf)": 2969210.8,
+      },
+      {
+        Tahun: "2014",
+        "Minyak & Kondensat (000 Barel)": 287902.2,
+        "Gas Alam (MMscf)": 2999524.4,
+      },
+      {
+        Tahun: "2015",
+        "Minyak & Kondensat (000 Barel)": 286814.2,
+        "Gas Alam (MMscf)": 2948365.8,
+      },
+      {
+        Tahun: "2017",
+        "Minyak & Kondensat (000 Barel)": 292373.8,
+        "Gas Alam (MMscf)": 2781154.0,
+      },
+      {
+        Tahun: "2018",
+        "Minyak & Kondensat (000 Barel)": 281826.61,
+        "Gas Alam (MMscf)": 2833783.51,
+      },
+      {
+        Tahun: "2019",
+        "Minyak & Kondensat (000 Barel)": 273494.8,
+        "Gas Alam (MMscf)": 2647985.9,
+      },
+      {
+        Tahun: "2020",
+        "Minyak & Kondensat (000 Barel)": 259246.8,
+        "Gas Alam (MMscf)": 2442830.7,
+      },
+      {
+        Tahun: "2021",
+        "Minyak & Kondensat (000 Barel)": 240324.5,
+        "Gas Alam (MMscf)": 2433364.0,
+      },
+      {
+        Tahun: "2022",
+        "Minyak & Kondensat (000 Barel)": 223532.5,
+        "Gas Alam (MMscf)": 1962929.0,
+      },
+      {
+        Tahun: "2023",
+        "Minyak & Kondensat (000 Barel)": 221088.9,
+        "Gas Alam (MMscf)": 2420059.5,
+      },
+      {
+        Tahun: "2024*",
+        "Minyak & Kondensat (000 Barel)": 211756.18,
+        "Gas Alam (MMscf)": 2483498.15,
+      },
     ],
     createdAt: "2024-01-01",
     updatedAt: "2026-03-31",
@@ -177,7 +328,7 @@ export const SEED_DATASETS: SeedDataset[] = [
       { Month: "Jan 2024", "CPI Inflation": 2.57, "Core Inflation": 1.8 },
       { Month: "Feb 2024", "CPI Inflation": 2.75, "Core Inflation": 1.9 },
       { Month: "Mar 2024", "CPI Inflation": 3.05, "Core Inflation": 1.8 },
-      { Month: "Apr 2024", "CPI Inflation": 3.0,  "Core Inflation": 1.8 },
+      { Month: "Apr 2024", "CPI Inflation": 3.0, "Core Inflation": 1.8 },
       { Month: "May 2024", "CPI Inflation": 2.84, "Core Inflation": 1.9 },
       { Month: "Jun 2024", "CPI Inflation": 2.51, "Core Inflation": 1.9 },
       { Month: "Jul 2024", "CPI Inflation": 2.13, "Core Inflation": 1.9 },
@@ -201,14 +352,14 @@ export const SEED_DATASETS: SeedDataset[] = [
     subtitle: "Sumber: Bank Indonesia / Federal Reserve",
     columns: ["Period", "BI Rate", "US Fed Rate"],
     rows: [
-      { Period: "Jan 2023", "BI Rate": 5.75, "US Fed Rate": 4.5  },
-      { Period: "Apr 2023", "BI Rate": 5.75, "US Fed Rate": 5.0  },
+      { Period: "Jan 2023", "BI Rate": 5.75, "US Fed Rate": 4.5 },
+      { Period: "Apr 2023", "BI Rate": 5.75, "US Fed Rate": 5.0 },
       { Period: "Jul 2023", "BI Rate": 5.75, "US Fed Rate": 5.25 },
-      { Period: "Oct 2023", "BI Rate": 6.0,  "US Fed Rate": 5.5  },
-      { Period: "Jan 2024", "BI Rate": 6.0,  "US Fed Rate": 5.5  },
-      { Period: "Apr 2024", "BI Rate": 6.25, "US Fed Rate": 5.5  },
-      { Period: "Jul 2024", "BI Rate": 6.25, "US Fed Rate": 5.5  },
-      { Period: "Oct 2024", "BI Rate": 6.0,  "US Fed Rate": 5.0  },
+      { Period: "Oct 2023", "BI Rate": 6.0, "US Fed Rate": 5.5 },
+      { Period: "Jan 2024", "BI Rate": 6.0, "US Fed Rate": 5.5 },
+      { Period: "Apr 2024", "BI Rate": 6.25, "US Fed Rate": 5.5 },
+      { Period: "Jul 2024", "BI Rate": 6.25, "US Fed Rate": 5.5 },
+      { Period: "Oct 2024", "BI Rate": 6.0, "US Fed Rate": 5.0 },
     ],
     createdAt: "2024-01-01",
     updatedAt: "2024-11-01",
@@ -268,7 +419,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "nickel-production",
     title: "Produksi Nikel Indonesia",
-    description: "Output nikel Indonesia 2010\u20132024 (tonnikel konten metal) dan pangsa pasar global",
+    description:
+      "Output nikel Indonesia 2010\u20132024 (tonnikel konten metal) dan pangsa pasar global",
     category: "Sectoral Intelligence",
     chartType: "area",
     color: "#2E5A88",
@@ -289,7 +441,7 @@ export const SEED_DATASETS: SeedDataset[] = [
       { Year: "2021", "Indonesia Production": 245.3, "Global Share %": 33 },
       { Year: "2022", "Indonesia Production": 258.1, "Global Share %": 35 },
       { Year: "2023", "Indonesia Production": 271.5, "Global Share %": 37 },
-      { Year: "2024*","Indonesia Production": 289.0, "Global Share %": 39 },
+      { Year: "2024*", "Indonesia Production": 289.0, "Global Share %": 39 },
     ],
     createdAt: "2024-06-01",
     updatedAt: "2026-03-01",
@@ -297,7 +449,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "digital-economy-gmv",
     title: "Ekonomi Digital Indonesia",
-    description: "Gross Merchandise Value (GMV) ekonomi digital Indonesia 2019\u20132026 (USD Miliar)",
+    description:
+      "Gross Merchandise Value (GMV) ekonomi digital Indonesia 2019\u20132026 (USD Miliar)",
     category: "Market Dashboard",
     chartType: "line",
     color: "#5CA0C8",
@@ -309,14 +462,14 @@ export const SEED_DATASETS: SeedDataset[] = [
     subtitle: "Sumber: Google Temasek Bain / AndaraLab estimates",
     columns: ["Year", "GMV (USD B)", "YoY Growth %"],
     rows: [
-      { Year: "2019", "GMV (USD B)": 40,  "YoY Growth %": 49 },
-      { Year: "2020", "GMV (USD B)": 44,  "YoY Growth %": 10 },
-      { Year: "2021", "GMV (USD B)": 70,  "YoY Growth %": 59 },
-      { Year: "2022", "GMV (USD B)": 77,  "YoY Growth %": 10 },
-      { Year: "2023", "GMV (USD B)": 82,  "YoY Growth %": 6  },
-      { Year: "2024", "GMV (USD B)": 95,  "YoY Growth %": 16 },
+      { Year: "2019", "GMV (USD B)": 40, "YoY Growth %": 49 },
+      { Year: "2020", "GMV (USD B)": 44, "YoY Growth %": 10 },
+      { Year: "2021", "GMV (USD B)": 70, "YoY Growth %": 59 },
+      { Year: "2022", "GMV (USD B)": 77, "YoY Growth %": 10 },
+      { Year: "2023", "GMV (USD B)": 82, "YoY Growth %": 6 },
+      { Year: "2024", "GMV (USD B)": 95, "YoY Growth %": 16 },
       { Year: "2025", "GMV (USD B)": 110, "YoY Growth %": 16 },
-      { Year: "2026*","GMV (USD B)": 130, "YoY Growth %": 18 },
+      { Year: "2026*", "GMV (USD B)": 130, "YoY Growth %": 18 },
     ],
     createdAt: "2024-06-01",
     updatedAt: "2026-03-01",
@@ -324,7 +477,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "sovereign-bond-yield",
     title: "Imbal Hasil SBN Indonesia",
-    description: "Yield obligasi pemerintah tenor 5, 10, 15 tahun (%) \u2014 Indikator risiko sovereign",
+    description:
+      "Yield obligasi pemerintah tenor 5, 10, 15 tahun (%) \u2014 Indikator risiko sovereign",
     category: "Financial Markets",
     chartType: "line",
     color: "#83BFCC",
@@ -336,14 +490,14 @@ export const SEED_DATASETS: SeedDataset[] = [
     subtitle: "Sumber: Refinitiv / Bloomberg",
     columns: ["Date", "SUN 5Y", "SUN 10Y", "SUN 15Y"],
     rows: [
-      { Date: "Jan 2024", "SUN 5Y": 6.35, "SUN 10Y": 6.62, "SUN 15Y": 6.80 },
+      { Date: "Jan 2024", "SUN 5Y": 6.35, "SUN 10Y": 6.62, "SUN 15Y": 6.8 },
       { Date: "Feb 2024", "SUN 5Y": 6.48, "SUN 10Y": 6.75, "SUN 15Y": 6.91 },
-      { Date: "Mar 2024", "SUN 5Y": 6.52, "SUN 10Y": 6.80, "SUN 15Y": 6.95 },
+      { Date: "Mar 2024", "SUN 5Y": 6.52, "SUN 10Y": 6.8, "SUN 15Y": 6.95 },
       { Date: "Apr 2024", "SUN 5Y": 6.88, "SUN 10Y": 7.05, "SUN 15Y": 7.18 },
       { Date: "May 2024", "SUN 5Y": 6.95, "SUN 10Y": 7.12, "SUN 15Y": 7.25 },
-      { Date: "Jun 2024", "SUN 5Y": 7.02, "SUN 10Y": 7.20, "SUN 15Y": 7.32 },
-      { Date: "Jul 2024", "SUN 5Y": 6.75, "SUN 10Y": 6.95, "SUN 15Y": 7.10 },
-      { Date: "Aug 2024", "SUN 5Y": 6.50, "SUN 10Y": 6.70, "SUN 15Y": 6.85 },
+      { Date: "Jun 2024", "SUN 5Y": 7.02, "SUN 10Y": 7.2, "SUN 15Y": 7.32 },
+      { Date: "Jul 2024", "SUN 5Y": 6.75, "SUN 10Y": 6.95, "SUN 15Y": 7.1 },
+      { Date: "Aug 2024", "SUN 5Y": 6.5, "SUN 10Y": 6.7, "SUN 15Y": 6.85 },
     ],
     createdAt: "2024-06-01",
     updatedAt: "2024-09-01",
@@ -351,7 +505,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "coal-production",
     title: "Produksi Batu Bara Indonesia",
-    description: "Output batu bara Indonesia 2010\u20132024 (juta ton) dan ekspor",
+    description:
+      "Output batu bara Indonesia 2010\u20132024 (juta ton) dan ekspor",
     category: "Sectoral Intelligence",
     chartType: "bar",
     color: "#C4E0EE",
@@ -372,7 +527,7 @@ export const SEED_DATASETS: SeedDataset[] = [
       { Year: "2021", Production: 614, Exports: 434 },
       { Year: "2022", Production: 687, Exports: 494 },
       { Year: "2023", Production: 743, Exports: 518 },
-      { Year: "2024*","Production": 775, Exports: 532 },
+      { Year: "2024*", Production: 775, Exports: 532 },
     ],
     createdAt: "2024-06-01",
     updatedAt: "2026-03-01",
@@ -380,7 +535,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "fdi-inflow",
     title: "Foreign Direct Investment Indonesia",
-    description: "Aliran FDI masuk ke Indonesia per kuartal (USD Miliar) \u2014 berdasarkan negara asal",
+    description:
+      "Aliran FDI masuk ke Indonesia per kuartal (USD Miliar) \u2014 berdasarkan negara asal",
     category: "Macro Foundations",
     chartType: "bar",
     color: "#CEDBEB",
@@ -407,7 +563,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "investment-credit-trend",
     title: "Tren Kredit Investasi Perbankan",
-    description: "Pertumbuhan kredit investasi perbankan Indonesia tahunan (YoY %)",
+    description:
+      "Pertumbuhan kredit investasi perbankan Indonesia tahunan (YoY %)",
     category: "Financial Markets",
     chartType: "line",
     color: "#1a3a5c",
@@ -417,24 +574,99 @@ export const SEED_DATASETS: SeedDataset[] = [
     xAxisLabel: "Bulan",
     yAxisLabel: "Pertumbuhan (%)",
     subtitle: "Sumber: OJK / Bank Indonesia",
-    columns: ["Bulan", "Kredit Investasi", "Kredit Modal Kerja", "Kredit Konsumsi"],
+    columns: [
+      "Bulan",
+      "Kredit Investasi",
+      "Kredit Modal Kerja",
+      "Kredit Konsumsi",
+    ],
     columnNames: {
-      en: ["Month", "Investment Credit", "Working Capital Credit", "Consumption Credit"],
-      id: ["Bulan", "Kredit Investasi", "Kredit Modal Kerja", "Kredit Konsumsi"]
+      en: [
+        "Month",
+        "Investment Credit",
+        "Working Capital Credit",
+        "Consumption Credit",
+      ],
+      id: [
+        "Bulan",
+        "Kredit Investasi",
+        "Kredit Modal Kerja",
+        "Kredit Konsumsi",
+      ],
     },
     rows: [
-      { Bulan: "Jan 2024", "Kredit Investasi": 11.2, "Kredit Modal Kerja": 9.5, "Kredit Konsumsi": 8.7 },
-      { Bulan: "Feb 2024", "Kredit Investasi": 11.5, "Kredit Modal Kerja": 9.8, "Kredit Konsumsi": 9.1 },
-      { Bulan: "Mar 2024", "Kredit Investasi": 11.8, "Kredit Modal Kerja": 10.1, "Kredit Konsumsi": 9.3 },
-      { Bulan: "Apr 2024", "Kredit Investasi": 12.1, "Kredit Modal Kerja": 10.3, "Kredit Konsumsi": 9.5 },
-      { Bulan: "May 2024", "Kredit Investasi": 12.4, "Kredit Modal Kerja": 10.5, "Kredit Konsumsi": 9.2 },
-      { Bulan: "Jun 2024", "Kredit Investasi": 12.7, "Kredit Modal Kerja": 10.4, "Kredit Konsumsi": 9.4 },
-      { Bulan: "Jul 2024", "Kredit Investasi": 13.0, "Kredit Modal Kerja": 10.6, "Kredit Konsumsi": 9.6 },
-      { Bulan: "Aug 2024", "Kredit Investasi": 13.2, "Kredit Modal Kerja": 10.8, "Kredit Konsumsi": 9.8 },
-      { Bulan: "Sep 2024", "Kredit Investasi": 13.5, "Kredit Modal Kerja": 11.0, "Kredit Konsumsi": 10.0 },
-      { Bulan: "Oct 2024", "Kredit Investasi": 13.4, "Kredit Modal Kerja": 11.2, "Kredit Konsumsi": 10.2 },
-      { Bulan: "Nov 2024", "Kredit Investasi": 13.6, "Kredit Modal Kerja": 11.1, "Kredit Konsumsi": 10.3 },
-      { Bulan: "Dec 2024", "Kredit Investasi": 13.62, "Kredit Modal Kerja": 11.3, "Kredit Konsumsi": 10.5 },
+      {
+        Bulan: "Jan 2024",
+        "Kredit Investasi": 11.2,
+        "Kredit Modal Kerja": 9.5,
+        "Kredit Konsumsi": 8.7,
+      },
+      {
+        Bulan: "Feb 2024",
+        "Kredit Investasi": 11.5,
+        "Kredit Modal Kerja": 9.8,
+        "Kredit Konsumsi": 9.1,
+      },
+      {
+        Bulan: "Mar 2024",
+        "Kredit Investasi": 11.8,
+        "Kredit Modal Kerja": 10.1,
+        "Kredit Konsumsi": 9.3,
+      },
+      {
+        Bulan: "Apr 2024",
+        "Kredit Investasi": 12.1,
+        "Kredit Modal Kerja": 10.3,
+        "Kredit Konsumsi": 9.5,
+      },
+      {
+        Bulan: "May 2024",
+        "Kredit Investasi": 12.4,
+        "Kredit Modal Kerja": 10.5,
+        "Kredit Konsumsi": 9.2,
+      },
+      {
+        Bulan: "Jun 2024",
+        "Kredit Investasi": 12.7,
+        "Kredit Modal Kerja": 10.4,
+        "Kredit Konsumsi": 9.4,
+      },
+      {
+        Bulan: "Jul 2024",
+        "Kredit Investasi": 13.0,
+        "Kredit Modal Kerja": 10.6,
+        "Kredit Konsumsi": 9.6,
+      },
+      {
+        Bulan: "Aug 2024",
+        "Kredit Investasi": 13.2,
+        "Kredit Modal Kerja": 10.8,
+        "Kredit Konsumsi": 9.8,
+      },
+      {
+        Bulan: "Sep 2024",
+        "Kredit Investasi": 13.5,
+        "Kredit Modal Kerja": 11.0,
+        "Kredit Konsumsi": 10.0,
+      },
+      {
+        Bulan: "Oct 2024",
+        "Kredit Investasi": 13.4,
+        "Kredit Modal Kerja": 11.2,
+        "Kredit Konsumsi": 10.2,
+      },
+      {
+        Bulan: "Nov 2024",
+        "Kredit Investasi": 13.6,
+        "Kredit Modal Kerja": 11.1,
+        "Kredit Konsumsi": 10.3,
+      },
+      {
+        Bulan: "Dec 2024",
+        "Kredit Investasi": 13.62,
+        "Kredit Modal Kerja": 11.3,
+        "Kredit Konsumsi": 10.5,
+      },
     ],
     createdAt: "2024-01-01",
     updatedAt: "2025-01-15",
@@ -442,7 +674,8 @@ export const SEED_DATASETS: SeedDataset[] = [
   {
     id: "ihpr-index",
     title: "Indeks Harga Properti Residensial (IHPR)",
-    description: "Indeks Harga Properti Residensial (IHPR) dan perubahannya (triwulanan & tahunan)",
+    description:
+      "Indeks Harga Properti Residensial (IHPR) dan perubahannya (triwulanan & tahunan)",
     category: "Macro Foundations",
     chartType: "combo",
     color: "#ef4444",
@@ -451,29 +684,134 @@ export const SEED_DATASETS: SeedDataset[] = [
     chartTitle: "Indeks Harga Properti Residensial",
     xAxisLabel: "Periode",
     yAxisLabel: "Indeks / %",
-    columns: ["Periode", "IHPR (lhs)", "% Perubahan Triwulan (rhs)", "% Perubahan Tahunan (rhs)"],
+    columns: [
+      "Periode",
+      "IHPR (lhs)",
+      "% Perubahan Triwulan (rhs)",
+      "% Perubahan Tahunan (rhs)",
+    ],
     colors: ["#ef4444", "#22c55e", "#1a3a5c"],
     rows: [
-      { "Periode": "2020 I", "IHPR (lhs)": 102.3, "% Perubahan Triwulan (rhs)": 0.4, "% Perubahan Tahunan (rhs)": 1.5 },
-      { "Periode": "2020 II", "IHPR (lhs)": 102.6, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 1.6 },
-      { "Periode": "2020 III", "IHPR (lhs)": 102.8, "% Perubahan Triwulan (rhs)": 0.2, "% Perubahan Tahunan (rhs)": 1.4 },
-      { "Periode": "2020 IV", "IHPR (lhs)": 103.1, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 1.2 },
-      { "Periode": "2021 I", "IHPR (lhs)": 103.4, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 1.1 },
-      { "Periode": "2021 II", "IHPR (lhs)": 103.7, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 1.1 },
-      { "Periode": "2021 III", "IHPR (lhs)": 104.0, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 1.2 },
-      { "Periode": "2021 IV", "IHPR (lhs)": 104.4, "% Perubahan Triwulan (rhs)": 0.4, "% Perubahan Tahunan (rhs)": 1.4 },
-      { "Periode": "2022 I", "IHPR (lhs)": 105.1, "% Perubahan Triwulan (rhs)": 0.7, "% Perubahan Tahunan (rhs)": 1.8 },
-      { "Periode": "2022 II", "IHPR (lhs)": 105.3, "% Perubahan Triwulan (rhs)": 0.2, "% Perubahan Tahunan (rhs)": 1.9 },
-      { "Periode": "2022 III", "IHPR (lhs)": 106.8, "% Perubahan Triwulan (rhs)": 0.4, "% Perubahan Tahunan (rhs)": 2.1 },
-      { "Periode": "2022 IV", "IHPR (lhs)": 107.1, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 2.2 },
-      { "Periode": "2023 I", "IHPR (lhs)": 107.5, "% Perubahan Triwulan (rhs)": 0.4, "% Perubahan Tahunan (rhs)": 2.1 },
-      { "Periode": "2023 II", "IHPR (lhs)": 108.0, "% Perubahan Triwulan (rhs)": 0.5, "% Perubahan Tahunan (rhs)": 2.2 },
-      { "Periode": "2023 III", "IHPR (lhs)": 108.3, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 2.2 },
-      { "Periode": "2023 IV", "IHPR (lhs)": 108.6, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 2.0 },
-      { "Periode": "2024 I", "IHPR (lhs)": 109.1, "% Perubahan Triwulan (rhs)": 0.5, "% Perubahan Tahunan (rhs)": 2.1 },
-      { "Periode": "2024 II", "IHPR (lhs)": 109.4, "% Perubahan Triwulan (rhs)": 0.3, "% Perubahan Tahunan (rhs)": 1.9 },
-      { "Periode": "2024 III", "IHPR (lhs)": 109.65, "% Perubahan Triwulan (rhs)": 0.2, "% Perubahan Tahunan (rhs)": 1.7 },
-      { "Periode": "2024 IV", "IHPR (lhs)": 109.8, "% Perubahan Triwulan (rhs)": 0.15, "% Perubahan Tahunan (rhs)": 1.6 },
+      {
+        Periode: "2020 I",
+        "IHPR (lhs)": 102.3,
+        "% Perubahan Triwulan (rhs)": 0.4,
+        "% Perubahan Tahunan (rhs)": 1.5,
+      },
+      {
+        Periode: "2020 II",
+        "IHPR (lhs)": 102.6,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 1.6,
+      },
+      {
+        Periode: "2020 III",
+        "IHPR (lhs)": 102.8,
+        "% Perubahan Triwulan (rhs)": 0.2,
+        "% Perubahan Tahunan (rhs)": 1.4,
+      },
+      {
+        Periode: "2020 IV",
+        "IHPR (lhs)": 103.1,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 1.2,
+      },
+      {
+        Periode: "2021 I",
+        "IHPR (lhs)": 103.4,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 1.1,
+      },
+      {
+        Periode: "2021 II",
+        "IHPR (lhs)": 103.7,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 1.1,
+      },
+      {
+        Periode: "2021 III",
+        "IHPR (lhs)": 104.0,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 1.2,
+      },
+      {
+        Periode: "2021 IV",
+        "IHPR (lhs)": 104.4,
+        "% Perubahan Triwulan (rhs)": 0.4,
+        "% Perubahan Tahunan (rhs)": 1.4,
+      },
+      {
+        Periode: "2022 I",
+        "IHPR (lhs)": 105.1,
+        "% Perubahan Triwulan (rhs)": 0.7,
+        "% Perubahan Tahunan (rhs)": 1.8,
+      },
+      {
+        Periode: "2022 II",
+        "IHPR (lhs)": 105.3,
+        "% Perubahan Triwulan (rhs)": 0.2,
+        "% Perubahan Tahunan (rhs)": 1.9,
+      },
+      {
+        Periode: "2022 III",
+        "IHPR (lhs)": 106.8,
+        "% Perubahan Triwulan (rhs)": 0.4,
+        "% Perubahan Tahunan (rhs)": 2.1,
+      },
+      {
+        Periode: "2022 IV",
+        "IHPR (lhs)": 107.1,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 2.2,
+      },
+      {
+        Periode: "2023 I",
+        "IHPR (lhs)": 107.5,
+        "% Perubahan Triwulan (rhs)": 0.4,
+        "% Perubahan Tahunan (rhs)": 2.1,
+      },
+      {
+        Periode: "2023 II",
+        "IHPR (lhs)": 108.0,
+        "% Perubahan Triwulan (rhs)": 0.5,
+        "% Perubahan Tahunan (rhs)": 2.2,
+      },
+      {
+        Periode: "2023 III",
+        "IHPR (lhs)": 108.3,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 2.2,
+      },
+      {
+        Periode: "2023 IV",
+        "IHPR (lhs)": 108.6,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 2.0,
+      },
+      {
+        Periode: "2024 I",
+        "IHPR (lhs)": 109.1,
+        "% Perubahan Triwulan (rhs)": 0.5,
+        "% Perubahan Tahunan (rhs)": 2.1,
+      },
+      {
+        Periode: "2024 II",
+        "IHPR (lhs)": 109.4,
+        "% Perubahan Triwulan (rhs)": 0.3,
+        "% Perubahan Tahunan (rhs)": 1.9,
+      },
+      {
+        Periode: "2024 III",
+        "IHPR (lhs)": 109.65,
+        "% Perubahan Triwulan (rhs)": 0.2,
+        "% Perubahan Tahunan (rhs)": 1.7,
+      },
+      {
+        Periode: "2024 IV",
+        "IHPR (lhs)": 109.8,
+        "% Perubahan Triwulan (rhs)": 0.15,
+        "% Perubahan Tahunan (rhs)": 1.6,
+      },
     ],
     createdAt: "2024-01-01T00:00:00.000Z",
     updatedAt: "2024-04-14T00:00:00.000Z",
@@ -488,14 +826,16 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "AndaraLab — Independent Economic Research for Indonesia",
-    description: "AndaraLab produces independent macroeconomic research, sectoral analysis, and market intelligence for Indonesia and emerging markets.",
+    description:
+      "AndaraLab produces independent macroeconomic research, sectoral analysis, and market intelligence for Indonesia and emerging markets.",
     navLabel: "Home",
     section: "root",
     content: [
       {
         type: "hero",
         headline: "Independent Economic Research for Indonesia",
-        subheadline: "Rigorous analysis of macroeconomic trends, sectoral dynamics, and market intelligence — for investors, policymakers, and researchers.",
+        subheadline:
+          "Rigorous analysis of macroeconomic trends, sectoral dynamics, and market intelligence — for investors, policymakers, and researchers.",
         ctaText: "Explore Research",
         ctaHref: "/macro/macro-outlooks",
       },
@@ -510,7 +850,11 @@ export const SEED_PAGES: SeedPage[] = [
       },
       {
         type: "featured",
-        slugs: ["nickel-ev-indonesia", "digital-economy-indonesia-2026", "bank-mandatory-ratio-q1-2026"],
+        slugs: [
+          "nickel-ev-indonesia",
+          "digital-economy-indonesia-2026",
+          "bank-mandatory-ratio-q1-2026",
+        ],
         limit: 3,
       },
       {
@@ -532,14 +876,16 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "AndaraLab — Riset Ekonomi Independen untuk Indonesia",
-    description: "AndaraLab memproduksi riset makroekonomi independen, analisis sektoral, dan intelijen pasar untuk Indonesia dan pasar berkembang.",
+    description:
+      "AndaraLab memproduksi riset makroekonomi independen, analisis sektoral, dan intelijen pasar untuk Indonesia dan pasar berkembang.",
     navLabel: "Beranda",
     section: "root",
     content: [
       {
         type: "hero",
         headline: "Riset Ekonomi Independen untuk Indonesia",
-        subheadline: "Analisis mendalam tentang tren makroekonomi, dinamika sektoral, dan intelijen pasar — untuk investor, pembuat kebijakan, dan peneliti.",
+        subheadline:
+          "Analisis mendalam tentang tren makroekonomi, dinamika sektoral, dan intelijen pasar — untuk investor, pembuat kebijakan, dan peneliti.",
         ctaText: "Jelajahi Riset",
         ctaHref: "/macro/macro-outlooks",
       },
@@ -554,7 +900,11 @@ export const SEED_PAGES: SeedPage[] = [
       },
       {
         type: "featured",
-        slugs: ["ri-transmigration-nickel-downstreaming", "p励keuatan-terbesar-di-asia-tenggara", "food-inflation-handling-indonesia"],
+        slugs: [
+          "ri-transmigration-nickel-downstreaming",
+          "p励keuatan-terbesar-di-asia-tenggara",
+          "food-inflation-handling-indonesia",
+        ],
         limit: 3,
       },
       {
@@ -576,28 +926,49 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "About AndaraLab",
-    description: "Who we are, our research methodology, and the team behind the analysis.",
+    description:
+      "Who we are, our research methodology, and the team behind the analysis.",
     navLabel: "About Us",
     section: "root",
     content: [
-      { type: "hero", headline: "Who We Are", subheadline: "Independent. Rigorous. Indonesia-focused." },
+      {
+        type: "hero",
+        headline: "Who We Are",
+        subheadline: "Independent. Rigorous. Indonesia-focused.",
+      },
       {
         type: "text",
-        content: "At AndaraLab, we operate as a premier economic research hub under PT. Andara Investasi Cerdas. We bridge the gap between complex macro-economic data and actionable intelligence. Built on the pillar of 'Tumbuh' (Growth), our mission is to provide the analytical foundation that allows our partners to flourish in an ever-evolving economic landscape.",
+        content:
+          "At AndaraLab, we operate as a premier economic research hub under PT. Andara Investasi Cerdas. We bridge the gap between complex macro-economic data and actionable intelligence. Built on the pillar of 'Tumbuh' (Growth), our mission is to provide the analytical foundation that allows our partners to flourish in an ever-evolving economic landscape.",
       },
-      { type: "stats", items: [
-        { label: "Economic Indicators Tracked", value: "100+" },
-        { label: "Economies Monitored", value: "15+" },
-        { label: "Research Verticals", value: "5+" },
-        { label: "Founded", value: "2019" },
-      ]},
+      {
+        type: "stats",
+        items: [
+          { label: "Economic Indicators Tracked", value: "100+" },
+          { label: "Economies Monitored", value: "15+" },
+          { label: "Research Verticals", value: "5+" },
+          { label: "Founded", value: "2019" },
+        ],
+      },
       {
         type: "about",
         headline: "Our Approach",
         items: [
-          { label: "Rigor", value: "Every analysis is grounded in verified data sources, peer-reviewed methodology, and transparent assumptions." },
-          { label: "Relevance", value: "We focus on what matters now — policy shifts, market dislocations, and structural economic changes." },
-          { label: "Clarity", value: "Complex economic intelligence translated into clear, actionable insights for decision-makers." },
+          {
+            label: "Rigor",
+            value:
+              "Every analysis is grounded in verified data sources, peer-reviewed methodology, and transparent assumptions.",
+          },
+          {
+            label: "Relevance",
+            value:
+              "We focus on what matters now — policy shifts, market dislocations, and structural economic changes.",
+          },
+          {
+            label: "Clarity",
+            value:
+              "Complex economic intelligence translated into clear, actionable insights for decision-makers.",
+          },
         ],
       },
     ],
@@ -607,28 +978,49 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Tentang AndaraLab",
-    description: "Siapa kami, metodologi riset kami, dan tim di balik analisis.",
+    description:
+      "Siapa kami, metodologi riset kami, dan tim di balik analisis.",
     navLabel: "Tentang Kami",
     section: "root",
     content: [
-      { type: "hero", headline: "Siapa Kami", subheadline: "Independen. Ketat. Berfokus pada Indonesia." },
+      {
+        type: "hero",
+        headline: "Siapa Kami",
+        subheadline: "Independen. Ketat. Berfokus pada Indonesia.",
+      },
       {
         type: "text",
-        content: "At AndaraLab, kami beroperasi sebagai pusat riset ekonomi terkemuka di bawah PT. Andara Investasi Cerdas. Kami menjembatani kesenjangan antara data makroekonomi yang kompleks dan intelijen yang dapat ditindaklanjuti. Dibangun di atas pilar 'Tumbuh' (Pertumbuhan), misi kami adalah menyediakan fondasi analitis yang memungkinkan mitra kami berkembang dalam lanskap ekonomi yang terus berkembang.",
+        content:
+          "At AndaraLab, kami beroperasi sebagai pusat riset ekonomi terkemuka di bawah PT. Andara Investasi Cerdas. Kami menjembatani kesenjangan antara data makroekonomi yang kompleks dan intelijen yang dapat ditindaklanjuti. Dibangun di atas pilar 'Tumbuh' (Pertumbuhan), misi kami adalah menyediakan fondasi analitis yang memungkinkan mitra kami berkembang dalam lanskap ekonomi yang terus berkembang.",
       },
-      { type: "stats", items: [
-        { label: "Indikator Ekonomi Dilacak", value: "100+" },
-        { label: "Ekonomi Dipantau", value: "15+" },
-        { label: "Lini Riset", value: "5+" },
-        { label: "Didirikan", value: "2019" },
-      ]},
+      {
+        type: "stats",
+        items: [
+          { label: "Indikator Ekonomi Dilacak", value: "100+" },
+          { label: "Ekonomi Dipantau", value: "15+" },
+          { label: "Lini Riset", value: "5+" },
+          { label: "Didirikan", value: "2019" },
+        ],
+      },
       {
         type: "about",
         headline: "Pendekatan Kami",
         items: [
-          { label: "Ketelitian", value: "Setiap analisis berbasis data terverifikasi, metodologi yang telah direview, dan asumsi yang transparan." },
-          { label: "Relevansi", value: "Kami fokus pada hal yang penting saat ini — pergeseran kebijakan, dislokasi pasar, dan perubahan struktural ekonomi." },
-          { label: "Kejelasan", value: "Intelijen ekonomi kompleks diterjemahkan ke dalam wawasan yang jelas dan dapat ditindaklanjuti." },
+          {
+            label: "Ketelitian",
+            value:
+              "Setiap analisis berbasis data terverifikasi, metodologi yang telah direview, dan asumsi yang transparan.",
+          },
+          {
+            label: "Relevansi",
+            value:
+              "Kami fokus pada hal yang penting saat ini — pergeseran kebijakan, dislokasi pasar, dan perubahan struktural ekonomi.",
+          },
+          {
+            label: "Kejelasan",
+            value:
+              "Intelijen ekonomi kompleks diterjemahkan ke dalam wawasan yang jelas dan dapat ditindaklanjuti.",
+          },
         ],
       },
     ],
@@ -638,12 +1030,24 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Macro Outlooks",
-    description: "In-depth analysis of Indonesia's macroeconomic trends, growth drivers, and risks.",
+    description:
+      "In-depth analysis of Indonesia's macroeconomic trends, growth drivers, and risks.",
     navLabel: "Macro Outlooks",
     section: "Macro Foundations",
     content: [
-      { type: "text", content: "Our Macro Outlooks series provides quarterly and annual assessments of Indonesia's macroeconomic environment." },
-      { type: "featured", slugs: ["omnibus-job-creation-law-analysis", "bank-mandatory-ratio-q1-2026", "government-bond-market-outlook-2026"] },
+      {
+        type: "text",
+        content:
+          "Our Macro Outlooks series provides quarterly and annual assessments of Indonesia's macroeconomic environment.",
+      },
+      {
+        type: "featured",
+        slugs: [
+          "omnibus-job-creation-law-analysis",
+          "bank-mandatory-ratio-q1-2026",
+          "government-bond-market-outlook-2026",
+        ],
+      },
       {
         type: "posts",
         title: "Latest analysis",
@@ -660,8 +1064,19 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "Prospek Makro",
     section: "Fondasi Makro",
     content: [
-      { type: "text", content: "Seri Prospek Makro kami menyediakan penilaian kuartalan dan tahunan tentang lingkungan makroekonomi Indonesia." },
-      { type: "featured", slugs: ["prospeks-makro-indonesia-2026-id", "ri-transmigration-nickel-downstreaming", "food-inflation-handling-indonesia"] },
+      {
+        type: "text",
+        content:
+          "Seri Prospek Makro kami menyediakan penilaian kuartalan dan tahunan tentang lingkungan makroekonomi Indonesia.",
+      },
+      {
+        type: "featured",
+        slugs: [
+          "prospeks-makro-indonesia-2026-id",
+          "ri-transmigration-nickel-downstreaming",
+          "food-inflation-handling-indonesia",
+        ],
+      },
       {
         type: "posts",
         title: "Analisis terbaru",
@@ -674,11 +1089,17 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Policy & Monetary Watch",
-    description: "Tracking Bank Indonesia policy, monetary conditions, and fiscal developments.",
+    description:
+      "Tracking Bank Indonesia policy, monetary conditions, and fiscal developments.",
     navLabel: "Policy & Monetary Watch",
     section: "Macro Foundations",
     content: [
-      { type: "hero", headline: "Policy & Monetary Watch", subheadline: "Bank Indonesia, rates, liquidity, and fiscal policy — tracked for investors and policymakers." },
+      {
+        type: "hero",
+        headline: "Policy & Monetary Watch",
+        subheadline:
+          "Bank Indonesia, rates, liquidity, and fiscal policy — tracked for investors and policymakers.",
+      },
       {
         type: "posts",
         title: "Latest",
@@ -691,11 +1112,17 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Kebijakan & Pantauan Moneter",
-    description: "Memantau kebijakan Bank Indonesia, kondisi moneter, dan perkembangan fiskal.",
+    description:
+      "Memantau kebijakan Bank Indonesia, kondisi moneter, dan perkembangan fiskal.",
     navLabel: "Kebijakan & Moneter",
     section: "Fondasi Makro",
     content: [
-      { type: "hero", headline: "Kebijakan & Pantauan Moneter", subheadline: "BI, suku bunga, likuiditas, dan kebijakan fiskal — untuk investor dan pembuat kebijakan." },
+      {
+        type: "hero",
+        headline: "Kebijakan & Pantauan Moneter",
+        subheadline:
+          "BI, suku bunga, likuiditas, dan kebijakan fiskal — untuk investor dan pembuat kebijakan.",
+      },
       {
         type: "posts",
         title: "Terbaru",
@@ -708,12 +1135,27 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Geopolitical & Structural Analysis",
-    description: "Geopolitical dynamics and structural shifts affecting Indonesia and the region.",
+    description:
+      "Geopolitical dynamics and structural shifts affecting Indonesia and the region.",
     navLabel: "Geopolitical & Structural Analysis",
     section: "Macro Foundations",
     content: [
-      { type: "hero", headline: "Geopolitical & Structural Analysis", subheadline: "Trade, alliances, supply chains, and long-run structural forces shaping Indonesia." },
-      { type: "posts", title: "Latest", categories: ["geopolitical", "Geopolitical", "policy-analysis", "sectoral-analysis"] },
+      {
+        type: "hero",
+        headline: "Geopolitical & Structural Analysis",
+        subheadline:
+          "Trade, alliances, supply chains, and long-run structural forces shaping Indonesia.",
+      },
+      {
+        type: "posts",
+        title: "Latest",
+        categories: [
+          "geopolitical",
+          "Geopolitical",
+          "policy-analysis",
+          "sectoral-analysis",
+        ],
+      },
     ],
   },
   {
@@ -721,12 +1163,27 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Analisis Geopolitik & Struktural",
-    description: "Dinamika geopolitik dan pergeseran struktural yang memengaruhi Indonesia dan kawasan.",
+    description:
+      "Dinamika geopolitik dan pergeseran struktural yang memengaruhi Indonesia dan kawasan.",
     navLabel: "Geopolitik & Struktural",
     section: "Fondasi Makro",
     content: [
-      { type: "hero", headline: "Analisis Geopolitik & Struktural", subheadline: "Perdagangan, aliansi, rantai pasok, dan kekuatan struktural jangka panjang bagi Indonesia." },
-      { type: "posts", title: "Terbaru", categories: ["geopolitical", "Geopolitical", "policy-analysis", "sectoral-analysis"] },
+      {
+        type: "hero",
+        headline: "Analisis Geopolitik & Struktural",
+        subheadline:
+          "Perdagangan, aliansi, rantai pasok, dan kekuatan struktural jangka panjang bagi Indonesia.",
+      },
+      {
+        type: "posts",
+        title: "Terbaru",
+        categories: [
+          "geopolitical",
+          "Geopolitical",
+          "policy-analysis",
+          "sectoral-analysis",
+        ],
+      },
     ],
   },
   {
@@ -734,11 +1191,17 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Strategic Industry Deep-dives",
-    description: "Sector-level analysis of Indonesia's key industries and strategic outlook.",
+    description:
+      "Sector-level analysis of Indonesia's key industries and strategic outlook.",
     navLabel: "Strategic Industry Deep-dives",
     section: "Sectoral Intelligence",
     content: [
-      { type: "hero", headline: "Strategic Industry Deep-dives", subheadline: "Deep sector research across commodities, manufacturing, and digital infrastructure." },
+      {
+        type: "hero",
+        headline: "Strategic Industry Deep-dives",
+        subheadline:
+          "Deep sector research across commodities, manufacturing, and digital infrastructure.",
+      },
       {
         type: "posts",
         title: "Latest",
@@ -751,11 +1214,17 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Deep-dive Industri Strategis",
-    description: "Analisis sektor untuk industri utama Indonesia dan prospek strategis.",
+    description:
+      "Analisis sektor untuk industri utama Indonesia dan prospek strategis.",
     navLabel: "Deep-dive Industri",
     section: "Intelijen Sektoral",
     content: [
-      { type: "hero", headline: "Deep-dive Industri Strategis", subheadline: "Riset sektor mendalam: komoditas, manufaktur, dan infrastruktur digital." },
+      {
+        type: "hero",
+        headline: "Deep-dive Industri Strategis",
+        subheadline:
+          "Riset sektor mendalam: komoditas, manufaktur, dan infrastruktur digital.",
+      },
       {
         type: "posts",
         title: "Terbaru",
@@ -768,12 +1237,28 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Regional Economic Monitor",
-    description: "Regional economic performance across Java, Sumatra, Kalimantan, and beyond.",
+    description:
+      "Regional economic performance across Java, Sumatra, Kalimantan, and beyond.",
     navLabel: "Regional Economic Monitor",
     section: "Sectoral Intelligence",
     content: [
-      { type: "hero", headline: "Regional Economic Monitor", subheadline: "Growth and structural trends across Indonesia's major regions." },
-      { type: "posts", title: "Latest", categories: ["regional", "Regional Monitor", "Regional", "sectoral-analysis", "economics-101"] },
+      {
+        type: "hero",
+        headline: "Regional Economic Monitor",
+        subheadline:
+          "Growth and structural trends across Indonesia's major regions.",
+      },
+      {
+        type: "posts",
+        title: "Latest",
+        categories: [
+          "regional",
+          "Regional Monitor",
+          "Regional",
+          "sectoral-analysis",
+          "economics-101",
+        ],
+      },
     ],
   },
   {
@@ -781,12 +1266,28 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Monitor Ekonomi Regional",
-    description: "Kinerja ekonomi regional di Jawa, Sumatra, Kalimantan, dan lainnya.",
+    description:
+      "Kinerja ekonomi regional di Jawa, Sumatra, Kalimantan, dan lainnya.",
     navLabel: "Monitor Regional",
     section: "Intelijen Sektoral",
     content: [
-      { type: "hero", headline: "Monitor Ekonomi Regional", subheadline: "Tren pertumbuhan dan struktur di wilayah utama Indonesia." },
-      { type: "posts", title: "Terbaru", categories: ["regional", "Regional Monitor", "Regional", "sectoral-analysis", "economics-101"] },
+      {
+        type: "hero",
+        headline: "Monitor Ekonomi Regional",
+        subheadline:
+          "Tren pertumbuhan dan struktur di wilayah utama Indonesia.",
+      },
+      {
+        type: "posts",
+        title: "Terbaru",
+        categories: [
+          "regional",
+          "Regional Monitor",
+          "Regional",
+          "sectoral-analysis",
+          "economics-101",
+        ],
+      },
     ],
   },
   {
@@ -794,12 +1295,22 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "ESG",
-    description: "Environmental, social, and governance analysis for Indonesian markets.",
+    description:
+      "Environmental, social, and governance analysis for Indonesian markets.",
     navLabel: "ESG",
     section: "Sectoral Intelligence",
     content: [
-      { type: "hero", headline: "ESG Intelligence", subheadline: "Sustainability, disclosure, and transition themes for investors." },
-      { type: "posts", title: "Latest", categories: ["esg", "ESG", "sectoral-analysis", "economics-101"] },
+      {
+        type: "hero",
+        headline: "ESG Intelligence",
+        subheadline:
+          "Sustainability, disclosure, and transition themes for investors.",
+      },
+      {
+        type: "posts",
+        title: "Latest",
+        categories: ["esg", "ESG", "sectoral-analysis", "economics-101"],
+      },
     ],
   },
   {
@@ -807,12 +1318,22 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "ESG",
-    description: "Analisis lingkungan, sosial, dan tata kelola untuk pasar Indonesia.",
+    description:
+      "Analisis lingkungan, sosial, dan tata kelola untuk pasar Indonesia.",
     navLabel: "ESG",
     section: "Intelijen Sektoral",
     content: [
-      { type: "hero", headline: "Intelijen ESG", subheadline: "Keberlanjutan, pengungkapan, dan transisi untuk investor." },
-      { type: "posts", title: "Terbaru", categories: ["esg", "ESG", "sectoral-analysis", "economics-101"] },
+      {
+        type: "hero",
+        headline: "Intelijen ESG",
+        subheadline:
+          "Keberlanjutan, pengungkapan, dan transisi untuk investor.",
+      },
+      {
+        type: "posts",
+        title: "Terbaru",
+        categories: ["esg", "ESG", "sectoral-analysis", "economics-101"],
+      },
     ],
   },
   {
@@ -824,15 +1345,31 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "All Insights",
     section: "root",
     content: [
-      { type: "hero", headline: "All Insights", subheadline: "Published research, market commentary, and lab notes." },
+      {
+        type: "hero",
+        headline: "All Insights",
+        subheadline: "Published research, market commentary, and lab notes.",
+      },
       {
         type: "posts",
         title: "All posts",
         categories: [
-          "economics-101", "market-pulse", "lab-notes",
-          "macro-outlooks", "macro", "Macro", "geopolitical", "Geopolitical",
-          "esg", "ESG", "sectoral", "regional", "monetary",
-          "sectoral-analysis", "policy-analysis", "financial-markets",
+          "economics-101",
+          "market-pulse",
+          "lab-notes",
+          "macro-outlooks",
+          "macro",
+          "Macro",
+          "geopolitical",
+          "Geopolitical",
+          "esg",
+          "ESG",
+          "sectoral",
+          "regional",
+          "monetary",
+          "sectoral-analysis",
+          "policy-analysis",
+          "financial-markets",
         ],
       },
     ],
@@ -846,15 +1383,31 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "Semua Wawasan",
     section: "root",
     content: [
-      { type: "hero", headline: "Semua Wawasan", subheadline: "Riset, komentar pasar, dan catatan lab." },
+      {
+        type: "hero",
+        headline: "Semua Wawasan",
+        subheadline: "Riset, komentar pasar, dan catatan lab.",
+      },
       {
         type: "posts",
         title: "Semua artikel",
         categories: [
-          "economics-101", "market-pulse", "lab-notes",
-          "macro-outlooks", "macro", "Macro", "geopolitical", "Geopolitical",
-          "esg", "ESG", "sectoral", "regional", "monetary",
-          "sectoral-analysis", "policy-analysis", "financial-markets",
+          "economics-101",
+          "market-pulse",
+          "lab-notes",
+          "macro-outlooks",
+          "macro",
+          "Macro",
+          "geopolitical",
+          "Geopolitical",
+          "esg",
+          "ESG",
+          "sectoral",
+          "regional",
+          "monetary",
+          "sectoral-analysis",
+          "policy-analysis",
+          "financial-markets",
         ],
       },
     ],
@@ -864,11 +1417,16 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Economics 101",
-    description: "Foundational concepts through the lens of Indonesia's economy.",
+    description:
+      "Foundational concepts through the lens of Indonesia's economy.",
     navLabel: "Economics 101",
     section: "root",
     content: [
-      { type: "hero", headline: "Economics 101", subheadline: "Core ideas made practical for Indonesia." },
+      {
+        type: "hero",
+        headline: "Economics 101",
+        subheadline: "Core ideas made practical for Indonesia.",
+      },
       { type: "posts", title: "Articles", categories: ["economics-101"] },
     ],
   },
@@ -881,7 +1439,11 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "Ekonomi 101",
     section: "root",
     content: [
-      { type: "hero", headline: "Ekonomi 101", subheadline: "Ide inti yang relevan untuk Indonesia." },
+      {
+        type: "hero",
+        headline: "Ekonomi 101",
+        subheadline: "Ide inti yang relevan untuk Indonesia.",
+      },
       { type: "posts", title: "Artikel", categories: ["economics-101"] },
     ],
   },
@@ -894,7 +1456,11 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "Market Pulse",
     section: "root",
     content: [
-      { type: "hero", headline: "Market Pulse", subheadline: "Quick takes on Indonesian markets." },
+      {
+        type: "hero",
+        headline: "Market Pulse",
+        subheadline: "Quick takes on Indonesian markets.",
+      },
       { type: "posts", title: "Articles", categories: ["market-pulse"] },
     ],
   },
@@ -907,7 +1473,11 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "Denyut Pasar",
     section: "root",
     content: [
-      { type: "hero", headline: "Denyut Pasar", subheadline: "Update cepat pasar Indonesia." },
+      {
+        type: "hero",
+        headline: "Denyut Pasar",
+        subheadline: "Update cepat pasar Indonesia.",
+      },
       { type: "posts", title: "Artikel", categories: ["market-pulse"] },
     ],
   },
@@ -920,7 +1490,11 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "Lab Notes",
     section: "root",
     content: [
-      { type: "hero", headline: "Lab Notes", subheadline: "Behind the scenes at AndaraLab." },
+      {
+        type: "hero",
+        headline: "Lab Notes",
+        subheadline: "Behind the scenes at AndaraLab.",
+      },
       { type: "posts", title: "Articles", categories: ["lab-notes"] },
     ],
   },
@@ -933,7 +1507,11 @@ export const SEED_PAGES: SeedPage[] = [
     navLabel: "Catatan Lab",
     section: "root",
     content: [
-      { type: "hero", headline: "Catatan Lab", subheadline: "Di balik layar AndaraLab." },
+      {
+        type: "hero",
+        headline: "Catatan Lab",
+        subheadline: "Di balik layar AndaraLab.",
+      },
       { type: "posts", title: "Artikel", categories: ["lab-notes"] },
     ],
   },
@@ -942,35 +1520,71 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Data Hub",
-    description: "Interactive charts, economic data, and market intelligence for Indonesia.",
+    description:
+      "Interactive charts, economic data, and market intelligence for Indonesia.",
     navLabel: "Data Hub",
     section: "root",
-    content: [{ type: "text", content: "The Data Hub provides interactive access to the datasets powering our research." }],
+    content: [
+      {
+        type: "text",
+        content:
+          "The Data Hub provides interactive access to the datasets powering our research.",
+      },
+    ],
   },
   {
     slug: "/data",
     locale: "id",
     status: "published",
     title: "Pusat Data",
-    description: "Grafik interaktif, data ekonomi, dan intelijen pasar untuk Indonesia.",
+    description:
+      "Grafik interaktif, data ekonomi, dan intelijen pasar untuk Indonesia.",
     navLabel: "Pusat Data",
     section: "root",
-    content: [{ type: "text", content: "Pusat Data menyediakan akses interaktif ke dataset yang menjadi dasar riset kami." }],
+    content: [
+      {
+        type: "text",
+        content:
+          "Pusat Data menyediakan akses interaktif ke dataset yang menjadi dasar riset kami.",
+      },
+    ],
   },
   {
     slug: "/sectors/energy",
     locale: "en",
     status: "published",
     title: "Energy Sector — Oil, Gas & New Energy",
-    description: "Analysis of Indonesia's energy sector: oil, gas, coal, and the emerging new energy landscape.",
+    description:
+      "Analysis of Indonesia's energy sector: oil, gas, coal, and the emerging new energy landscape.",
     navLabel: "Energy",
     section: "Sectoral Intelligence",
     content: [
-      { type: "hero", headline: "Energy Sector Intelligence", subheadline: "From fossil fuels to the new energy transition — tracking Indonesia's energy dynamics." },
-      { type: "chart", datasetId: "oil-gas-production", title: "Oil & Gas Production" },
-      { type: "chart", datasetId: "coal-production", title: "Coal Production & Exports" },
-      { type: "chart", datasetId: "nickel-production", title: "Nickel Production — EV Battery Feedstock" },
-      { type: "text", content: "Indonesia's energy sector is at a crossroads. While oil production continues its structural decline, the country has emerged as a dominant force in the global nickel market — a key input for electric vehicle batteries." },
+      {
+        type: "hero",
+        headline: "Energy Sector Intelligence",
+        subheadline:
+          "From fossil fuels to the new energy transition — tracking Indonesia's energy dynamics.",
+      },
+      {
+        type: "chart",
+        datasetId: "oil-gas-production",
+        title: "Oil & Gas Production",
+      },
+      {
+        type: "chart",
+        datasetId: "coal-production",
+        title: "Coal Production & Exports",
+      },
+      {
+        type: "chart",
+        datasetId: "nickel-production",
+        title: "Nickel Production — EV Battery Feedstock",
+      },
+      {
+        type: "text",
+        content:
+          "Indonesia's energy sector is at a crossroads. While oil production continues its structural decline, the country has emerged as a dominant force in the global nickel market — a key input for electric vehicle batteries.",
+      },
     ],
   },
   {
@@ -978,14 +1592,32 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Sektor Energi — Minyak, Gas & Energi Baru",
-    description: "Analisis sektor energi Indonesia: minyak, gas, batu bara, dan lanskap energi baru.",
+    description:
+      "Analisis sektor energi Indonesia: minyak, gas, batu bara, dan lanskap energi baru.",
     navLabel: "Energi",
     section: "Intelijen Sektoral",
     content: [
-      { type: "hero", headline: "Intelijen Sektor Energi", subheadline: "Dari bahan bakar fosil hingga transisi energi baru — mengikuti dinamika energi Indonesia." },
-      { type: "chart", datasetId: "oil-gas-production", title: "Produksi Minyak & Gas" },
-      { type: "chart", datasetId: "coal-production", title: "Produksi & Ekspor Batu Bara" },
-      { type: "chart", datasetId: "nickel-production", title: "Produksi Nikel — Bahan Baku Baterai EV" },
+      {
+        type: "hero",
+        headline: "Intelijen Sektor Energi",
+        subheadline:
+          "Dari bahan bakar fosil hingga transisi energi baru — mengikuti dinamika energi Indonesia.",
+      },
+      {
+        type: "chart",
+        datasetId: "oil-gas-production",
+        title: "Produksi Minyak & Gas",
+      },
+      {
+        type: "chart",
+        datasetId: "coal-production",
+        title: "Produksi & Ekspor Batu Bara",
+      },
+      {
+        type: "chart",
+        datasetId: "nickel-production",
+        title: "Produksi Nikel — Bahan Baku Baterai EV",
+      },
     ],
   },
   {
@@ -993,12 +1625,22 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Financial Markets — Banking, Bonds & Equities",
-    description: "Analysis of Indonesia's banking system, government bond market, and equity landscape.",
+    description:
+      "Analysis of Indonesia's banking system, government bond market, and equity landscape.",
     navLabel: "Financial Markets",
     section: "Financial Markets",
     content: [
-      { type: "hero", headline: "Financial Markets Intelligence", subheadline: "Banking system, sovereign bonds, and equity market analysis." },
-      { type: "chart", datasetId: "sovereign-bond-yield", title: "SBN Yield Curve" },
+      {
+        type: "hero",
+        headline: "Financial Markets Intelligence",
+        subheadline:
+          "Banking system, sovereign bonds, and equity market analysis.",
+      },
+      {
+        type: "chart",
+        datasetId: "sovereign-bond-yield",
+        title: "SBN Yield Curve",
+      },
       { type: "chart", datasetId: "idr-usd", title: "IDR/USD Exchange Rate" },
     ],
   },
@@ -1007,12 +1649,22 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Pasar Keuangan — Perbankan, Obligasi & Saham",
-    description: "Analisis sistem perbankan, pasar obligasi pemerintah, dan lanskap ekuitas Indonesia.",
+    description:
+      "Analisis sistem perbankan, pasar obligasi pemerintah, dan lanskap ekuitas Indonesia.",
     navLabel: "Pasar Keuangan",
     section: "Pasar Keuangan",
     content: [
-      { type: "hero", headline: "Intelijen Pasar Keuangan", subheadline: "Sistem perbankan, obligasi pemerintah, dan analisis pasar saham." },
-      { type: "chart", datasetId: "sovereign-bond-yield", title: "Kurve Yield SBN" },
+      {
+        type: "hero",
+        headline: "Intelijen Pasar Keuangan",
+        subheadline:
+          "Sistem perbankan, obligasi pemerintah, dan analisis pasar saham.",
+      },
+      {
+        type: "chart",
+        datasetId: "sovereign-bond-yield",
+        title: "Kurve Yield SBN",
+      },
       { type: "chart", datasetId: "idr-usd", title: "Kurs IDR/USD" },
     ],
   },
@@ -1021,12 +1673,24 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Contact Us",
-    description: "Get in touch with AndaraLab for research inquiries, partnerships, or subscription information.",
+    description:
+      "Get in touch with AndaraLab for research inquiries, partnerships, or subscription information.",
     navLabel: "Contact",
     section: "root",
     content: [
-      { type: "hero", headline: "Get in Touch", subheadline: "Research inquiries, partnerships, and subscription support." },
-      { type: "cta", heading: "Contact AndaraLab", body: "Email us at research@andarlab.io for research inquiries, subscription information, or partnership proposals.", buttonText: "Send Email", buttonHref: "mailto:research@andarlab.io" },
+      {
+        type: "hero",
+        headline: "Get in Touch",
+        subheadline:
+          "Research inquiries, partnerships, and subscription support.",
+      },
+      {
+        type: "cta",
+        heading: "Contact AndaraLab",
+        body: "Email us at research@andarlab.io for research inquiries, subscription information, or partnership proposals.",
+        buttonText: "Send Email",
+        buttonHref: "mailto:research@andarlab.io",
+      },
     ],
   },
   {
@@ -1034,12 +1698,23 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Hubungi Kami",
-    description: "Hubungi AndaraLab untuk pertanyaan riset, kemitraan, atau informasi langganan.",
+    description:
+      "Hubungi AndaraLab untuk pertanyaan riset, kemitraan, atau informasi langganan.",
     navLabel: "Kontak",
     section: "root",
     content: [
-      { type: "hero", headline: "Hubungi Kami", subheadline: "Pertanyaan riset, kemitraan, dan dukungan langganan." },
-      { type: "cta", heading: "Hubungi AndaraLab", body: "Email kami di research@andarlab.io untuk pertanyaan riset, informasi langganan, atau proposal kemitraan.", buttonText: "Kirim Email", buttonHref: "mailto:research@andarlab.io" },
+      {
+        type: "hero",
+        headline: "Hubungi Kami",
+        subheadline: "Pertanyaan riset, kemitraan, dan dukungan langganan.",
+      },
+      {
+        type: "cta",
+        heading: "Hubungi AndaraLab",
+        body: "Email kami di research@andarlab.io untuk pertanyaan riset, informasi langganan, atau proposal kemitraan.",
+        buttonText: "Kirim Email",
+        buttonHref: "mailto:research@andarlab.io",
+      },
     ],
   },
   {
@@ -1047,11 +1722,17 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "en",
     status: "published",
     title: "Macro Foundations",
-    description: "Indonesia macroeconomic research — GDP, inflation, monetary policy, and structural analysis.",
+    description:
+      "Indonesia macroeconomic research — GDP, inflation, monetary policy, and structural analysis.",
     navLabel: "Macro",
     section: "root",
     content: [
-      { type: "hero", headline: "Macro Foundations", subheadline: "In-depth macroeconomic research on Indonesia's growth, inflation, and monetary policy." },
+      {
+        type: "hero",
+        headline: "Macro Foundations",
+        subheadline:
+          "In-depth macroeconomic research on Indonesia's growth, inflation, and monetary policy.",
+      },
       { type: "featured", slugs: [], limit: 6 },
     ],
   },
@@ -1060,11 +1741,17 @@ export const SEED_PAGES: SeedPage[] = [
     locale: "id",
     status: "published",
     title: "Fondasi Makro",
-    description: "Riset makroekonomi Indonesia — PDB, inflasi, kebijakan moneter, dan analisis struktural.",
+    description:
+      "Riset makroekonomi Indonesia — PDB, inflasi, kebijakan moneter, dan analisis struktural.",
     navLabel: "Makro",
     section: "root",
     content: [
-      { type: "hero", headline: "Fondasi Makro", subheadline: "Riset makroekonomi mendalam tentang pertumbuhan, inflasi, dan kebijakan moneter Indonesia." },
+      {
+        type: "hero",
+        headline: "Fondasi Makro",
+        subheadline:
+          "Riset makroekonomi mendalam tentang pertumbuhan, inflasi, dan kebijakan moneter Indonesia.",
+      },
       { type: "featured", slugs: [], limit: 6 },
     ],
   },
@@ -1077,8 +1764,10 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     slug: "what-is-current-account-deficit",
     locale: "en",
     status: "published",
-    title: "What Is a Current Account Deficit — and Why It Matters for Indonesia",
-    excerpt: "A current account deficit is one of the most watched macro variables in emerging markets.",
+    title:
+      "What Is a Current Account Deficit — and Why It Matters for Indonesia",
+    excerpt:
+      "A current account deficit is one of the most watched macro variables in emerging markets.",
     body: [
       "The current account is the broadest measure of a country's transactions with the rest of the world.",
       "When a country spends more on imports than it earns from exports, it runs a current account deficit. This is not inherently bad.",
@@ -1094,7 +1783,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "CPI vs. Core Inflation: Why Central Banks Watch the Difference",
-    excerpt: "Headline inflation captures everything. Core inflation tells you what the central bank really cares about.",
+    excerpt:
+      "Headline inflation captures everything. Core inflation tells you what the central bank really cares about.",
     body: [
       "Consumer Price Index (CPI) inflation is the number that makes headlines.",
       "Core inflation strips out the most volatile components: food prices and administered prices.",
@@ -1110,7 +1800,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "JCI at 7,200: Why BI's Rate Hold Changes the Playbook",
-    excerpt: "With Bank Indonesia holding rates and the Fed signaling caution, the calculus for Indonesian equities has shifted.",
+    excerpt:
+      "With Bank Indonesia holding rates and the Fed signaling caution, the calculus for Indonesian equities has shifted.",
     body: [
       "The Jakarta Composite Index's push toward 7,200 this quarter reflects resilient corporate earnings and foreign inflow momentum.",
       "Bank Indonesia's decision to hold the BI Rate at 6.00% removes one tail risk from the equity market.",
@@ -1126,7 +1817,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "How We Build Our Macro Models: A Behind-the-Scenes Look",
-    excerpt: "Our GDP nowcasting model combines official data, high-frequency indicators, and machine learning.",
+    excerpt:
+      "Our GDP nowcasting model combines official data, high-frequency indicators, and machine learning.",
     body: [
       "One of the most challenging problems in emerging market research is the lag between what is happening and what official data reveals.",
       "This is the nowcasting problem — and it's where we spend a significant portion of our analytical effort.",
@@ -1142,7 +1834,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "id",
     status: "published",
     title: "Prospek Makro Indonesia 2026: Menavigasi Angin Keringat Global",
-    excerpt: "Dengan pertumbuhan global melambat, fundamental makroekonomi Indonesia tetap tangguh.",
+    excerpt:
+      "Dengan pertumbuhan global melambat, fundamental makroekonomi Indonesia tetap tangguh.",
     body: [
       "Indonesia memasuki 2026 dengan salah satu profil makro paling tangguh di Asia Tenggara.",
       "Pendorong utama ketahanan ini adalah konsumsi rumah tangga yang kuat, yang menyumbang sekitar 57% PDB.",
@@ -1158,7 +1851,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "Indonesia's Nickel Dominance: The EV Supply Chain Power Play",
-    excerpt: "Indonesia controls 22% of global nickel reserves. Here's how it became the world's battery manufacturing hub.",
+    excerpt:
+      "Indonesia controls 22% of global nickel reserves. Here's how it became the world's battery manufacturing hub.",
     body: [
       "Indonesia's strategic move to ban raw nickel ore exports in 2020 was controversial. Three years later, the strategy is paying off spectacularly.",
       "By forcing foreign investment in domestic processing, Indonesia attracted over $15 billion in EV battery and smelter investments.",
@@ -1175,7 +1869,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "Indonesia's Digital Economy: Why 2026 Is the Inflection Point",
-    excerpt: "With 220 million internet users and a $40B GMV target, Indonesia's digital economy is entering a new phase.",
+    excerpt:
+      "With 220 million internet users and a $40B GMV target, Indonesia's digital economy is entering a new phase.",
     body: [
       "Indonesia's digital economy has grown at a compound annual growth rate of 22% since 2021.",
       "The government's Making Indonesia 4.0 roadmap targets 22% contribution to GDP by 2030.",
@@ -1191,8 +1886,10 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     slug: "bank-mandatory-ratio-q1-2026",
     locale: "en",
     status: "published",
-    title: "Understanding G20's New Bank Capital Rules and What They Mean for Indonesian Banks",
-    excerpt: "Basel III endgame rules will reshape how Indonesian banks allocate capital. Here's a practical guide.",
+    title:
+      "Understanding G20's New Bank Capital Rules and What They Mean for Indonesian Banks",
+    excerpt:
+      "Basel III endgame rules will reshape how Indonesian banks allocate capital. Here's a practical guide.",
     body: [
       "Bank Indonesia has begun implementing Basel III endgame capital standards that will require major banks to hold more capital against risk-weighted assets.",
       "For Indonesian banks, the primary impact will be on mortgage lending, where risk weights for property exposures will increase.",
@@ -1207,8 +1904,10 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     slug: "ri-transmigration-nickel-downstreaming",
     locale: "id",
     status: "published",
-    title: "Downstreaming Nikel Indonesia: Dari Raw Ore ke Baterai Kendaraan Listrik",
-    excerpt: "Strategi hilirisasi nikel telah menarik investasi Rp 230 triliun dan menciptakan ekosistem industri baterai kendaraan listrik.",
+    title:
+      "Downstreaming Nikel Indonesia: Dari Raw Ore ke Baterai Kendaraan Listrik",
+    excerpt:
+      "Strategi hilirisasi nikel telah menarik investasi Rp 230 triliun dan menciptakan ekosistem industri baterai kendaraan listrik.",
     body: [
       "Larangan ekspor bijih nikel mentah pada 2020 adalah langkah berani yang kini membuahkan hasil.",
       "Pabrik-pabrik HPAL (High Pressure Acid Leach) kini berdiri di Sulawesi, memproses ore laterit menjadi nikel sulfat untuk baterai litium-ion.",
@@ -1225,7 +1924,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "id",
     status: "published",
     title: "Menggenggam Inflasi Harga Pangan: Dari Petani hingga Konsumen",
-    excerpt: "Inflasi pangan volatile. AndaraLab menganalisis mekanisme transmisinya dan kebijakan stabilisasi harga yang efektif.",
+    excerpt:
+      "Inflasi pangan volatile. AndaraLab menganalisis mekanisme transmisinya dan kebijakan stabilisasi harga yang efektif.",
     body: [
       "Inflasi harga pangan menyumbang sekitar 30-40% dari total inflasi IHK di Indonesia.",
       "Volatilitas ini terutama didorong oleh faktor musiman produksi pertanian dan gangguan cuaca.",
@@ -1240,8 +1940,10 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     slug: "p励keuatan-terbesar-di-asia-tenggara",
     locale: "id",
     status: "published",
-    title: "Mengapa Ekonomi Digital Indonesia adalah Pasar Terbesar di Asia Tenggara",
-    excerpt: "Dengan GMV yang ditargetkan mencapai $360 miliar pada 2030, ekonomi digital Indonesia adalah ladang riset utama.",
+    title:
+      "Mengapa Ekonomi Digital Indonesia adalah Pasar Terbesar di Asia Tenggara",
+    excerpt:
+      "Dengan GMV yang ditargetkan mencapai $360 miliar pada 2030, ekonomi digital Indonesia adalah ladang riset utama.",
     body: [
       "Indonesia menyumbang 35% dari total GMV ekonomi digital ASEAN.",
       "E-commerce, fintech, dan super-apps menjadi mesin pertumbuhan utama.",
@@ -1258,7 +1960,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "Omnibus Law Two Years Later: What the Data Actually Shows",
-    excerpt: "After two years of the Job Creation Law, we examine whether it delivered on its investment and employment promises.",
+    excerpt:
+      "After two years of the Job Creation Law, we examine whether it delivered on its investment and employment promises.",
     body: [
       "The Job Creation Law (UU Cipta Kerja) was Indonesia's most significant regulatory overhaul in decades.",
       "Initial data on foreign direct investment shows a 12% increase in approved investments in the 18 months following its passage.",
@@ -1275,7 +1978,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "Indonesia Government Bond Market Outlook H1 2026",
-    excerpt: "With a record Rp 890 trillion in net financing needed, the SUN market faces a pivotal first half.",
+    excerpt:
+      "With a record Rp 890 trillion in net financing needed, the SUN market faces a pivotal first half.",
     body: [
       "Indonesia's government bond market is entering a critical period with significant refinancing needs.",
       "Foreign ownership of government bonds stands at 15.2% — down from the 40% peak in 2019 but still a meaningful market share.",
@@ -1291,7 +1995,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "draft",
     title: "Indonesia's Progressive Tax Reform Agenda for 2026",
-    excerpt: "Draft legislation proposes a new progressive personal income tax bracket that could reshape household consumption patterns.",
+    excerpt:
+      "Draft legislation proposes a new progressive personal income tax bracket that could reshape household consumption patterns.",
     body: [
       "The Ministry of Finance has published draft legislation proposing a revised PPh Article 25 bracket structure.",
       "For high-income earners (above Rp 5 billion annually), effective tax rates would increase from 30% to 35%.",
@@ -1307,7 +2012,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "The State of ESG Reporting in Indonesia: A 2026 Audit",
-    excerpt: "With OJK's mandatory sustainability reporting in full swing, we audit the disclosure quality of IDX-80 companies.",
+    excerpt:
+      "With OJK's mandatory sustainability reporting in full swing, we audit the disclosure quality of IDX-80 companies.",
     body: [
       "2026 marks the third year since OJK implemented mandatory ESG disclosure for all listed companies.",
       "Our audit shows that while 90% of companies now publish sustainability reports, only 25% provide verifiable scope-3 emissions data.",
@@ -1324,7 +2030,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "Java Economic Monitor: Manufacturing Resilience and Service Growth",
-    excerpt: "Java continues to drive 57% of Indonesia's GDP. We analyze the regional specificities of West, Central, and East Java.",
+    excerpt:
+      "Java continues to drive 57% of Indonesia's GDP. We analyze the regional specificities of West, Central, and East Java.",
     body: [
       "Economic growth in Java remained stable at 5.1% in Q1 2026, outperforming the national average.",
       "West Java's manufacturing sector showed a significant rebound in export orders for textiles and electronics.",
@@ -1341,7 +2048,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "BI Rate Decision: Why a Hold is the New Hike",
-    excerpt: "With inflation within target but IDR under pressure, Bank Indonesia's decision to hold the rate tells a wider story.",
+    excerpt:
+      "With inflation within target but IDR under pressure, Bank Indonesia's decision to hold the rate tells a wider story.",
     body: [
       "Bank Indonesia maintained the BI Rate at 6.00% in its April board meeting, a move widely expected by domestic markets.",
       "The 'higher-for-longer' environment in the US continues to complicate the terminal rate path for Indonesian monetary policy.",
@@ -1358,7 +2066,8 @@ export const SEED_BLOG_POSTS: SeedBlogPost[] = [
     locale: "en",
     status: "published",
     title: "ASEAN Supply Chain Realignment: Indonesia's Structural Advantage",
-    excerpt: "How the China+1 strategy is manifesting in Indonesia's industrial parks across Java and Batam.",
+    excerpt:
+      "How the China+1 strategy is manifesting in Indonesia's industrial parks across Java and Batam.",
     body: [
       "Geopolitical tensions continue to drive a structural realignment of global supply chains toward Southeast Asia.",
       "Indonesia's combination of abundant natural resources and a large domestic market makes it a primary beneficiary of this shift.",

@@ -1,20 +1,23 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "wouter";
-
-const pillars = [
-  { num: "01", title: "Rigor", desc: "Every analysis is grounded in verified data sources, peer-reviewed methodology, and transparent assumptions." },
-  { num: "02", title: "Relevance", desc: "We focus on what matters now — policy shifts, market dislocations, and structural economic changes." },
-  { num: "03", title: "Clarity", desc: "Complex economic intelligence translated into clear, actionable insights for decision-makers." },
-];
-
-const stats = [
-  { value: "100+", label: "Economic Indicators Tracked" },
-  { value: "15+", label: "Economies Monitored" },
-  { value: "5+", label: "Research Verticals" },
-  { value: "2019", label: "Founded, Jakarta" },
-];
+import { useLocale } from "@/lib/locale";
 
 export default function AboutSection() {
+  const { t } = useLocale();
+
+  const pillars = [
+    { num: "01", title: t("about_pillar_rigor_title"), desc: t("about_pillar_rigor_desc") },
+    { num: "02", title: t("about_pillar_relevance_title"), desc: t("about_pillar_relevance_desc") },
+    { num: "03", title: t("about_pillar_clarity_title"), desc: t("about_pillar_clarity_desc") },
+  ];
+
+  const stats = [
+    { value: "100+", label: t("stat_indicators") },
+    { value: "15+", label: t("stat_economies") },
+    { value: "5+", label: t("stat_verticals") },
+    { value: "2019", label: t("stat_founded") },
+  ];
+
   return (
     <section className="border-t border-[#E5E7EB] bg-white">
       {/* Stats bar */}
@@ -36,33 +39,33 @@ export default function AboutSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-4">
-              About AndaraLab
+              {t("about_andaralab")}
             </div>
             <h2 className="text-[28px] font-bold text-gray-900 leading-tight mb-5">
-              A Laboratory for<br />Economic Intelligence
+              {t("about_lab_headline")}<br />{t("about_lab_headline2")}
             </h2>
             <p className="text-[14.5px] text-gray-500 leading-relaxed mb-7">
-              At AndaraLab, we operate as a premier economic research hub under PT. Andara Investasi Cerdas. We bridge the gap between complex macro-economic data and actionable intelligence. Built on the pillar of <strong className="text-gray-700">"Tumbuh"</strong> (Growth), our mission is to provide the analytical foundation that allows our partners to flourish in an ever-evolving economic landscape.
+              {t("about_lab_body")}
             </p>
             <div className="flex items-center gap-3">
               <Link
                 href="/about"
                 className="inline-flex items-center gap-2 text-[13.5px] font-medium text-gray-900 border border-gray-900 px-6 py-2.5 hover:bg-gray-100 transition-colors"
               >
-                About Us <ArrowRight className="w-4 h-4" />
+                {t("about_us")} <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/contact"
                 className="inline-flex items-center gap-2 text-[13.5px] font-medium text-gray-700 border border-[#D1D5DB] px-6 py-2.5 hover:border-gray-400 transition-colors"
               >
-                Contact
+                {t("contact_label")}
               </Link>
             </div>
           </div>
 
           <div>
             <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-4">
-              Our Approach
+              {t("our_approach")}
             </div>
             <div className="space-y-0 border border-[#E5E7EB]">
               {pillars.map((p, i) => (
