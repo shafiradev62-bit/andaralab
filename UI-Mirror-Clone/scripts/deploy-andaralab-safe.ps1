@@ -150,27 +150,17 @@ if ($BackendOnly -and $beFiles.Count -gt 0) {
 
 if ($FrontendOnly) {
     Write-Host "[4] Build frontend DI VPS (bukan overwrite folder data)..." -ForegroundColor Yellow
-    Invoke-Ssh "cd $REMOTE_ROOT/artifacts/andaralab && pnpm run build"
+    Invoke-Ssh "cd $REMOTE_ROOT/artifacts/andaralab; pnpm run build"
 
     Write-Host "[5] docker cp + nginx reload (TANPA restart container)..." -ForegroundColor Yellow
-    Invoke-Ssh @"
-docker cp $REMOTE_ROOT/artifacts/andaralab/dist/public/. ${FRONTEND_CONTAINER}:/usr/share/nginx/html/ &&
-docker exec ${FRONTEND_CONTAINER} nginx -s reload &&
-echo NGINX_RELOAD_OK
-"@
+    $feDeploy = "docker cp $REMOTE_ROOT/artifacts/andaralab/dist/public/. ${FRONTEND_CONTAINER}:/usr/share/nginx/html/; docker exec ${FRONTEND_CONTAINER} nginx -s reload; echo NGINX_RELOAD_OK"
+    Invoke-Ssh $feDeploy
 }
 
 if ($BackendOnly) {
     Write-Host "[6] PM2 restart api-server (bukan docker compose)..." -ForegroundColor Yellow
-    Invoke-Ssh @"
-if pm2 describe api-server >/dev/null 2>&1; then
-  pm2 restart api-server
-else
-  cd $REMOTE_ROOT/artifacts/api-server &&
-  PORT=3001 NODE_ENV=production DATA_DIR=$DATA_DIR CORS_ALLOW_ALL=true \
-    pm2 start --interpreter ./node_modules/.bin/tsx src/index.ts --name api-server
-fi
-"@
+    $pm2Cmd = "if pm2 describe api-server >/dev/null 2>&1; then pm2 restart api-server; else cd $REMOTE_ROOT/artifacts/api-server; PORT=3001 NODE_ENV=production DATA_DIR=$DATA_DIR CORS_ALLOW_ALL=true pm2 start --interpreter ./node_modules/.bin/tsx src/index.ts --name api-server; fi"
+    Invoke-Ssh $pm2Cmd
     Write-Host "  Catatan: container docker 'backend' tidak di-restart (session/hindari compose)." -ForegroundColor DarkGray
 }
 

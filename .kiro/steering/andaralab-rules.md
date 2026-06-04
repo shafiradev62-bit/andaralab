@@ -29,7 +29,8 @@ inclusion: manual
 - Data saat ini: 74 datasets, 18 blog posts, 32 pages — ini angka referensi
 
 ## Script Deploy Aman (pakai ini, jangan script lama)
-- **Dari PC (SSH key wajib):** `UI-Mirror-Clone/scripts/deploy-andaralab-safe.ps1`
+- **Dari PC (SSH timeout → otomatis HTTPS/Cloudflare):** `UI-Mirror-Clone/scripts/deploy-andaralab-safe.ps1`
+- **HTTPS only (bypass port 22):** `UI-Mirror-Clone/scripts/deploy-via-cloudflare.ps1` → `POST https://andaralab.id/api/webhook/deploy?secret=...` (sama seperti tombol deploy di CMS / Zed)
   - Frontend saja: `-FrontendOnly` (tidak restart backend / tidak sentuh data)
   - Backend saja: `-BackendOnly` (hanya file route, **bukan** `seed-data.ts`)
   - Keduanya: tanpa flag (default partial hari ini)

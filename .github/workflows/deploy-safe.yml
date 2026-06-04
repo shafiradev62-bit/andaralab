@@ -1,0 +1,30 @@
+name: Deploy Safe to VPS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Safe deploy on VPS (andaralab-rules)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -euo pipefail
+            APP=/opt/andara-lab
+            DATA=/opt/andaralab-data
+            TS=$(date +%Y%m%d-%H%M%S)
+            cp -r "$DATA" "${DATA}-backup-${TS}"
+            cd "$APP"
+            git config --global --add safe.directory "$APP" || true
+            git fetch origin main
+            git checkout main
+            git pull --ff-only origin main
+            bash "$APP/scripts/vps-deploy-on-server.sh"
