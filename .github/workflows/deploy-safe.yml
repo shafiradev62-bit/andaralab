@@ -2,6 +2,11 @@ name: Deploy Safe to VPS
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "UI-Mirror-Clone/**"
+      - ".github/workflows/deploy-safe.yml"
 
 jobs:
   deploy:
