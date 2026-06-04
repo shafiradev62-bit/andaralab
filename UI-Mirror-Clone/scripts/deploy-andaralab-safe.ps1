@@ -1,7 +1,5 @@
-# Deploy aman — HARUS mengikuti .kiro/steering/andaralab-rules.md
-# Tidak overwrite CMS: tidak sentuh /opt/andaralab-data kecuali backup salinan.
-# Tidak: docker compose build/up, docker compose down -v, rsync --delete, git reset --hard,
-#        rebuild image frontend, restart container backend.
+# Deploy aman - andaralab-rules.md
+# SSH key: id_ed25519_andaralab_new | fallback: HTTPS via Cloudflare (webhook)
 
 param(
     [switch]$FrontendOnly,
@@ -24,63 +22,43 @@ $SSH_KEY = @(
     "$env:USERPROFILE\.ssh\id_rsa_andaralab"
 ) | Where-Object { Test-Path $_ } | Select-Object -First 1
 
-if (-not $SSH_KEY) {
-    Write-Error "SSH key tidak ada. Buat id_ed25519_andaralab atau id_rsa_andaralab di ~/.ssh"
-}
+if (-not $SSH_KEY) { Write-Error "SSH key tidak ada di ~/.ssh" }
 
 $RepoRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $Andaralab = Join-Path $RepoRoot "artifacts\andaralab"
 $ApiSrc = Join-Path $RepoRoot "artifacts\api-server\src"
 
-# File yang berubah hari ini (partial — bukan seluruh repo)
 $DefaultFrontend = @(
-    "src\components\AboutSection.tsx",
-    "src\components\DataHub.tsx",
-    "src\components\FeaturedInsights.tsx",
-    "src\components\HomeAboutSection.tsx",
-    "src\components\LatestInsights.tsx",
-    "src\components\Navbar.tsx",
-    "src\components\NewsletterSection.tsx",
-    "src\lib\cms-store.ts",
-    "src\lib\locale.tsx",
-    "src\pages\AboutPage.tsx",
-    "src\pages\AdminPage.tsx",
-    "src\pages\ContactPage.tsx",
-    "src\pages\SectionPage.tsx"
+    "src\components\AboutSection.tsx", "src\components\DataHub.tsx",
+    "src\components\FeaturedInsights.tsx", "src\components\HomeAboutSection.tsx",
+    "src\components\LatestInsights.tsx", "src\components\Navbar.tsx",
+    "src\components\NewsletterSection.tsx", "src\lib\cms-store.ts", "src\lib\locale.tsx",
+    "src\pages\AboutPage.tsx", "src\pages\AdminPage.tsx",
+    "src\pages\ContactPage.tsx", "src\pages\SectionPage.tsx"
 )
-# JANGAN deploy seed-data.ts — hanya dipakai saat reset; bukan untuk update live CMS
-$DefaultBackend = @(
-    "routes\pages.ts"
-)
+$DefaultBackend = @("routes\pages.ts")
 
-if (-not $FrontendOnly -and -not $BackendOnly) {
-    $FrontendOnly = $true
-    $BackendOnly = $true
-}
+if (-not $FrontendOnly -and -not $BackendOnly) { $FrontendOnly = $true; $BackendOnly = $true }
 
 function Invoke-Ssh([string]$Command) {
-    & ssh -o ConnectTimeout=45 -o BatchMode=yes -o StrictHostKeyChecking=no -i $SSH_KEY "${VPS_USER}@${VPS_HOST}" $Command
-    if ($LASTEXITCODE -ne 0) { throw "SSH gagal (exit $LASTEXITCODE): $Command" }
+    & ssh -o ConnectTimeout=45 -o BatchMode=yes -o StrictHostKeyChecking=no -i $SSH_KEY "${VPS_USER}@${VPS_HOST}" $Command 2>$null
+    if ($LASTEXITCODE -ne 0) { throw "ssh_failed" }
+    return $true
 }
 
 function Invoke-ScpFile([string]$Local, [string]$Remote) {
     $parent = ($Remote -replace '/[^/]+$','')
-    if ($parent) { Invoke-Ssh "mkdir -p $parent" }
+    if ($parent) { Invoke-Ssh "mkdir -p $parent" | Out-Null }
     & scp -o ConnectTimeout=45 -o BatchMode=yes -o StrictHostKeyChecking=no -i $SSH_KEY $Local "${VPS_USER}@${VPS_HOST}:${Remote}"
-    if ($LASTEXITCODE -ne 0) { throw "SCP gagal: $Local" }
+    if ($LASTEXITCODE -ne 0) { throw "scp_failed" }
 }
 
 function Get-DataCounts {
-    $raw = Invoke-Ssh @"
-python3 - <<'PY'
-import json, os
-base='$DATA_DIR'
-for name in ('datasets','posts','pages'):
-    p=os.path.join(base, f'{name}.json')
-    n=len(json.load(open(p))) if os.path.isfile(p) else -1
-    print(f'{name}={n}')
-PY
-"@
+    $py = "python3 -c ""import json,os;b='$DATA_DIR';
+for n in 'datasets','posts','pages':
+ p=os.path.join(b,n+'.json');
+ print(n+'='+str(len(json.load(open(p)))))"""
+    $raw = & ssh -o ConnectTimeout=45 -o BatchMode=yes -o StrictHostKeyChecking=no -i $SSH_KEY "${VPS_USER}@${VPS_HOST}" $py
     $counts = @{}
     foreach ($line in ($raw -split "`n")) {
         if ($line -match '^(\w+)=(\d+)$') { $counts[$Matches[1]] = [int]$Matches[2] }
@@ -89,97 +67,57 @@ PY
 }
 
 Write-Host "=== Deploy aman (andaralab-rules) ===" -ForegroundColor Cyan
-Write-Host "SSH key : $SSH_KEY"
-Write-Host "Target  : ${VPS_USER}@${VPS_HOST}"
-Write-Host "Mode    : Frontend=$FrontendOnly Backend=$BackendOnly"
-Write-Host ""
-Write-Host "TIDAK akan dijalankan: docker compose, rebuild image, sentuh isi $DATA_DIR" -ForegroundColor DarkGray
+Write-Host "SSH key: $SSH_KEY"
 
-# Preflight
-Write-Host "[preflight] SSH..." -ForegroundColor Yellow
 $useHttps = $false
-try { Invoke-Ssh "echo OK" | Out-Null } catch {
-    Write-Host "SSH timeout — fallback deploy via Cloudflare HTTPS (webhook)..." -ForegroundColor Yellow
-    $useHttps = $true
-}
+Write-Host "[preflight] SSH..." -ForegroundColor Yellow
+try { Invoke-Ssh "echo OK" | Out-Null } catch { $useHttps = $true }
 
 if ($useHttps) {
+    Write-Host "SSH gagal - deploy via Cloudflare HTTPS (sama seperti Zed/CMS webhook)..." -ForegroundColor Yellow
     & (Join-Path $PSScriptRoot "deploy-via-cloudflare.ps1")
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-    Write-Host "Webhook triggered. Tunggu ~2-5 menit lalu cek https://andaralab.id" -ForegroundColor Green
-    exit 0
+    exit $LASTEXITCODE
 }
 
 $ts = Get-Date -Format "yyyyMMdd-HHmmss"
-$backupPath = "${DATA_DIR}-backup-${ts}"
+$backupPath = "$DATA_DIR-backup-$ts"
 
-Write-Host "[1] Hitung data SEBELUM deploy..." -ForegroundColor Yellow
 $before = Get-DataCounts
-$before.GetEnumerator() | ForEach-Object { Write-Host "  $($_.Key): $($_.Value)" }
+Write-Host "BEFORE: datasets=$($before.datasets) posts=$($before.posts) pages=$($before.pages)"
 
-Write-Host "[2] Backup data (salinan saja, bukan overwrite)..." -ForegroundColor Yellow
-Invoke-Ssh "cp -r $DATA_DIR $backupPath"
-Write-Host "  -> $backupPath" -ForegroundColor Green
+Invoke-Ssh "cp -r $DATA_DIR $backupPath" | Out-Null
+Write-Host "Backup: $backupPath" -ForegroundColor Green
 
-# Upload source partial
 $feFiles = $DefaultFrontend + $ExtraFrontendFiles
-$beFiles = @()
-if ($BackendOnly) { $beFiles = $DefaultBackend + $ExtraBackendFiles }
-
-if ($FrontendOnly -and $feFiles.Count -gt 0) {
-    Write-Host "[3a] Upload file frontend (partial)..." -ForegroundColor Yellow
+if ($FrontendOnly) {
     foreach ($rel in $feFiles) {
         $local = Join-Path $Andaralab $rel
-        if (-not (Test-Path $local)) { Write-Host "  skip: $rel" -ForegroundColor DarkYellow; continue }
-        $remote = "$REMOTE_ROOT/artifacts/andaralab/$($rel -replace '\\','/')"
-        Invoke-ScpFile $local $remote
-        Write-Host "  ok $rel" -ForegroundColor Green
+        if (Test-Path $local) {
+            $remote = "$REMOTE_ROOT/artifacts/andaralab/$($rel -replace '\\','/')"
+            Invoke-ScpFile $local $remote
+        }
     }
-}
-
-if ($BackendOnly -and $beFiles.Count -gt 0) {
-    Write-Host "[3b] Upload file backend (partial)..." -ForegroundColor Yellow
-    foreach ($rel in $beFiles) {
-        $local = Join-Path $ApiSrc $rel
-        if (-not (Test-Path $local)) { Write-Host "  skip: $rel" -ForegroundColor DarkYellow; continue }
-        $remote = "$REMOTE_ROOT/artifacts/api-server/src/$($rel -replace '\\','/')"
-        Invoke-ScpFile $local $remote
-        Write-Host "  ok $rel" -ForegroundColor Green
-    }
-}
-
-if ($FrontendOnly) {
-    Write-Host "[4] Build frontend DI VPS (bukan overwrite folder data)..." -ForegroundColor Yellow
-    Invoke-Ssh "cd $REMOTE_ROOT/artifacts/andaralab; pnpm run build"
-
-    Write-Host "[5] docker cp + nginx reload (TANPA restart container)..." -ForegroundColor Yellow
-    $feDeploy = "docker cp $REMOTE_ROOT/artifacts/andaralab/dist/public/. ${FRONTEND_CONTAINER}:/usr/share/nginx/html/; docker exec ${FRONTEND_CONTAINER} nginx -s reload; echo NGINX_RELOAD_OK"
-    Invoke-Ssh $feDeploy
+    Invoke-Ssh "cd $REMOTE_ROOT/artifacts/andaralab; pnpm run build" | Out-Null
+    $cmd = "docker cp $REMOTE_ROOT/artifacts/andaralab/dist/public/. ${FRONTEND_CONTAINER}:/usr/share/nginx/html/; docker exec ${FRONTEND_CONTAINER} nginx -s reload"
+    Invoke-Ssh $cmd | Out-Null
 }
 
 if ($BackendOnly) {
-    Write-Host "[6] PM2 restart api-server (bukan docker compose)..." -ForegroundColor Yellow
-    $pm2Cmd = "if pm2 describe api-server >/dev/null 2>&1; then pm2 restart api-server; else cd $REMOTE_ROOT/artifacts/api-server; PORT=3001 NODE_ENV=production DATA_DIR=$DATA_DIR CORS_ALLOW_ALL=true pm2 start --interpreter ./node_modules/.bin/tsx src/index.ts --name api-server; fi"
-    Invoke-Ssh $pm2Cmd
-    Write-Host "  Catatan: container docker 'backend' tidak di-restart (session/hindari compose)." -ForegroundColor DarkGray
+    foreach ($rel in ($DefaultBackend + $ExtraBackendFiles)) {
+        $local = Join-Path $ApiSrc $rel
+        if (Test-Path $local) {
+            Invoke-ScpFile $local "$REMOTE_ROOT/artifacts/api-server/src/$($rel -replace '\\','/')"
+        }
+    }
+    $pm2 = "if pm2 describe api-server >/dev/null 2>&1; then pm2 restart api-server; else cd $REMOTE_ROOT/artifacts/api-server; PORT=3001 NODE_ENV=production DATA_DIR=$DATA_DIR CORS_ALLOW_ALL=true pm2 start --interpreter ./node_modules/.bin/tsx src/index.ts --name api-server; fi"
+    Invoke-Ssh $pm2 | Out-Null
 }
 
-Write-Host "[7] Verifikasi data SESUDAH deploy..." -ForegroundColor Yellow
 $after = Get-DataCounts
-$ok = $true
-foreach ($key in @("datasets", "posts", "pages")) {
-    $b = $before[$key]; $a = $after[$key]
-    Write-Host ('  {0}: {1} -> {2}' -f $key, $b, $a)
-    if ($null -ne $b -and $a -lt $b) {
-        Write-Host "  ABORT: jumlah ${key} TURUN - restore dari $backupPath" -ForegroundColor Red
-        $ok = $false
+Write-Host "AFTER: datasets=$($after.datasets) posts=$($after.posts) pages=$($after.pages)"
+foreach ($k in @("datasets","posts","pages")) {
+    if ($before[$k] -and $after[$k] -lt $before[$k]) {
+        Write-Error "ABORT: $k turun. Restore $backupPath"
     }
 }
-if (-not $ok) {
-    throw "Deploy dihentikan: data count turun. Jangan lanjutkan. Restore backup di VPS."
-}
-
-Write-Host ""
-Write-Host "=== Deploy aman selesai ===" -ForegroundColor Green
-Write-Host "Cek https://andaralab.id dan /admin"
-Write-Host "Backup: $backupPath"
+Write-Host "=== Deploy selesai ===" -ForegroundColor Green

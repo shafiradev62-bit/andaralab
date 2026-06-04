@@ -24,11 +24,10 @@ try {
     $code = $_.Exception.Response.StatusCode.value__
     Write-Host "HTTP $code" -ForegroundColor Red
     if ($code -eq 503) {
-        Write-Host "Webhook belum dikonfigurasi di server (DEPLOY_WEBHOOK_SECRET kosong)." -ForegroundColor Yellow
-        Write-Host "Sekali setup di VPS (Web Console):"
-        Write-Host '  export DEPLOY_WEBHOOK_SECRET=andara-secret-key'
-        Write-Host '  pm2 restart api-server --update-env'
-        Write-Host "Atau di container backend: set env + restart."
+        Write-Host "Webhook belum aktif di server. Deploy manual (Web Console Hostinger) - aman, sudah di GitHub main:" -ForegroundColor Yellow
+        Write-Host '  cd /opt/andara-lab && git pull --ff-only origin main && bash scripts/vps-deploy-on-server.sh'
+        Write-Host "Aktifkan webhook (sekali): export DEPLOY_WEBHOOK_SECRET=andara-secret-key && pm2 restart api-server --update-env"
+        exit 2
     }
     throw
 }
