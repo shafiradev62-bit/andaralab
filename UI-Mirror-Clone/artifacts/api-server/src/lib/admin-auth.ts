@@ -1,6 +1,14 @@
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
+import bcrypt from "bcryptjs";
+
+export interface AdminUser {
+  username: string;
+  passwordHash: string;
+  role: "superuser" | "regular";
+  createdAt: string;
+}
 
 export interface AdminSession {
   token: string;
@@ -9,18 +17,12 @@ export interface AdminSession {
 }
 
 const SESSION_TTL_MS = 1000 * 60 * 60 * 72; // 72 hours — survive weekend deploys
+const SALT_ROUNDS = 10;
 
-const ADMIN_CREDENTIALS: Record<string, string> = {
-  admin1: "AndaraLab@Secure#2026!",
-  admin2: "AndaraLab@Secure#2026@",
-};
-
-// ─── Persistent session store ─────────────────────────────────────────────────
-// Sessions are written to /data/sessions.json so they survive container restarts.
-// Same DATA_DIR pattern as store.ts.
-
+// ─── Persistent stores ─────────────────────────────────────────────────
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const SESSIONS_FILE = path.join(DATA_DIR, "sessions.json");
+const USERS_FILE = path.join(DATA_DIR, "users.json");
 
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -28,6 +30,50 @@ function ensureDataDir() {
   }
 }
 
+// ─── Users Store ───────────────────────────────────────────────────────
+function loadUsers(): Map<string, AdminUser> {
+  ensureDataDir();
+  try {
+    if (fs.existsSync(USERS_FILE)) {
+      const raw = fs.readFileSync(USERS_FILE, "utf-8");
+      const arr = JSON.parse(raw) as AdminUser[];
+      return new Map(arr.map((u) => [u.username, u]));
+    }
+  } catch {
+    // Corrupt or missing — start fresh
+  }
+
+  // Seed with admin1 as superuser
+  seedUsers();
+  return loadUsers();
+}
+
+function saveUsers(users: Map<string, AdminUser>) {
+  ensureDataDir();
+  try {
+    const arr = [...users.values()];
+    fs.writeFileSync(USERS_FILE, JSON.stringify(arr, null, 2), "utf-8");
+  } catch (e) {
+    console.error("[admin-auth] Failed to persist users:", e);
+  }
+}
+
+function seedUsers() {
+  const users = new Map<string, AdminUser>();
+  // Note: We'll hash this synchronously for seeding
+  const passwordHash = bcrypt.hashSync("AndaraLab@Secure#2026!", SALT_ROUNDS);
+  users.set("admin1", {
+    username: "admin1",
+    passwordHash,
+    role: "superuser",
+    createdAt: new Date().toISOString(),
+  });
+  saveUsers(users);
+}
+
+let users: Map<string, AdminUser> = loadUsers();
+
+// ─── Sessions Store ─────────────────────────────────────────────────
 function loadSessions(): Map<string, AdminSession> {
   ensureDataDir();
   try {
@@ -69,9 +115,46 @@ function purgeExpiredSessions() {
   if (changed) saveSessions(sessions);
 }
 
-export function validateAdminCredentials(username: string, password: string): boolean {
-  const expected = ADMIN_CREDENTIALS[username];
-  return typeof expected === "string" && expected === password;
+// ─── Auth Functions ─────────────────────────────────────────────────
+export async function validateAdminCredentials(username: string, password: string): Promise<boolean> {
+  const user = users.get(username);
+  if (!user) return false;
+  return bcrypt.compare(password, user.passwordHash);
+}
+
+export function getUser(username: string): AdminUser | undefined {
+  return users.get(username);
+}
+
+export function listUsers(): AdminUser[] {
+  return [...users.values()];
+}
+
+export async function createUser(username: string, password: string, role: "superuser" | "regular" = "regular"): Promise<AdminUser> {
+  const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+  const user: AdminUser = {
+    username,
+    passwordHash,
+    role,
+    createdAt: new Date().toISOString(),
+  };
+  users.set(username, user);
+  saveUsers(users);
+  return user;
+}
+
+export async function changePassword(username: string, newPassword: string): Promise<void> {
+  const user = users.get(username);
+  if (!user) throw new Error("User not found");
+  const passwordHash = await bcrypt.hash(newPassword, SALT_ROUNDS);
+  user.passwordHash = passwordHash;
+  users.set(username, user);
+  saveUsers(users);
+}
+
+export function deleteUser(username: string): void {
+  users.delete(username);
+  saveUsers(users);
 }
 
 export function createAdminSession(username: string): AdminSession {
@@ -96,6 +179,15 @@ export function getAdminSession(token: string): AdminSession | null {
     saveSessions(sessions);
     return null;
   }
+  return session;
+}
+
+export function renewAdminSession(token: string): AdminSession | null {
+  purgeExpiredSessions();
+  const session = sessions.get(token);
+  if (!session) return null;
+  session.expiresAt = Date.now() + SESSION_TTL_MS;
+  saveSessions(sessions);
   return session;
 }
 

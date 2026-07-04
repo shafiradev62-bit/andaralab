@@ -1,11 +1,14 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import path from "path";
 import router from "./routes";
 import { logger } from "./lib/logger";
 import { activityLogger } from "./middlewares/activity-logger.js";
+import { requireAdminAuth, type AdminAuthRequest } from "./middlewares/admin-auth.js";
 
 const app: Express = express();
+app.set("trust proxy", true);
 
 app.use(
   pinoHttp({
@@ -42,6 +45,9 @@ const allowedOrigins = [
   "https://andaralab-lkxp7b875-rahmis-projects-881d2cc1.vercel.app",
   "https://andara-lab.vercel.app",
   "https://andara-cl3il0m9o-rahmis-projects-881d2cc1.vercel.app",
+  // Production domain
+  "https://andaralab.id",
+  "https://www.andaralab.id",
 ];
 
 /** Comma-separated extra origins (e.g. https://lab.example.com,http://10.0.0.5:8080) */
@@ -52,6 +58,9 @@ const extraOrigins = (process.env.CORS_ORIGINS ?? "")
 
 app.use(cors({
   origin: (origin, callback) => {
+    if (process.env.CORS_ALLOW_ALL === "true") {
+      return callback(null, true);
+    }
     // Allow requests with no origin (e.g., mobile apps, curl)
     if (!origin) return callback(null, true);
     
@@ -76,12 +85,51 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(activityLogger);
 
+// Serve uploaded images as static files via /images/<filename>
+// This proxies directly from /opt/andaralab-data/images/ on VPS
+const DATA_DIR = process.env.DATA_DIR ?? "/data";
+app.use("/images", express.static(path.join(DATA_DIR, "images"), {
+  maxAge: "7d",
+  etag: true,
+}));
+
 // Prevent browser/proxy caching on all API responses
 app.use("/api", (_req, res, next) => {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
   res.setHeader("Pragma", "no-cache");
   res.setHeader("Expires", "0");
   next();
+});
+
+function isProtectedAdminApi(req: Request): boolean {
+  const apiPath = req.path;
+  const method = req.method.toUpperCase();
+  const isMutation = method === "POST" || method === "PUT" || method === "PATCH" || method === "DELETE";
+  const cmsPath =
+    apiPath.startsWith("/datasets") ||
+    apiPath.startsWith("/pages") ||
+    apiPath.startsWith("/blog") ||
+    apiPath.startsWith("/analisis") ||
+    apiPath.startsWith("/featured-insights") ||
+    apiPath.startsWith("/exchange-rates") ||
+    apiPath.startsWith("/calendar/events") ||
+    apiPath.startsWith("/calendar/config") ||
+    apiPath.startsWith("/webhook") ||
+    apiPath.startsWith("/upload");
+
+  if (apiPath.startsWith("/auth/login")) return false;
+  if (apiPath.startsWith("/auth/renew")) return false;
+  if (apiPath.startsWith("/health")) return false;
+  if (apiPath.startsWith("/member-auth")) return false;
+  if (apiPath.startsWith("/subscriptions")) return false;
+  if (apiPath.startsWith("/webhook/deploy")) return false; // has its own secret-based auth
+  if (apiPath.startsWith("/activity")) return true;
+  return isMutation && cmsPath;
+}
+
+app.use("/api", (req, res, next) => {
+  if (!isProtectedAdminApi(req)) return next();
+  return requireAdminAuth(req as AdminAuthRequest, res, next);
 });
 
 app.use("/api", router);

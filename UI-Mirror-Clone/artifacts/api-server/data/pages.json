@@ -60,7 +60,7 @@
     ],
     "id": 1,
     "createdAt": "2026-04-15T10:43:47.976Z",
-    "updatedAt": "2026-04-15T10:43:47.977Z"
+    "updatedAt": "2026-05-01T12:20:47.107Z"
   },
   {
     "slug": "/",
@@ -788,58 +788,6 @@
     "updatedAt": "2026-04-15T10:43:47.977Z"
   },
   {
-    "slug": "/blog/lab-notes",
-    "locale": "en",
-    "status": "published",
-    "title": "Lab Notes",
-    "description": "Methodology, data, and how we build our research.",
-    "navLabel": "Lab Notes",
-    "section": "root",
-    "content": [
-      {
-        "type": "hero",
-        "headline": "Lab Notes",
-        "subheadline": "Behind the scenes at AndaraLab."
-      },
-      {
-        "type": "posts",
-        "title": "Articles",
-        "categories": [
-          "lab-notes"
-        ]
-      }
-    ],
-    "id": 23,
-    "createdAt": "2026-04-15T10:43:47.977Z",
-    "updatedAt": "2026-04-15T10:43:47.977Z"
-  },
-  {
-    "slug": "/blog/lab-notes",
-    "locale": "id",
-    "status": "published",
-    "title": "Catatan Lab",
-    "description": "Metodologi, data, dan proses riset kami.",
-    "navLabel": "Catatan Lab",
-    "section": "root",
-    "content": [
-      {
-        "type": "hero",
-        "headline": "Catatan Lab",
-        "subheadline": "Di balik layar AndaraLab."
-      },
-      {
-        "type": "posts",
-        "title": "Artikel",
-        "categories": [
-          "lab-notes"
-        ]
-      }
-    ],
-    "id": 24,
-    "createdAt": "2026-04-15T10:43:47.977Z",
-    "updatedAt": "2026-04-15T10:43:47.977Z"
-  },
-  {
     "slug": "/data",
     "locale": "en",
     "status": "published",
@@ -974,7 +922,7 @@
     ],
     "id": 29,
     "createdAt": "2026-04-15T10:43:47.977Z",
-    "updatedAt": "2026-04-15T10:43:47.977Z"
+    "updatedAt": "2026-05-01T05:34:57.054Z"
   },
   {
     "slug": "/sectors/finance",

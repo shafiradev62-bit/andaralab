@@ -43,13 +43,13 @@ function formatDate(dateStr?: string) {
 
 function HeroSection({ headline, subheadline, ctaText, ctaHref }: any) {
   return (
-    <section className="border-b border-[#E5E7EB] py-16">
+    <section className="border-b border-[#E5E7EB] dark:border-white/10 py-16">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="max-w-[720px]">
-          <h1 className="text-[38px] font-bold text-gray-900 leading-tight mb-4">{headline}</h1>
-          {subheadline && <p className="text-[16px] text-gray-500 leading-relaxed mb-6">{subheadline}</p>}
+          <h1 className="text-[38px] font-bold text-gray-900 dark:text-gray-50 leading-tight mb-4">{headline}</h1>
+          {subheadline && <p className="text-[16px] text-gray-500 dark:text-gray-400 leading-relaxed mb-6">{subheadline}</p>}
           {ctaText && ctaHref && (
-            <Link href={ctaHref} className="inline-flex items-center gap-2 text-[13.5px] font-medium text-gray-900 border border-gray-900 px-5 py-2.5 hover:bg-gray-100">
+            <Link href={ctaHref} className="inline-flex items-center gap-2 text-[13.5px] font-medium text-gray-900 dark:text-gray-100 border border-gray-900 dark:border-white/40 px-5 py-2.5 hover:bg-gray-100 dark:hover:bg-white/10">
               {ctaText} <ArrowRight className="w-4 h-4" />
             </Link>
           )}
@@ -62,7 +62,7 @@ function HeroSection({ headline, subheadline, ctaText, ctaHref }: any) {
 function TextSection({ content }: any) {
   return (
     <section className="max-w-[1200px] mx-auto px-6 py-10">
-      <p className="text-[15px] text-gray-600 leading-[1.8] max-w-[720px]">{content}</p>
+      <p className="text-[15px] text-gray-600 dark:text-gray-300 leading-[1.8] max-w-[720px]">{content}</p>
     </section>
   );
 }
@@ -70,15 +70,15 @@ function TextSection({ content }: any) {
 function StatsSection({ items }: any) {
   const list = Array.isArray(items) ? items : [];
   return (
-    <section className="bg-gray-50 border-y border-[#E5E7EB] py-12">
+    <section className="bg-gray-50 dark:bg-gray-900 border-y border-[#E5E7EB] dark:border-white/10 py-12">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {list.map((item, i) => (
             <div key={i} className="text-center">
-              <div className="text-[28px] font-bold text-gray-900 mb-1">
-                {item.value}{item.unit && <span className="text-[16px] font-normal text-gray-500 ml-1">{item.unit}</span>}
+              <div className="text-[28px] font-bold text-gray-900 dark:text-gray-50 mb-1">
+                {item.value}{item.unit && <span className="text-[16px] font-normal text-gray-500 dark:text-gray-400 ml-1">{item.unit}</span>}
               </div>
-              <div className="text-[12px] text-gray-400 uppercase tracking-wide">{item.label}</div>
+              <div className="text-[12px] text-gray-400 dark:text-gray-500 uppercase tracking-wide">{item.label}</div>
             </div>
           ))}
         </div>
@@ -89,13 +89,13 @@ function StatsSection({ items }: any) {
 
 function CTASection({ heading, body, buttonText, buttonHref }: any) {
   return (
-    <section className="bg-white border-y border-[#E5E7EB] py-12">
+    <section className="bg-white dark:bg-gray-950 border-y border-[#E5E7EB] dark:border-white/10 py-12">
       <div className="max-w-[1200px] mx-auto px-6 flex items-center justify-between">
         <div>
-          <h3 className="text-[20px] font-semibold text-gray-900 mb-2">{heading}</h3>
-          <p className="text-[14px] text-gray-500">{body}</p>
+          <h3 className="text-[20px] font-semibold text-gray-900 dark:text-gray-50 mb-2">{heading}</h3>
+          <p className="text-[14px] text-gray-500 dark:text-gray-400">{body}</p>
         </div>
-        <Link href={buttonHref} className="flex-shrink-0 inline-flex items-center gap-2 text-[13px] font-medium text-gray-900 border border-gray-900 px-5 py-2.5 hover:bg-gray-100">
+        <Link href={buttonHref} className="flex-shrink-0 inline-flex items-center gap-2 text-[13px] font-medium text-gray-900 dark:text-gray-100 border border-gray-900 dark:border-white/40 px-5 py-2.5 hover:bg-gray-100 dark:hover:bg-white/10">
           {buttonText} <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
@@ -112,7 +112,6 @@ function FeaturedSection({ slugs, limit }: any) {
   const { data: allPosts = [] } = usePosts({ status: "published" });
   const raw = Array.isArray(slugs) ? slugs : [];
   const targetSlugs: string[] = limit ? raw.slice(0, limit) : raw;
-  // Match by slug from CMS posts, fallback to first N published posts if slugs not found
   const matched = targetSlugs
     .map((s: string) => allPosts.find((p) => p.slug === s))
     .filter(Boolean) as typeof allPosts;
@@ -120,18 +119,18 @@ function FeaturedSection({ slugs, limit }: any) {
   if (!items.length) return null;
   return (
     <section className="max-w-[1200px] mx-auto px-6 py-10">
-      <h2 className="text-[18px] font-semibold text-gray-900 mb-6">{t("featured_insights_title")}</h2>
+      <h2 className="text-[18px] font-semibold text-gray-900 dark:text-gray-50 mb-6">{t("featured_insights_title")}</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {items.map((post, i) => (
           <Link key={post.slug} href={"/article/" + post.slug.replace(/^\//, "")}
-            className={"border border-[#E5E7EB] hover:border-gray-300 hover:shadow-sm transition-all group " + (i === 0 ? "md:col-span-3" : "")}>
+            className={"border border-[#E5E7EB] dark:border-white/10 hover:border-gray-300 dark:hover:border-white/25 hover:shadow-sm transition-all group bg-white dark:bg-gray-900 " + (i === 0 ? "md:col-span-3" : "")}>
             {post.image && <div className="h-[180px] overflow-hidden"><img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" /></div>}
             <div className="p-4">
               <div className="flex items-center gap-2 mb-2">
-                {post.tag && <span className="inline-flex items-center gap-1 text-[10px] font-medium text-gray-900 bg-slate-100 px-2 py-0.5"><Tag className="w-3 h-3" />{post.tag}</span>}
-                {post.readTime && <span className="flex items-center gap-1 text-[11px] text-gray-400"><Clock className="w-3 h-3" />{post.readTime}</span>}
+                {post.tag && <span className="inline-flex items-center gap-1 text-[10px] font-medium text-gray-900 dark:text-gray-100 bg-slate-100 dark:bg-white/10 px-2 py-0.5"><Tag className="w-3 h-3" />{post.tag}</span>}
+                {post.readTime && <span className="flex items-center gap-1 text-[11px] text-gray-400 dark:text-gray-500"><Clock className="w-3 h-3" />{post.readTime}</span>}
               </div>
-              <h3 className="text-[14px] font-semibold text-gray-900 group-hover:text-gray-900 transition-colors">{post.title}</h3>
+              <h3 className="text-[14px] font-semibold text-gray-900 dark:text-gray-100 transition-colors">{post.title}</h3>
             </div>
           </Link>
         ))}
@@ -197,7 +196,7 @@ function PostsSection({ categories, title }: { categories: string[]; title?: str
 
   return (
     <section className="max-w-[1200px] mx-auto px-6 py-10">
-      {title && <h2 className="text-[18px] font-semibold text-gray-900 mb-6">{title}</h2>}
+      {title && <h2 className="text-[18px] font-semibold text-gray-900 dark:text-gray-50 mb-6">{title}</h2>}
       {isLoading && (
         <div className="flex items-center justify-center py-24 gap-3 text-gray-400">
           <Loader2 className="w-5 h-5 animate-spin" />
@@ -205,7 +204,7 @@ function PostsSection({ categories, title }: { categories: string[]; title?: str
         </div>
       )}
       {!isLoading && posts.length === 0 && (
-        <div className="text-center py-16 text-gray-400 text-[14px]">{t("no_articles_match")}</div>
+        <div className="text-center py-16 text-gray-400 dark:text-gray-500 text-[14px]">{t("no_articles_match")}</div>
       )}
       {!isLoading && posts.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -213,7 +212,7 @@ function PostsSection({ categories, title }: { categories: string[]; title?: str
             <Link
               key={post.id}
               href={`/article/${post.slug.replace(/^\//, "")}`}
-              className={`border border-[#E5E7EB] hover:border-gray-300 hover:shadow-sm transition-all cursor-pointer group ${i === 0 ? "md:col-span-2" : ""}`}
+              className={`border border-[#E5E7EB] dark:border-white/10 hover:border-gray-300 dark:hover:border-white/25 hover:shadow-sm transition-all cursor-pointer group bg-white dark:bg-gray-900 ${i === 0 ? "md:col-span-2" : ""}`}
             >
               {post.image && i === 0 && (
                 <div className="h-[220px] overflow-hidden">
@@ -237,24 +236,24 @@ function PostsSection({ categories, title }: { categories: string[]; title?: str
                     </span>
                   )}
                   {post.readTime && (
-                    <span className="flex items-center gap-1 text-[11px] text-gray-400">
+                    <span className="flex items-center gap-1 text-[11px] text-gray-400 dark:text-gray-500">
                       <Clock className="w-3 h-3" />
                       {post.readTime}
                     </span>
                   )}
-                  <span className="text-[11px] text-gray-400">{formatDate(post.publishedAt || post.createdAt)}</span>
+                  <span className="text-[11px] text-gray-400 dark:text-gray-500">{formatDate(post.publishedAt || post.createdAt)}</span>
                 </div>
                 <h2
-                  className={`font-semibold text-gray-900 mb-2 leading-snug group-hover:text-gray-900 transition-colors ${
+                  className={`font-semibold text-gray-900 dark:text-gray-100 mb-2 leading-snug transition-colors ${
                     i === 0 ? "text-[20px]" : "text-[15px]"
                   }`}
                 >
                   {post.title}
                 </h2>
                 {post.excerpt && (
-                  <p className="text-[13px] text-gray-500 leading-relaxed mb-4">{post.excerpt}</p>
+                  <p className="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed mb-4">{post.excerpt}</p>
                 )}
-                <span className="flex items-center gap-1.5 text-[12.5px] font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
+                <span className="flex items-center gap-1.5 text-[12.5px] font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
                   {t("read_more_label")} <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
@@ -272,7 +271,7 @@ function ChartSection({ datasetId, title }: any) {
   const dataset = datasets.find((d: any) => d.id === datasetId);
   if (!dataset) return (
     <section className="max-w-[1200px] mx-auto px-6 py-10">
-      <div className="border border-[#E5E7EB] p-8 text-center text-gray-400 text-[13px]">
+      <div className="border border-[#E5E7EB] dark:border-white/10 p-8 text-center text-gray-400 dark:text-gray-500 text-[13px]">
         <BarChart2 className="w-8 h-8 mx-auto mb-2 opacity-30" />
         {t("dataset_not_found")}: {datasetId}
       </div>
@@ -280,9 +279,9 @@ function ChartSection({ datasetId, title }: any) {
   );
   return (
     <section className="max-w-[1200px] mx-auto px-6 py-10">
-      {title && <h2 className="text-[18px] font-semibold text-gray-900 mb-4">{title}</h2>}
-      {dataset.description && <p className="text-[14px] text-gray-500 mb-6 leading-relaxed">{dataset.description}</p>}
-      <div className="border border-[#E5E7EB] p-6">
+      {title && <h2 className="text-[18px] font-semibold text-gray-900 dark:text-gray-50 mb-4">{title}</h2>}
+      {dataset.description && <p className="text-[14px] text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">{dataset.description}</p>}
+      <div className="border border-[#E5E7EB] dark:border-white/10 p-6">
         <InteractiveChart dataset={dataset} height={280} />
       </div>
     </section>
@@ -349,24 +348,24 @@ function SectionBlock({ section, pageSlug, pageTitle, pageSection }: { section: 
 function AboutSectionContent({ headline, items, description }: { headline?: string; items?: { label: string; value: string; unit?: string }[]; description?: string }) {
   const { t } = useLocale();
   return (
-    <section className="border-t border-[#E5E7EB] bg-white">
+    <section className="border-t border-[#E5E7EB] dark:border-white/10 bg-white dark:bg-gray-950">
       <div className="max-w-[1200px] mx-auto px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-4">{t("about_andaralab")}</div>
+            <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4">{t("about_andaralab")}</div>
             {description ? (
-              <p className="text-[14.5px] text-gray-500 leading-relaxed">{description}</p>
+              <p className="text-[14.5px] text-gray-500 dark:text-gray-400 leading-relaxed">{description}</p>
             ) : null}
           </div>
           <div>
-            <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-4">{headline ?? t("our_approach")}</div>
-            <div className="space-y-0 border border-[#E5E7EB]">
+            <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500 mb-4">{headline ?? t("our_approach")}</div>
+            <div className="space-y-0 border border-[#E5E7EB] dark:border-white/10">
               {(items ?? []).map((item, i, arr) => (
-                <div key={i} className={`flex gap-4 p-5 ${i < arr.length - 1 ? "border-b border-[#E5E7EB]" : ""}`}>
-                  <div className="text-[11px] font-bold text-gray-300 w-6 flex-shrink-0 mt-0.5">0{i + 1}</div>
+                <div key={i} className={`flex gap-4 p-5 ${i < arr.length - 1 ? "border-b border-[#E5E7EB] dark:border-white/10" : ""}`}>
+                  <div className="text-[11px] font-bold text-gray-300 dark:text-gray-600 w-6 flex-shrink-0 mt-0.5">0{i + 1}</div>
                   <div>
-                    <div className="text-[14px] font-semibold text-gray-900 mb-1">{item.label}</div>
-                    <div className="text-[13px] text-gray-500 leading-relaxed">{item.value}</div>
+                    <div className="text-[14px] font-semibold text-gray-900 dark:text-gray-100 mb-1">{item.label}</div>
+                    <div className="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">{item.value}</div>
                   </div>
                 </div>
               ))}
@@ -416,12 +415,12 @@ export default function DynamicPage({ pageSlug, locale: propLocale }: { pageSlug
         : "This page does not exist or is still a draft in the CMS.");
     return (
       <div className="max-w-[1200px] mx-auto px-6 py-24 text-center">
-        <div className="text-[60px] font-bold text-gray-100 mb-4">404</div>
-        <h1 className="text-[22px] font-semibold text-gray-900 mb-3">
+        <div className="text-[60px] font-bold text-gray-100 dark:text-gray-800 mb-4">404</div>
+        <h1 className="text-[22px] font-semibold text-gray-900 dark:text-gray-100 mb-3">
           {locale === "id" ? "Halaman tidak ditemukan" : t("page_not_found_title")}
         </h1>
-        <p className="text-gray-500 mb-8 max-w-lg mx-auto leading-relaxed">{hint}</p>
-        <Link href="/" className="text-[13px] font-medium text-gray-900 border border-gray-900 px-6 py-2.5 hover:bg-gray-100">
+        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-lg mx-auto leading-relaxed">{hint}</p>
+        <Link href="/" className="text-[13px] font-medium text-gray-900 dark:text-gray-100 border border-gray-900 dark:border-white/40 px-6 py-2.5 hover:bg-gray-100 dark:hover:bg-white/10">
           {t("go_home")}
         </Link>
       </div>

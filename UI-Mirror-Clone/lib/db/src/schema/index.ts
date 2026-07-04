@@ -13,6 +13,9 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// Export membership schema
+export * from "./membership";
+
 // ─── Chart Dataset Table ──────────────────────────────────────────────────────
 //
 // Core entity: a named time-series dataset that renders as a chart.

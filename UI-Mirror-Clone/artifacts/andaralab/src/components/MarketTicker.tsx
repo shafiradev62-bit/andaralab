@@ -1,4 +1,5 @@
 import { useLocale } from "@/lib/locale";
+import { useTheme } from "@/lib/theme";
 import { useExchangeRates } from "@/lib/cms-store";
 
 // Default fallback tickers if API is unavailable
@@ -17,8 +18,10 @@ const FALLBACK_TICKERS_EN = [
   { symbol: "CPI ID", value: "2.51%", change: "-0.33pp", up: true },
 ];
 
-export default function MarketTicker({ dark = false }: { dark?: boolean }) {
+export default function MarketTicker({ dark: darkProp = false }: { dark?: boolean }) {
   const { locale, t } = useLocale();
+  const { isDark } = useTheme();
+  const dark = isDark || darkProp;
   const { data: exchangeRates = [] } = useExchangeRates();
 
   // Use CMS data if available, otherwise fall back

@@ -1,0 +1,17 @@
+{
+  "name": "AndaraLab",
+  "short_name": "AndaraLab",
+  "description": "Economic Research & Policy Analysis",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a3a5c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

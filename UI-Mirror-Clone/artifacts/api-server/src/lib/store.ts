@@ -13,6 +13,11 @@ import {
   type SeedPage,
   type SeedBlogPost,
 } from "./seed-data.js";
+import {
+  normalizePageNavOrder,
+  normalizePostImagePosition,
+  resolveNavOrder,
+} from "./nav-order.js";
 
 // ─── Analisis Deskriptif Types ────────────────────────────────────────────────
 
@@ -379,7 +384,14 @@ class PersistentPageStore implements PageStore {
   private load() {
     const saved = readJson<PageRecord[]>(this.FILE, []);
     if (saved.length > 0) {
-      this.pages = new Map(saved.map((p) => [p.id, p]));
+      let migrated = false;
+      const normalized = saved.map((p) => {
+        const withOrder = normalizePageNavOrder(p);
+        if (withOrder.navOrder !== p.navOrder) migrated = true;
+        return withOrder;
+      });
+      this.pages = new Map(normalized.map((p) => [p.id, p]));
+      if (migrated) this.save();
     } else {
       this.seed();
     }
@@ -399,7 +411,7 @@ class PersistentPageStore implements PageStore {
   }
 
   list(filter?: { locale?: string; status?: string; section?: string }): PageRecord[] {
-    let all = [...this.pages.values()];
+    let all = [...this.pages.values()].map((p) => normalizePageNavOrder(p));
     if (filter?.locale)  all = all.filter((p) => p.locale === filter.locale);
     if (filter?.status)  all = all.filter((p) => p.status === filter.status);
     if (filter?.section) all = all.filter((p) => p.section === filter.section);
@@ -446,7 +458,13 @@ class PersistentPageStore implements PageStore {
 
   create(data: SeedPage): PageRecord {
     const id = nextId(this.pages);
-    const record: PageRecord = { ...cloneDeep(data), id, createdAt: now(), updatedAt: now() };
+    const record: PageRecord = normalizePageNavOrder({
+      ...cloneDeep(data),
+      id,
+      createdAt: now(),
+      updatedAt: now(),
+      navOrder: resolveNavOrder(data.slug, data.navOrder),
+    });
     this.pages.set(id, record);
     this.save();
     return record;
@@ -455,7 +473,11 @@ class PersistentPageStore implements PageStore {
   update(id: number, data: Partial<SeedPage>): PageRecord | null {
     const existing = this.pages.get(id);
     if (!existing) return null;
-    const updated: PageRecord = { ...existing, ...cloneDeep(data), updatedAt: now() };
+    const merged = { ...existing, ...cloneDeep(data), updatedAt: now() };
+    const updated: PageRecord = normalizePageNavOrder({
+      ...merged,
+      navOrder: resolveNavOrder(merged.slug, merged.navOrder),
+    });
     this.pages.set(id, updated);
     this.save();
     return updated;
@@ -507,7 +529,14 @@ class PersistentBlogPostStore implements BlogPostStore {
   private load() {
     const saved = readJson<BlogPostRecord[]>(this.FILE, []);
     if (saved.length > 0) {
-      this.posts = new Map(saved.map((p) => [p.id, p]));
+      let migrated = false;
+      const normalized = saved.map((p) => {
+        const next = normalizePostImagePosition(p);
+        if (next.imagePosition !== p.imagePosition) migrated = true;
+        return next;
+      });
+      this.posts = new Map(normalized.map((p) => [p.id, p]));
+      if (migrated) this.save();
     } else {
       this.seed();
     }
@@ -527,14 +556,17 @@ class PersistentBlogPostStore implements BlogPostStore {
   }
 
   list(filter?: { locale?: string; status?: string; category?: string }): BlogPostRecord[] {
-    let all = [...this.posts.values()];
+    let all = [...this.posts.values()].map((p) => normalizePostImagePosition(p));
     if (filter?.locale)   all = all.filter((p) => p.locale === filter.locale);
     if (filter?.status)   all = all.filter((p) => p.status === filter.status);
     if (filter?.category) all = all.filter((p) => p.category === filter.category);
     return all;
   }
 
-  get(id: number): BlogPostRecord | undefined { return this.posts.get(id); }
+  get(id: number): BlogPostRecord | undefined {
+    const post = this.posts.get(id);
+    return post ? normalizePostImagePosition(post) : undefined;
+  }
 
   getBySlug(slug: string, locale?: string): BlogPostRecord | undefined {
     const norm = slug.startsWith("/") ? slug : "/" + slug;
@@ -599,7 +631,12 @@ class PersistentBlogPostStore implements BlogPostStore {
 
   create(data: SeedBlogPost): BlogPostRecord {
     const id = nextId(this.posts);
-    const record: BlogPostRecord = { ...cloneDeep(data), id, createdAt: now(), updatedAt: now() };
+    const record: BlogPostRecord = normalizePostImagePosition({
+      ...cloneDeep(data),
+      id,
+      createdAt: now(),
+      updatedAt: now(),
+    });
     this.posts.set(id, record);
     this.save();
     return record;
@@ -608,7 +645,8 @@ class PersistentBlogPostStore implements BlogPostStore {
   update(id: number, data: Partial<SeedBlogPost>): BlogPostRecord | null {
     const existing = this.posts.get(id);
     if (!existing) return null;
-    const updated: BlogPostRecord = { ...existing, ...cloneDeep(data), updatedAt: now() };
+    const merged = { ...existing, ...cloneDeep(data), updatedAt: now() };
+    const updated: BlogPostRecord = normalizePostImagePosition(merged);
     this.posts.set(id, updated);
     this.save();
     return updated;

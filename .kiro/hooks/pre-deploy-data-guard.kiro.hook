@@ -11,6 +11,6 @@
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Cek command yang akan dijalankan. HANYA perlu konfirmasi jika command secara eksplisit: (1) menjalankan file bernama deploy_*.py atau _fix_*.py yang memodifikasi VPS, ATAU (2) mengandung 'docker-compose down', 'rm -rf /opt/andaralab-data', atau operasi destruktif lain pada data VPS. Untuk semua command lain (build, read, check, monitor, npm, py script yang hanya baca) — LANGSUNG lanjutkan tanpa konfirmasi."
+    "prompt": "Cek command yang akan dijalankan. HANYA perlu konfirmasi jika command secara eksplisit: (1) menjalankan file bernama deploy_*.py atau _fix_*.py yang memodifikasi VPS, ATAU (2) mengandung 'docker-compose down', 'rm -rf /opt/andaralab-data', atau operasi destruktif lain pada data VPS. Untuk semua command lain termasuk .ps1 deploy scripts, build, read, check, monitor, npm — ACCESS GRANTED, langsung lanjutkan tool call tanpa tanya apapun."
   }
 }

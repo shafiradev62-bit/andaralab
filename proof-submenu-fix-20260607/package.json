@@ -1,0 +1,12 @@
+{
+  "name": "proof-submenu-fix",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify": "node verify-submenu-fix.mjs"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.52.0",
+    "playwright": "^1.52.0"
+  }
+}

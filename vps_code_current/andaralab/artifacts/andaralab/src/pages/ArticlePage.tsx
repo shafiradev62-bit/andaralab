@@ -120,7 +120,7 @@ export default function ArticlePage() {
     return (
       <div className="flex items-center justify-center py-32 gap-3 text-gray-400">
         <Loader2 className="w-5 h-5 animate-spin" />
-        <span className="text-[13.5px]">Loading article…</span>
+        <span className="text-[13.5px]">{locale === "id" ? "Memuat artikel…" : "Loading article…"}</span>
       </div>
     );
   }
@@ -132,14 +132,18 @@ export default function ArticlePage() {
         : undefined;
     const hint =
       apiDetail ||
-      "This article doesn't exist, is still a draft in the CMS, or may have been moved.";
+      (locale === "id"
+        ? "Artikel ini tidak ada, masih berstatus draf di CMS, atau mungkin telah dipindahkan."
+        : "This article doesn't exist, is still a draft in the CMS, or may have been moved.");
     return (
       <div className="max-w-[1200px] mx-auto px-6 py-24 text-center">
         <div className="text-[72px] font-bold text-gray-100 mb-4">404</div>
-        <h1 className="text-[24px] font-semibold text-gray-900 mb-3">Article not found</h1>
+        <h1 className="text-[24px] font-semibold text-gray-900 mb-3">
+          {locale === "id" ? "Artikel tidak ditemukan" : "Article not found"}
+        </h1>
         <p className="text-gray-500 mb-8">{hint}</p>
         <Link href="/" className="text-[13.5px] font-medium text-gray-900 border border-gray-900 px-6 py-2.5 hover:bg-gray-100">
-          Go Home
+          {locale === "id" ? "Ke Beranda" : "Go Home"}
         </Link>
       </div>
     );
@@ -154,7 +158,7 @@ export default function ArticlePage() {
       {/* Breadcrumb */}
       <div className="border-b border-[#E5E7EB]">
         <div className="max-w-[1200px] mx-auto px-6 py-3 flex items-center gap-2 text-[12px] text-gray-400">
-          <Link href="/" className="hover:text-gray-700 transition-colors">Home</Link>
+          <Link href="/" className="hover:text-gray-700 transition-colors">{locale === "id" ? "Beranda" : "Home"}</Link>
           <span>/</span>
           <Link href={categoryHref} className="hover:text-gray-700 transition-colors">{post.category}</Link>
           <span>/</span>
@@ -217,13 +221,13 @@ export default function ArticlePage() {
 
             <div className="mt-10 pt-8 border-t border-[#E5E7EB] flex items-center justify-between">
               <div className="text-[12px] text-gray-400">
-                Published: <span className="text-gray-600">{publishedDate}</span> · AndaraLab Research
+                {locale === "id" ? "Diterbitkan" : "Published"}: <span className="text-gray-600">{publishedDate}</span> · AndaraLab Research
               </div>
               <Link
                 href={categoryHref}
                 className="inline-flex items-center gap-2 text-[12.5px] font-medium text-white bg-gray-900 px-4 py-2 hover:bg-gray-700 transition-colors"
               >
-                More in {post.category} <ArrowRight className="w-3.5 h-3.5" />
+                {locale === "id" ? `Lebih di ${post.category}` : `More in ${post.category}`} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
@@ -234,7 +238,7 @@ export default function ArticlePage() {
               {related.length > 0 && (
                 <div>
                   <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-4">
-                    Related Articles
+                    {locale === "id" ? "Artikel Terkait" : "Related Articles"}
                   </div>
                   <div className="space-y-0 border border-[#E5E7EB]">
                     {related.map((r, i) => (
@@ -265,28 +269,32 @@ export default function ArticlePage() {
 
               <div className="mt-6 border border-[#E5E7EB] p-4">
                 <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-3">
-                  About This Research
+                  {locale === "id" ? "Tentang Riset Ini" : "About This Research"}
                 </div>
                 <p className="text-[12.5px] text-gray-500 leading-relaxed mb-3">
-                  AndaraLab produces independent economic research for Indonesia and emerging markets.
+                  {locale === "id"
+                    ? "AndaraLab menghasilkan riset ekonomi independen untuk Indonesia dan pasar berkembang."
+                    : "AndaraLab produces independent economic research for Indonesia and emerging markets."}
                 </p>
                 <Link href="/about" className="text-[12px] font-medium text-gray-900 hover:underline flex items-center gap-1">
-                  About AndaraLab <ArrowRight className="w-3 h-3" />
+                  {locale === "id" ? "Tentang AndaraLab" : "About AndaraLab"} <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
 
               <div className="mt-4 border border-[#E5E7EB] p-4">
                 <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-2">
-                  Data Hub
+                  {locale === "id" ? "Pusat Data" : "Data Hub"}
                 </div>
                 <p className="text-[12.5px] text-gray-500 mb-3">
-                  Explore interactive charts and economic data behind this analysis.
+                  {locale === "id"
+                    ? "Jelajahi grafik interaktif dan data ekonomi di balik analisis ini."
+                    : "Explore interactive charts and economic data behind this analysis."}
                 </p>
                 <Link
                   href="/data"
                   className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white bg-gray-900 px-3 py-1.5 hover:bg-gray-700 transition-colors"
                 >
-                  Open Data Hub <ArrowRight className="w-3 h-3" />
+                  {locale === "id" ? "Buka Pusat Data" : "Open Data Hub"} <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
             </div>

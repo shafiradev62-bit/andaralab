@@ -6,14 +6,14 @@ All code assistants (Cursor, Codex, Claude, etc.) MUST follow this contract.
 ## 1) Single Deploy Method (Mandatory)
 
 - Deploy only with:
-  - `python vps_deploy.py`
+  - `python vps_deploy.py` (or `deploy-today.ps1` which uses it)
 - Do not introduce alternative deploy flows unless explicitly requested by maintainer.
 - Do not replace with ad-hoc manual docker commands as default workflow.
 
 ## 2) Data Source of Truth (Mandatory)
 
 - Backend live data is source of truth:
-  - `http://76.13.17.91:3001/api/*`
+  - `http://177.7.55.182:3001/api/*`
 - Frontend must render the same live data counts (datasets/pages/posts), not stale local cache.
 - Never switch frontend back to localhost-only API defaults in production builds.
 
@@ -21,7 +21,7 @@ All code assistants (Cursor, Codex, Claude, etc.) MUST follow this contract.
 
 - Keep production API routing resilient:
   - Primary: same-origin `/api`
-  - Fallback: `http://76.13.17.91:3001/api`
+  - Fallback: `http://177.7.55.182:3001/api`
 - Do not remove API fallback logic without explicit maintainer approval.
 
 ## 4) Persistence Policy (Mandatory)
@@ -39,16 +39,16 @@ All code assistants (Cursor, Codex, Claude, etc.) MUST follow this contract.
 
 Assistants must verify all of the following after deploy:
 
-- `http://76.13.17.91:3001/api/datasets` returns expected live count
-- `http://76.13.17.91:3001/api/pages` returns expected live count
-- `http://76.13.17.91` returns HTTP 200
-- `http://76.13.17.91/admin` returns HTTP 200
+- `http://177.7.55.182:3001/api/datasets` returns expected live count
+- `http://177.7.55.182:3001/api/pages` returns expected live count
+- `http://177.7.55.182` returns HTTP 200
+- `http://177.7.55.182/admin` returns HTTP 200
 
 If any check fails, continue fixing and redeploying until all pass.
 
 ## 7) Prohibited Changes (unless explicitly requested)
 
-- Do not change VPS host target (`76.13.17.91`) for production path.
+- Do not change VPS host target (`177.7.55.182`) for production path.
 - Do not remove deploy verification steps in `vps_deploy.py`.
 - Do not silently re-enable stale frontend fallback behavior as default.
 
@@ -66,4 +66,11 @@ If any check fails, continue fixing and redeploying until all pass.
 - Public views (charts, **DatasetPreviewTable**, formatters) are **read-only**; they must not change stored records.
 - Prefer backward-compatible, additive changes to JSON shapes.
 - See also: `.cursor/rules/data-integrity.mdc`.
+
+## 10) Post-Deploy Verification
+
+After every deploy, verify counts match `ANDARALAB_RULES.md`:
+- Datasets: 83
+- Posts: 18
+- Pages: 32
 
