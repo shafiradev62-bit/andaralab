@@ -7,30 +7,9 @@ const pillars = [
   { num: "03", title: "Clarity", desc: "Complex economic intelligence translated into clear, actionable insights for decision-makers." },
 ];
 
-const stats = [
-  { value: "100+", label: "Economic Indicators Tracked" },
-  { value: "15+", label: "Economies Monitored" },
-  { value: "5+", label: "Research Verticals" },
-  { value: "2019", label: "Founded, Jakarta" },
-];
-
 export default function AboutSection() {
   return (
     <section className="border-t border-[#E5E7EB] bg-white">
-      {/* Stats bar */}
-      <div className="border-b border-[#E5E7EB]">
-        <div className="max-w-[1200px] mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-[#E5E7EB]">
-            {stats.map((s, i) => (
-              <div key={i} className="px-6 py-6 text-center">
-                <div className="text-[32px] font-bold text-gray-900 leading-none">{s.value}</div>
-                <div className="text-[12px] text-gray-400 mt-1.5 leading-tight">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/* Main content */}
       <div className="max-w-[1200px] mx-auto px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
