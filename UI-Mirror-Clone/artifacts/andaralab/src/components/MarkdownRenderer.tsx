@@ -9,15 +9,13 @@ export function MarkdownRenderer({ content, inlineOnly = false }: MarkdownRender
   if (!content) return null;
 
   if (inlineOnly) {
-    // Strip leading # symbols for inline rendering (e.g. in titles)
     const cleanContent = content.replace(/^#+\s+/, '');
     return <>{renderInline(cleanContent)}</>;
   }
 
-  // Handle Headings (at the start of the string)
   if (content.startsWith('# ')) {
     return (
-      <h1 className="text-[22px] md:text-[26px] font-bold text-gray-900 mt-8 mb-4 leading-tight">
+      <h1 className="text-[22px] md:text-[26px] font-bold text-foreground mt-8 mb-4 leading-tight">
         {renderInline(content.replace('# ', ''))}
       </h1>
     );
@@ -25,7 +23,7 @@ export function MarkdownRenderer({ content, inlineOnly = false }: MarkdownRender
   
   if (content.startsWith('## ')) {
     return (
-      <h2 className="text-[18px] md:text-[22px] font-bold text-gray-900 mt-7 mb-3 leading-tight">
+      <h2 className="text-[18px] md:text-[22px] font-bold text-foreground mt-7 mb-3 leading-tight">
         {renderInline(content.replace('## ', ''))}
       </h2>
     );
@@ -33,53 +31,70 @@ export function MarkdownRenderer({ content, inlineOnly = false }: MarkdownRender
 
   if (content.startsWith('### ')) {
     return (
-      <h3 className="text-[16px] md:text-[18px] font-bold text-gray-900 mt-6 mb-2 leading-tight">
+      <h3 className="text-[16px] md:text-[18px] font-bold text-foreground mt-6 mb-2 leading-tight">
         {renderInline(content.replace('### ', ''))}
       </h3>
     );
   }
 
-  // Handle Bullet Points
-  if (content.startsWith('* ')) {
+  // Bullet: * item or - item
+  if (content.startsWith('* ') || content.startsWith('- ')) {
+    const text = content.replace(/^(\*|-)\s+/, '');
     return (
       <div className="flex gap-3 mb-4 pl-1">
-        <span className="text-gray-400 mt-1.5">•</span>
-        <div className="text-[14.5px] text-gray-700 leading-[1.8]">
-          {renderInline(content.replace('* ', ''))}
+        <span className="text-muted-foreground mt-1.5">•</span>
+        <div className="text-[14.5px] text-foreground/90 leading-[1.8]">
+          {renderInline(text)}
         </div>
       </div>
     );
   }
 
-  // Default Paragraph
+  // Numbered: 1. item
+  const numberedMatch = content.match(/^(\d+)\.\s+(.*)$/);
+  if (numberedMatch) {
+    return (
+      <div className="flex gap-3 mb-4 pl-1">
+        <span className="text-muted-foreground mt-1.5 font-medium min-w-[1.25rem]">{numberedMatch[1]}.</span>
+        <div className="text-[14.5px] text-foreground/90 leading-[1.8]">
+          {renderInline(numberedMatch[2])}
+        </div>
+      </div>
+    );
+  }
+
+  // Alphabetical: a. item or A. item
+  const alphaMatch = content.match(/^([a-zA-Z])\.\s+(.*)$/);
+  if (alphaMatch) {
+    return (
+      <div className="flex gap-3 mb-4 pl-1">
+        <span className="text-muted-foreground mt-1.5 font-medium min-w-[1.25rem]">{alphaMatch[1].toLowerCase()}.</span>
+        <div className="text-[14.5px] text-foreground/90 leading-[1.8]">
+          {renderInline(alphaMatch[2])}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <p className="text-[14.5px] text-gray-700 leading-[1.8] mb-5">
+    <p className="text-[14.5px] text-foreground/90 leading-[1.8] mb-5">
       {renderInline(content)}
     </p>
   );
 }
 
-/**
- * Basic inline markdown parser for bold and italic
- */
 function renderInline(text: string): React.ReactNode[] {
-  // Split by bold (**text**)
   const parts = text.split(/(\*\*.*?\*\*)/g);
   
   return parts.map((part, i) => {
-    // Bold
     if (part.startsWith('**') && part.endsWith('**')) {
       const boldText = part.slice(2, -2);
       return (
-        <strong key={i} className="font-bold text-gray-900">
+        <strong key={i} className="font-bold text-foreground">
           {boldText}
         </strong>
       );
     }
-    
-    // You can add more inline rules here (e.g., links, italic)
-    // For now, keeping it simple as per user request
-    
     return <React.Fragment key={i}>{part}</React.Fragment>;
   });
 }

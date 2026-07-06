@@ -89,6 +89,7 @@ import {
   PieChart,
   LayoutGrid,
   List,
+  ListOrdered,
   ArrowUp,
   ArrowDown,
   ArrowRight,
@@ -110,6 +111,11 @@ import {
   ExternalLink,
   Activity,
 } from "lucide-react";
+import {
+  applyListFormat,
+  getCursorLineIndex,
+  type ListKind,
+} from "@/lib/body-format";
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
@@ -2720,6 +2726,48 @@ function PageEditor({
 
 // ─── Blog Post Editor ──────────────────────────────────────────────────────────
 
+function BodyFormatToolbar({
+  value,
+  onChange,
+  textareaRef,
+}: {
+  value: string;
+  onChange: (next: string) => void;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+}) {
+  const applyToCursorLine = (kind: ListKind) => {
+    const lines = value.split("\n");
+    const ta = textareaRef.current;
+    const lineIdx = ta ? getCursorLineIndex(value, ta.selectionStart) : lines.length - 1;
+    lines[lineIdx] = applyListFormat(lines[lineIdx] ?? "", kind, lines, lineIdx);
+    onChange(lines.join("\n"));
+    requestAnimationFrame(() => ta?.focus());
+  };
+
+  const btnClass =
+    "flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-semibold border border-[#E5E7EB] text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors";
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 mb-2">
+      <span className="text-[10.5px] font-semibold text-gray-400 uppercase tracking-wide mr-1">
+        Format:
+      </span>
+      <button type="button" onClick={() => applyToCursorLine("bullet")} className={btnClass} title="Bullet list (* item)">
+        <List className="w-3.5 h-3.5" /> Bullet
+      </button>
+      <button type="button" onClick={() => applyToCursorLine("numbered")} className={btnClass} title="Numbered list (1. item)">
+        <ListOrdered className="w-3.5 h-3.5" /> Numbered
+      </button>
+      <button type="button" onClick={() => applyToCursorLine("alpha")} className={btnClass} title="Alphabetical list (a. item)">
+        <Type className="w-3.5 h-3.5" /> A–Z
+      </button>
+      <span className="text-[10px] text-gray-400 ml-1">
+        Klik baris lalu pilih format. Klik lagi untuk hapus prefix.
+      </span>
+    </div>
+  );
+}
+
 function PostEditor({
   post,
   onBack,
@@ -2832,6 +2880,7 @@ function PostEditor({
 
   const bodyLines = Array.isArray(draft.body) ? draft.body : [""];
   const setBodyLines = (lines: string[]) => patch({ body: lines });
+  const bodyTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   const articleHref = savedSlug ? `/article/${savedSlug}` : "/blog";
 
@@ -3075,15 +3124,21 @@ function PostEditor({
           <label className="block text-[11.5px] font-semibold text-gray-500 uppercase tracking-wide mb-1.5">
             Body — Paragraphs (one per line)
           </label>
+          <BodyFormatToolbar
+            value={bodyLines.join("\n")}
+            onChange={(text) => setBodyLines(text.split("\n"))}
+            textareaRef={bodyTextareaRef}
+          />
           <textarea
+            ref={bodyTextareaRef}
             rows={bodyLines.length + 2}
             value={bodyLines.join("\n")}
             onChange={(e) => setBodyLines(e.target.value.split("\n"))}
             className="w-full border border-[#E5E7EB] px-3 py-2 text-[13.5px] text-gray-900 focus:outline-none focus:border-gray-900 resize-y font-mono leading-relaxed"
-            placeholder="Enter paragraph text… Each line becomes a new paragraph."
+            placeholder="Enter paragraph text… Each line becomes a new paragraph. Use toolbar for bullet, numbered, or alphabetical lists."
           />
           <p className="text-[10.5px] text-gray-400 mt-1">
-            {bodyLines.length} paragraph{bodyLines.length !== 1 ? "s" : ""}
+            {bodyLines.length} paragraph{bodyLines.length !== 1 ? "s" : ""} · Bullet: <code>* teks</code> · Numbered: <code>1. teks</code> · Alphabetical: <code>a. teks</code>
           </p>
         </div>
       </div>
