@@ -4,7 +4,6 @@ import { ArrowLeft, ArrowRight, Clock, Loader2 } from "lucide-react";
 import { usePosts, usePostBySlug } from "@/lib/cms-store";
 import { useLocale } from "@/lib/locale";
 import { applyDocumentSeo, truncateMeta } from "@/lib/document-meta";
-import { useDarkMode } from "@/lib/dark-mode-context";
 
 function formatDate(dateStr?: string) {
   if (!dateStr) return "";
@@ -16,7 +15,6 @@ function formatDate(dateStr?: string) {
 export default function ArticlePage() {
   const params = useParams<{ slug: string }>();
   const { locale, t } = useLocale();
-  const { darkMode } = useDarkMode();
   const slug = (params.slug || "").replace(/^\//, "");
   const { data: post, isLoading: postLoading, error: postError } = usePostBySlug(slug, locale);
   const { data: posts = [] } = usePosts({ status: "published" });
@@ -51,7 +49,7 @@ export default function ArticlePage() {
 
   if (isLoading) {
     return (
-      <div className={`flex items-center justify-center py-32 gap-3 ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"}`}>
+      <div className="flex items-center justify-center py-32 gap-3 text-gray-400">
         <Loader2 className="w-5 h-5 animate-spin" />
         <span className="text-[13.5px]">Loading article…</span>
       </div>
@@ -68,10 +66,10 @@ export default function ArticlePage() {
       "This article doesn't exist, is still a draft in the CMS, or may have been moved.";
     return (
       <div className="max-w-[1200px] mx-auto px-6 py-24 text-center">
-        <div className={`text-[72px] font-bold ${darkMode ? "text-[hsl(217,33%,17%)]" : "text-gray-100"} mb-4`}>404</div>
-        <h1 className={`text-[24px] font-semibold ${darkMode ? "text-[hsl(210,40%,98%)]" : "text-gray-900"} mb-3`}>Article not found</h1>
-        <p className={`${darkMode ? "text-[hsl(210,40%,98%)]/60" : "text-gray-500"} mb-8`}>{hint}</p>
-        <Link href="/" className={`text-[13.5px] font-medium ${darkMode ? "text-[hsl(210,40%,98%)] border border-[hsl(210,40%,98%)] hover:bg-[hsl(217,33%,17%)]" : "text-gray-900 border border-gray-900 hover:bg-gray-100"} px-6 py-2.5 transition-colors`}>
+        <div className="text-[72px] font-bold text-gray-100 mb-4">404</div>
+        <h1 className="text-[24px] font-semibold text-gray-900 mb-3">Article not found</h1>
+        <p className="text-gray-500 mb-8">{hint}</p>
+        <Link href="/" className="text-[13.5px] font-medium text-gray-900 border border-gray-900 px-6 py-2.5 hover:bg-gray-100">
           Go Home
         </Link>
       </div>
@@ -83,15 +81,15 @@ export default function ArticlePage() {
   const bodyParagraphs = Array.isArray(post.body) ? post.body : [];
 
   return (
-    <div className={darkMode ? "bg-[hsl(222,47%,8%)]" : "bg-white"}>
+    <div className="bg-white">
       {/* Breadcrumb */}
-      <div className={darkMode ? "border-b border-[hsl(217,33%,17%)]" : "border-b border-[#E5E7EB]"}>
-        <div className={`max-w-[1200px] mx-auto px-6 py-3 flex items-center gap-2 text-[12px] ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"}`}>
-          <Link href="/" className={`hover:${darkMode ? "text-[hsl(210,40%,98%)]" : "text-gray-700"} transition-colors`}>Home</Link>
+      <div className="border-b border-[#E5E7EB]">
+        <div className="max-w-[1200px] mx-auto px-6 py-3 flex items-center gap-2 text-[12px] text-gray-400">
+          <Link href="/" className="hover:text-gray-700 transition-colors">Home</Link>
           <span>/</span>
-          <Link href={categoryHref} className={`hover:${darkMode ? "text-[hsl(210,40%,98%)]" : "text-gray-700"} transition-colors`}>{post.category}</Link>
+          <Link href={categoryHref} className="hover:text-gray-700 transition-colors">{post.category}</Link>
           <span>/</span>
-          <span className={`${darkMode ? "text-[hsl(210,40%,98%)]/70" : "text-gray-600"} truncate max-w-[300px]`}>{post.title}</span>
+          <span className="text-gray-600 truncate max-w-[300px]">{post.title}</span>
         </div>
       </div>
 
@@ -102,7 +100,7 @@ export default function ArticlePage() {
           <div className="lg:col-span-2">
             <Link
               href={categoryHref}
-              className={`inline-flex items-center gap-1.5 text-[12px] font-medium ${darkMode ? "text-[hsl(210,40%,98%)]" : "text-gray-900"} mb-5 hover:underline`}
+              className="inline-flex items-center gap-1.5 text-[12px] font-medium text-gray-900 mb-5 hover:underline"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               {post.tag || post.category}
@@ -110,30 +108,30 @@ export default function ArticlePage() {
 
             <div className="flex items-center gap-2 mb-4">
               {post.tag && (
-                <span className={`text-[10.5px] font-semibold ${darkMode ? "text-[hsl(210,40%,98%)] border border-[hsl(217,33%,17%)] bg-[hsl(217,33%,17%)]" : "text-gray-900 border border-gray-900/20 bg-gray-100"} px-2 py-0.5 uppercase tracking-wide`}>
+                <span className="text-[10.5px] font-semibold text-gray-900 border border-gray-900/20 bg-gray-100 px-2 py-0.5 uppercase tracking-wide">
                   {post.tag}
                 </span>
               )}
               {post.readTime && (
-                <span className={`flex items-center gap-1 text-[12px] ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"}`}>
+                <span className="flex items-center gap-1 text-[12px] text-gray-400">
                   <Clock className="w-3 h-3" /> {post.readTime}
                 </span>
               )}
-              <span className={`text-[12px] ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"}`}>{publishedDate}</span>
+              <span className="text-[12px] text-gray-400">{publishedDate}</span>
             </div>
 
-            <h1 className={`text-[28px] md:text-[34px] font-bold ${darkMode ? "text-[hsl(210,40%,98%)]" : "text-gray-900"} leading-tight mb-4`}>
+            <h1 className="text-[28px] md:text-[34px] font-bold text-gray-900 leading-tight mb-4">
               {post.title}
             </h1>
 
             {post.excerpt && (
-              <p className={`text-[15px] ${darkMode ? "text-[hsl(210,40%,98%)]/60" : "text-gray-500"} leading-relaxed mb-6 border-l-4 ${darkMode ? "border-[hsl(210,40%,98%)]" : "border-gray-900"} pl-4`}>
+              <p className="text-[15px] text-gray-500 leading-relaxed mb-6 border-l-4 border-gray-900 pl-4">
                 {post.excerpt}
               </p>
             )}
 
             {post.image && (
-              <div className={`mb-8 ${darkMode ? "border border-[hsl(217,33%,17%)]" : "border border-[#E5E7EB]"} overflow-hidden`}>
+              <div className="mb-8 border border-[#E5E7EB] overflow-hidden">
                 <img
                   src={post.image}
                   alt={post.title}
@@ -144,19 +142,19 @@ export default function ArticlePage() {
 
             <div className="prose max-w-none">
               {bodyParagraphs.map((para, i) => (
-                <p key={i} className={`text-[14.5px] ${darkMode ? "text-[hsl(210,40%,98%)]/70" : "text-gray-700"} leading-[1.8] mb-5`}>
+                <p key={i} className="text-[14.5px] text-gray-700 leading-[1.8] mb-5">
                   {para}
                 </p>
               ))}
             </div>
 
-            <div className={`mt-10 pt-8 ${darkMode ? "border-t border-[hsl(217,33%,17%)]" : "border-t border-[#E5E7EB]"} flex items-center justify-between`}>
-              <div className={`text-[12px] ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"}`}>
-                Published: <span className={darkMode ? "text-[hsl(210,40%,98%)]/70" : "text-gray-600"}>{publishedDate}</span> · AndaraLab Research
+            <div className="mt-10 pt-8 border-t border-[#E5E7EB] flex items-center justify-between">
+              <div className="text-[12px] text-gray-400">
+                Published: <span className="text-gray-600">{publishedDate}</span> · AndaraLab Research
               </div>
               <Link
                 href={categoryHref}
-                className={`inline-flex items-center gap-2 text-[12.5px] font-medium text-white ${darkMode ? "bg-[hsl(210,40%,98%)] text-[hsl(222,47%,8%)] hover:bg-[hsl(210,40%,98%)]/80" : "bg-gray-900 hover:bg-gray-700"} px-4 py-2 transition-colors`}
+                className="inline-flex items-center gap-2 text-[12.5px] font-medium text-white bg-gray-900 px-4 py-2 hover:bg-gray-700 transition-colors"
               >
                 More in {post.category} <ArrowRight className="w-3.5 h-3.5" />
               </Link>
@@ -168,58 +166,58 @@ export default function ArticlePage() {
             <div className="sticky top-[6rem]">
               {related.length > 0 && (
                 <div>
-                  <div className={`text-[11px] font-semibold uppercase tracking-widest ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"} mb-4`}>
+                  <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-4">
                     Related Articles
                   </div>
-                  <div className={`space-y-0 ${darkMode ? "border border-[hsl(217,33%,17%)]" : "border border-[#E5E7EB]"}`}>
+                  <div className="space-y-0 border border-[#E5E7EB]">
                     {related.map((r, i) => (
                       <Link
                         key={r.slug}
                         href={`/article/${r.slug.replace(/^\//, "")}`}
-                        className={`block p-4 group ${darkMode ? "hover:bg-[hsl(217,33%,17%)]" : "hover:bg-gray-50"} transition-colors ${i < related.length - 1 ? (darkMode ? "border-b border-[hsl(217,33%,17%)]" : "border-b border-[#E5E7EB]") : ""}`}
+                        className={`block p-4 group hover:bg-gray-50 transition-colors ${i < related.length - 1 ? "border-b border-[#E5E7EB]" : ""}`}
                       >
                         <div className="flex items-center gap-1.5 mb-1.5">
                           {r.tag && (
-                            <span className={`text-[10px] font-semibold ${darkMode ? "text-[hsl(210,40%,98%)] bg-[hsl(217,33%,17%)]" : "text-gray-900 bg-gray-100"} px-1.5 py-0.5 uppercase tracking-wide`}>
+                            <span className="text-[10px] font-semibold text-gray-900 bg-gray-100 px-1.5 py-0.5 uppercase tracking-wide">
                               {r.tag}
                             </span>
                           )}
                           {r.readTime && (
-                            <span className={`text-[10.5px] ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"}`}>{r.readTime}</span>
+                            <span className="text-[10.5px] text-gray-400">{r.readTime}</span>
                           )}
                         </div>
-                        <h4 className={`text-[13px] font-medium ${darkMode ? "text-[hsl(210,40%,98%)]" : "text-gray-900"} leading-snug transition-colors`}>
+                        <h4 className="text-[13px] font-medium text-gray-900 leading-snug group-hover:text-gray-900 transition-colors">
                           {r.title}
                         </h4>
-                        <p className={`text-[11.5px] ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"} mt-1`}>{formatDate(r.publishedAt || r.createdAt)}</p>
+                        <p className="text-[11.5px] text-gray-400 mt-1">{formatDate(r.publishedAt || r.createdAt)}</p>
                       </Link>
                     ))}
                   </div>
                 </div>
               )}
 
-              <div className={`mt-6 ${darkMode ? "border border-[hsl(217,33%,17%)]" : "border border-[#E5E7EB]"} p-4`}>
-                <div className={`text-[11px] font-semibold uppercase tracking-widest ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"} mb-3`}>
+              <div className="mt-6 border border-[#E5E7EB] p-4">
+                <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-3">
                   About This Research
                 </div>
-                <p className={`text-[12.5px] ${darkMode ? "text-[hsl(210,40%,98%)]/60" : "text-gray-500"} leading-relaxed mb-3`}>
+                <p className="text-[12.5px] text-gray-500 leading-relaxed mb-3">
                   AndaraLab produces independent economic research for Indonesia and emerging markets.
                 </p>
-                <Link href="/about" className={`text-[12px] font-medium ${darkMode ? "text-[hsl(210,40%,98%)]" : "text-gray-900"} hover:underline flex items-center gap-1`}>
+                <Link href="/about" className="text-[12px] font-medium text-gray-900 hover:underline flex items-center gap-1">
                   About AndaraLab <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
 
-              <div className={`mt-4 ${darkMode ? "border border-[hsl(217,33%,17%)]" : "border border-[#E5E7EB]"} p-4`}>
-                <div className={`text-[11px] font-semibold uppercase tracking-widest ${darkMode ? "text-[hsl(210,40%,98%)]/50" : "text-gray-400"} mb-2`}>
+              <div className="mt-4 border border-[#E5E7EB] p-4">
+                <div className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-2">
                   Data Hub
                 </div>
-                <p className={`text-[12.5px] ${darkMode ? "text-[hsl(210,40%,98%)]/60" : "text-gray-500"} mb-3`}>
+                <p className="text-[12.5px] text-gray-500 mb-3">
                   Explore interactive charts and economic data behind this analysis.
                 </p>
                 <Link
                   href="/data"
-                  className={`inline-flex items-center gap-1.5 text-[12px] font-medium text-white ${darkMode ? "bg-[hsl(210,40%,98%)] text-[hsl(222,47%,8%)] hover:bg-[hsl(210,40%,98%)]/80" : "bg-gray-900 hover:bg-gray-700"} px-3 py-1.5 transition-colors`}
+                  className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white bg-gray-900 px-3 py-1.5 hover:bg-gray-700 transition-colors"
                 >
                   Open Data Hub <ArrowRight className="w-3 h-3" />
                 </Link>

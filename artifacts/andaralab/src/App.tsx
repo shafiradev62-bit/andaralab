@@ -15,17 +15,10 @@ import ArticlePage from "@/pages/ArticlePage";
 import AnalysisPage from "@/pages/AnalysisPage";
 import DynamicPage from "@/pages/DynamicPage";
 import { LocaleProvider, useLocale } from "@/lib/locale";
-import { DarkModeProvider, useDarkMode } from "@/lib/dark-mode-context";
 import { adminLogin, adminLogout, adminMe } from "@/lib/api";
 import {
   BlogPage,
   BlogCategoryPage,
-  MacroOutlooksPage,
-  PolicyMonetaryPage,
-  GeopoliticalPage,
-  DeepDivesPage,
-  RegionalPage,
-  ESGPage,
 } from "@/pages/SectionPage";
 
 function SiteHeader({ dark = false }: { dark?: boolean }) {
@@ -38,10 +31,9 @@ function SiteHeader({ dark = false }: { dark?: boolean }) {
 }
 
 function Layout({ children, withNewsletter = true, withHeader = true, headerDark = false }: { children: React.ReactNode; withNewsletter?: boolean; withHeader?: boolean; headerDark?: boolean }) {
-  const { darkMode } = useDarkMode();
   return (
-    <div className={`min-h-screen font-sans ${darkMode ? "dark bg-[hsl(222,47%,8%)] text-[hsl(210,40%,98%)]" : "text-gray-900 bg-white"}`}>
-      {withHeader && <SiteHeader dark={headerDark || darkMode} />}
+    <div className="min-h-screen text-gray-900 font-sans bg-white">
+      {withHeader && <SiteHeader dark={headerDark} />}
       {/* pt = ticker(2rem) + navbar(3.5rem) = 5.5rem; no pt when header is hidden */}
       <main className={withHeader ? "pt-[5.5rem]" : ""}>{children}</main>
       {withNewsletter && <NewsletterSection />}
@@ -203,101 +195,99 @@ function ScrollToTop() {
 
 export default function App() {
   return (
-    <DarkModeProvider>
-      <LocaleProvider>
-        <ScrollToTop />
-        <Switch>
-          <Route path="/admin">
-            <AdminRoute />
-          </Route>
+    <LocaleProvider>
+      <ScrollToTop />
+      <Switch>
+        <Route path="/admin">
+          <AdminRoute />
+        </Route>
 
-          <Route path="/contact">
-            <Layout withNewsletter={false}><ContactPage /></Layout>
-          </Route>
+        <Route path="/contact">
+          <Layout withNewsletter={false}><ContactPage /></Layout>
+        </Route>
 
-          <Route path="/about">
-            <Layout><AboutPage /></Layout>
-          </Route>
+        <Route path="/about">
+          <Layout><AboutPage /></Layout>
+        </Route>
 
-          <Route path="/macro/macro-outlooks">
-            <Layout><MacroOutlooksPage /></Layout>
-          </Route>
-          <Route path="/macro/policy-monetary">
-            <Layout><PolicyMonetaryPage /></Layout>
-          </Route>
-          <Route path="/macro/geopolitical">
-            <Layout><GeopoliticalPage /></Layout>
-          </Route>
-          <Route path="/macro">
-            <Layout><MacroOutlooksPage /></Layout>
-          </Route>
+        <Route path="/macro/macro-outlooks">
+          <Layout><CmsPage slug="/macro/macro-outlooks" /></Layout>
+        </Route>
+        <Route path="/macro/policy-monetary">
+          <Layout><CmsPage slug="/macro/policy-monetary" /></Layout>
+        </Route>
+        <Route path="/macro/geopolitical">
+          <Layout><CmsPage slug="/macro/geopolitical" /></Layout>
+        </Route>
+        <Route path="/macro">
+          <Layout><CmsPage slug="/macro/macro-outlooks" /></Layout>
+        </Route>
 
-          <Route path="/sectoral/deep-dives">
-            <Layout><DeepDivesPage /></Layout>
-          </Route>
-          <Route path="/sectoral/regional">
-            <Layout><RegionalPage /></Layout>
-          </Route>
-          <Route path="/sectoral/esg">
-            <Layout><ESGPage /></Layout>
-          </Route>
+        <Route path="/sectoral/deep-dives">
+          <Layout><CmsPage slug="/sectoral/deep-dives" /></Layout>
+        </Route>
+        <Route path="/sectoral/regional">
+          <Layout><CmsPage slug="/sectoral/regional" /></Layout>
+        </Route>
+        <Route path="/sectoral/esg">
+          <Layout><CmsPage slug="/sectoral/esg" /></Layout>
+        </Route>
 
-          <Route path="/data/models">
-            <Layout withNewsletter={false}><ModelsPage /></Layout>
-          </Route>
-          <Route path="/data/economic-calendar">
-            <Layout withNewsletter={false}><DataHubPage /></Layout>
-          </Route>
-          <Route path="/data/market-dashboard">
-            <Layout withNewsletter={false}><DataHubPage /></Layout>
-          </Route>
-          <Route path="/data/market-overview">
-            <Layout withNewsletter={false}><DynamicPage pageSlug="market-overview" /></Layout>
-          </Route>
-          <Route path="/data">
-            <Layout withNewsletter={false}><DataHubPage /></Layout>
-          </Route>
+        <Route path="/data/models">
+          <Layout withNewsletter={false}><ModelsPage /></Layout>
+        </Route>
+        <Route path="/data/economic-calendar">
+          <Layout withNewsletter={false}><DataHubPage /></Layout>
+        </Route>
+        <Route path="/data/market-dashboard">
+          <Layout withNewsletter={false}><DataHubPage /></Layout>
+        </Route>
+        <Route path="/data/market-overview">
+          <Layout withNewsletter={false}><DynamicPage pageSlug="market-overview" /></Layout>
+        </Route>
+        <Route path="/data">
+          <Layout withNewsletter={false}><DataHubPage /></Layout>
+        </Route>
 
-          <Route path="/blog/economics-101">
-            <Layout><BlogPage sub="economics-101" /></Layout>
-          </Route>
-          <Route path="/blog/market-pulse">
-            <Layout><BlogPage sub="market-pulse" /></Layout>
-          </Route>
-          <Route path="/blog/lab-notes">
-            <Layout><BlogPage sub="lab-notes" /></Layout>
-          </Route>
-          <Route path="/blog/:category">
-            <Layout><BlogCategoryPage /></Layout>
-          </Route>
-          <Route path="/blog">
-            <Layout><BlogPage /></Layout>
-          </Route>
+        <Route path="/blog/economics-101">
+          <Layout><BlogPage sub="economics-101" /></Layout>
+        </Route>
+        <Route path="/blog/market-pulse">
+          <Layout><BlogPage sub="market-pulse" /></Layout>
+        </Route>
+        <Route path="/blog/lab-notes">
+          <Layout><BlogPage sub="lab-notes" /></Layout>
+        </Route>
+        <Route path="/blog/:category">
+          <Layout><BlogCategoryPage /></Layout>
+        </Route>
+        <Route path="/blog">
+          <Layout><BlogPage /></Layout>
+        </Route>
 
-          <Route path="/article/:slug">
-            <Layout withNewsletter={false}><ArticlePage /></Layout>
-          </Route>
+        <Route path="/article/:slug">
+          <Layout withNewsletter={false}><ArticlePage /></Layout>
+        </Route>
 
-          <Route path="/analisis/corporate-action">
-            <Layout withNewsletter={false}><AnalysisPage /></Layout>
-          </Route>
-          <Route path="/analisis/emiten-insight">
-            <Layout withNewsletter={false}><AnalysisPage /></Layout>
-          </Route>
-          <Route path="/analisis">
-            <Layout withNewsletter={false}><AnalysisPage /></Layout>
-          </Route>
+        <Route path="/analisis/corporate-action">
+          <Layout withNewsletter={false}><AnalysisPage /></Layout>
+        </Route>
+        <Route path="/analisis/emiten-insight">
+          <Layout withNewsletter={false}><AnalysisPage /></Layout>
+        </Route>
+        <Route path="/analisis">
+          <Layout withNewsletter={false}><AnalysisPage /></Layout>
+        </Route>
 
-          <Route path="/">
-            <HomePage />
-          </Route>
+        <Route path="/">
+          <HomePage />
+        </Route>
 
-          {/* Dynamic CMS pages — catches any slug created in admin */}
-          <Route>
-            <Layout><CmsDynamicPage /></Layout>
-          </Route>
-        </Switch>
-      </LocaleProvider>
-    </DarkModeProvider>
+        {/* Dynamic CMS pages — catches any slug created in admin */}
+        <Route>
+          <Layout><CmsDynamicPage /></Layout>
+        </Route>
+      </Switch>
+    </LocaleProvider>
   );
 }

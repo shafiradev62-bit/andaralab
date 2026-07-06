@@ -1,9 +1,8 @@
 import { useState, useRef, useMemo } from "react";
 import { Link, useLocation } from "wouter";
-import { ChevronDown, Menu, X, Sun, Moon } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { useLocale } from "@/lib/locale";
 import { usePages, usePosts } from "@/lib/cms-store";
-import { useDarkMode } from "@/lib/dark-mode-context";
 
 type NavChild = { label: string; href: string };
 type NavItem =
@@ -34,13 +33,9 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const { locale, setLocale, t } = useLocale();
-  const { darkMode, setDarkMode } = useDarkMode();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { data: cmsPages = [] } = usePages({ status: "published", locale });
   const { data: cmsPosts = [] } = usePosts({ status: "published" });
-  
-  // Use darkMode from context if dark prop not provided
-  const isDark = dark || darkMode;
 
   // Blog children — always show the 3 fixed categories (Economics 101, Market Pulse, Lab Notes)
   const blogNavChildren: NavChild[] = FALLBACK_BLOG;
@@ -144,13 +139,13 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
   };
 
   return (
-    <header className={`${isDark ? "bg-[hsl(222,47%,8%)]/90 backdrop-blur-sm border-b border-[hsl(217,33%,17%)]" : "bg-white border-b border-[#E5E7EB]"}`}>
+    <header className={`${dark ? "bg-black/40 backdrop-blur-sm border-b border-white/10" : "bg-white border-b border-[#E5E7EB]"}`}>
       <div className="max-w-[1200px] mx-auto px-6 flex items-center h-14">
         <Link href="/" className="flex items-center gap-2 mr-6 flex-shrink-0">
-          <div className={`w-7 h-7 border flex items-center justify-center rounded-md ${isDark ? "border-[hsl(217,33%,17%)]" : "border-gray-400"}`}>
-            <span className={`text-[11px] font-bold ${isDark ? "text-[hsl(210,40%,98%)]" : "text-gray-700"}`}>AL</span>
+          <div className={`w-7 h-7 border flex items-center justify-center rounded-md ${dark ? "border-white/40" : "border-gray-400"}`}>
+            <span className={`text-[11px] font-bold ${dark ? "text-white" : "text-gray-700"}`}>AL</span>
           </div>
-          <span className={`text-[15px] font-bold tracking-tight ${isDark ? "text-[hsl(210,40%,98%)]" : "text-gray-900"}`}>AndaraLab</span>
+          <span className={`text-[15px] font-bold tracking-tight ${dark ? "text-white" : "text-gray-900"}`}>AndaraLab</span>
         </Link>
 
         {/* Desktop nav */}
@@ -167,8 +162,8 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
                   href={(item as any).href}
                   className={`flex items-center px-3 py-5 text-[13px] font-medium border-b-2 transition-colors whitespace-nowrap ${
                     isActive(item)
-                      ? (isDark ? "border-[hsl(210,40%,98%)] text-[hsl(210,40%,98%)]" : "border-gray-900 text-gray-900")
-                      : isDark ? "border-transparent text-[hsl(210,40%,98%)]/70 hover:text-[hsl(210,40%,98%)]" : "border-transparent text-gray-600 hover:text-gray-900"
+                      ? (dark ? "border-white text-white" : "border-gray-900 text-gray-900")
+                      : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-gray-600 hover:text-gray-900"
                   }`}
                 >
                   {item.label}
@@ -178,8 +173,8 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
                   <button
                     className={`flex items-center gap-1 px-3 py-5 text-[13px] font-medium border-b-2 transition-colors whitespace-nowrap ${
                       isActive(item)
-                        ? (isDark ? "border-[hsl(210,40%,98%)] text-[hsl(210,40%,98%)]" : "border-gray-900 text-gray-900")
-                        : isDark ? "border-transparent text-[hsl(210,40%,98%)]/70 hover:text-[hsl(210,40%,98%)]" : "border-transparent text-gray-600 hover:text-gray-900"
+                        ? (dark ? "border-white text-white" : "border-gray-900 text-gray-900")
+                        : dark ? "border-transparent text-white/70 hover:text-white" : "border-transparent text-gray-600 hover:text-gray-900"
                     }`}
                   >
                     {item.label}
@@ -187,7 +182,7 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
                   </button>
                   {openMenu === item.label && "children" in item && (
                     <div
-                      className={`absolute top-full left-0 border shadow-lg min-w-[230px] z-50 ${isDark ? "bg-[hsl(222,47%,8%)] border-[hsl(217,33%,17%)]" : "bg-white border-[#E5E7EB]"}`}
+                      className={`absolute top-full left-0 border shadow-lg min-w-[230px] z-50 ${dark ? "bg-black/80 backdrop-blur-sm border-white/10" : "bg-white border-[#E5E7EB]"}`}
                       onMouseEnter={() => handleMouseEnter(item.label)}
                       onMouseLeave={handleMouseLeave}
                     >
@@ -198,8 +193,8 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
                           onClick={() => setOpenMenu(null)}
                           className={`block px-4 py-2.5 text-[13px] transition-colors border-b last:border-0 ${
                             location === child.href
-                              ? (isDark ? "text-[hsl(210,40%,98%)] font-medium bg-[hsl(217,33%,17%)]" : "text-gray-900 font-medium bg-gray-100")
-                              : isDark ? "text-[hsl(210,40%,98%)]/70 hover:text-[hsl(210,40%,98%)] hover:bg-[hsl(217,33%,17%)] border-[hsl(217,33%,17%)]" : "text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-[#F9FAFB]"
+                              ? (dark ? "text-white font-medium bg-white/10" : "text-gray-900 font-medium bg-gray-100")
+                              : dark ? "text-white/70 hover:text-white hover:bg-white/10 border-white/10" : "text-gray-700 hover:bg-gray-50 hover:text-gray-900 border-[#F9FAFB]"
                           }`}
                         >
                           {child.label}
@@ -215,28 +210,15 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
 
         {/* Right side */}
         <div className="hidden lg:flex items-center gap-3 ml-4">
-          {/* Dark mode toggle */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`p-2 rounded-md transition-colors ${
-              isDark 
-                ? "text-[hsl(210,40%,98%)] hover:bg-[hsl(217,33%,17%)]" 
-                : "text-gray-600 hover:bg-gray-100"
-            }`}
-            aria-label="Toggle dark mode"
-          >
-            {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
-          
-          <div className={`flex items-center gap-1 text-[12.5px] p-0.5 ${isDark ? "text-[hsl(210,40%,98%)]/50 border border-[hsl(217,33%,17%)]" : "text-gray-500 border border-[#E5E7EB]"}`}>
+          <div className={`flex items-center gap-1 text-[12.5px] p-0.5 ${dark ? "text-white/50 border border-white/20" : "text-gray-500 border border-[#E5E7EB]"}`}>
             {(["en", "id"] as const).map((l) => (
               <button
                 key={l}
                 onClick={() => setLocale(l)}
                 className={`px-2.5 py-1 font-medium transition-colors ${
                   locale === l
-                    ? (isDark ? "bg-[hsl(210,40%,98%)] text-[hsl(222,47%,8%)] border border-[hsl(210,40%,98%)]" : "bg-white text-gray-900 border border-gray-900")
-                    : isDark ? "hover:text-[hsl(210,40%,98%)]" : "hover:text-gray-800"
+                    ? (dark ? "bg-white text-gray-900 border border-white" : "bg-white text-gray-900 border border-gray-900")
+                    : dark ? "hover:text-white" : "hover:text-gray-800"
                 }`}
               >
                 {l.toUpperCase()}
@@ -246,62 +228,51 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
           <Link
             href="/contact"
             className={`text-[12.5px] font-medium border px-4 py-1.5 transition-colors whitespace-nowrap ${
-              isDark ? "text-[hsl(210,40%,98%)] border-[hsl(210,40%,98%)]/60 hover:bg-[hsl(217,33%,17%)]" : "text-gray-900 border-gray-900 hover:bg-gray-100"
+              dark ? "text-white border-white/60 hover:bg-white/10" : "text-gray-900 border-gray-900 hover:bg-gray-100"
             }`}
           >
             {t("nav_get_in_touch")}
           </Link>
         </div>
 
-        <div className="flex lg:hidden items-center gap-2 ml-auto">
-          {/* Dark mode toggle for mobile */}
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`p-2 ${isDark ? "text-[hsl(210,40%,98%)]" : "text-gray-500"}`}
-            aria-label="Toggle dark mode"
-          >
-            {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-          
-          <button
-            className={`p-2 ${isDark ? "text-[hsl(210,40%,98%)]" : "text-gray-500"}`}
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
+        <button
+          className={`lg:hidden ml-auto p-2 ${dark ? "text-white" : "text-gray-500"}`}
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
       {/* Mobile nav */}
       {mobileOpen && (
-        <div className={`lg:hidden shadow-lg max-h-[80vh] overflow-y-auto ${isDark ? "bg-[hsl(222,47%,8%)] border-t border-[hsl(217,33%,17%)]" : "bg-white border-t border-[#E5E7EB]"}`}>
+        <div className={`lg:hidden shadow-lg max-h-[80vh] overflow-y-auto ${dark ? "bg-black/90 backdrop-blur-sm border-t border-white/10" : "bg-white border-t border-[#E5E7EB]"}`}>
           {navItemsWithBlog.map((item) => (
-            <div key={item.label} className={`border-b ${isDark ? "border-[hsl(217,33%,17%)]" : "border-[#F3F4F6]"}`}>
+            <div key={item.label} className={`border-b ${dark ? "border-white/10" : "border-[#F3F4F6]"}`}>
               {"href" in item && !("children" in item) ? (
                 <Link
                   href={(item as any).href}
                   onClick={() => setMobileOpen(false)}
-                  className={`block px-6 py-3.5 text-[14px] font-medium ${isDark ? "text-[hsl(210,40%,98%)]" : "text-gray-800"}`}
+                  className={`block px-6 py-3.5 text-[14px] font-medium ${dark ? "text-white" : "text-gray-800"}`}
                 >
                   {item.label}
                 </Link>
               ) : (
                 <>
                   <button
-                    className={`flex items-center justify-between w-full px-6 py-3.5 text-[14px] font-medium ${isDark ? "text-[hsl(210,40%,98%)]" : "text-gray-800"}`}
+                    className={`flex items-center justify-between w-full px-6 py-3.5 text-[14px] font-medium ${dark ? "text-white" : "text-gray-800"}`}
                     onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
                   >
                     {item.label}
                     <ChevronDown className={`w-4 h-4 transition-transform ${mobileExpanded === item.label ? "rotate-180" : ""}`} />
                   </button>
                   {mobileExpanded === item.label && "children" in item && (
-                    <div className={isDark ? "bg-[hsl(217,33%,17%)] border-t border-[hsl(217,33%,17%)]" : "bg-gray-50 border-t border-[#F3F4F6]"}>
+                    <div className={dark ? "bg-white/5 border-t border-white/10" : "bg-gray-50 border-t border-[#F3F4F6]"}>
                       {(item as any).children?.map((child: any) => (
                         <Link
                           key={child.href}
                           href={child.href}
                           onClick={() => { setMobileOpen(false); setMobileExpanded(null); }}
-                          className={`block px-8 py-3 text-[13.5px] ${isDark ? "text-[hsl(210,40%,98%)]/70 hover:text-[hsl(210,40%,98%)]" : "text-gray-600 hover:text-gray-900"}`}
+                          className={`block px-8 py-3 text-[13.5px] ${dark ? "text-white/70 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
                         >
                           {child.label}
                         </Link>
@@ -312,13 +283,13 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
               )}
             </div>
           ))}
-          <div className={`flex items-center gap-3 px-6 py-4 ${isDark ? "border-t border-[hsl(217,33%,17%)]" : ""}`}>
-            <div className={`flex items-center gap-1 text-[12.5px] p-0.5 ${isDark ? "text-[hsl(210,40%,98%)]/50 border border-[hsl(217,33%,17%)]" : "text-gray-500 border border-[#E5E7EB]"}`}>
+          <div className={`flex items-center gap-3 px-6 py-4 ${dark ? "border-t border-white/10" : ""}`}>
+            <div className={`flex items-center gap-1 text-[12.5px] p-0.5 ${dark ? "text-white/50 border border-white/20" : "text-gray-500 border border-[#E5E7EB]"}`}>
               {(["en", "id"] as const).map((l) => (
                 <button
                   key={l}
                   onClick={() => setLocale(l)}
-                  className={`px-2.5 py-1 font-medium transition-colors ${locale === l ? (isDark ? "bg-[hsl(210,40%,98%)] text-[hsl(222,47%,8%)] border border-[hsl(210,40%,98%)]" : "bg-white text-gray-900 border border-gray-900") : isDark ? "hover:text-[hsl(210,40%,98%)]" : "hover:text-gray-800"}`}
+                  className={`px-2.5 py-1 font-medium transition-colors ${locale === l ? (dark ? "bg-white text-gray-900 border border-white" : "bg-white text-gray-900 border border-gray-900") : dark ? "hover:text-white" : "hover:text-gray-800"}`}
                 >
                   {l.toUpperCase()}
                 </button>
@@ -327,7 +298,7 @@ export default function Navbar({ dark = false }: { dark?: boolean }) {
             <Link
               href="/contact"
               onClick={() => setMobileOpen(false)}
-              className={`text-[12.5px] font-medium border px-4 py-1.5 ${isDark ? "text-[hsl(210,40%,98%)] border-[hsl(210,40%,98%)]/60" : "text-gray-900 border-gray-900"}`}
+              className={`text-[12.5px] font-medium border px-4 py-1.5 ${dark ? "text-white border-white/60" : "text-gray-900 border-gray-900"}`}
             >
               {t("nav_get_in_touch")}
             </Link>

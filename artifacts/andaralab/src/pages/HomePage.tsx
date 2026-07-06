@@ -8,11 +8,8 @@ import MarketTicker from "@/components/MarketTicker";
 import Navbar from "@/components/Navbar";
 import NewsletterSection from "@/components/NewsletterSection";
 import Footer from "@/components/Footer";
-import { useDarkMode } from "@/lib/dark-mode-context";
 
 export default function HomePage() {
-  const { darkMode } = useDarkMode();
-  
   useEffect(() => {
     applyDocumentSeo({
       title: `${SITE_NAME} | Economic Intelligence`,
@@ -22,10 +19,10 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className={`min-h-screen font-sans ${darkMode ? "bg-[hsl(222,47%,8%)] text-[hsl(210,40%,98%)]" : "bg-white text-gray-900"}`}>
+    <div className="min-h-screen bg-white font-sans text-gray-900">
       <div className="fixed top-0 left-0 right-0 z-50">
-        <MarketTicker dark={darkMode} />
-        <Navbar dark={darkMode} />
+        <MarketTicker dark />
+        <Navbar dark />
       </div>
       <Hero />
       <DataHub />
