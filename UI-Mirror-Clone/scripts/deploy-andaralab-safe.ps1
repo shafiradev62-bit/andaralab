@@ -43,14 +43,12 @@ $DefaultFrontend = @(
     "src\lib\admin-auth-gate.tsx", "src\lib\blog-doc-editor.ts", "src\lib\cms-store.ts",
     "src\lib\dataset-search.ts", "src\lib\dev-auth.ts", "src\lib\locale.tsx", "src\lib\nav-order.ts",
     "src\lib\member-storage.ts", "src\lib\post-matching.ts", "src\lib\research-tag-styles.ts",
-    "src\lib\dark-mode-context.tsx",
     "src\pages\AboutPage.tsx", "src\pages\AdminPage.tsx", "src\pages\ArticlePage.tsx",
     "src\pages\ContactPage.tsx", "src\pages\DataHubPage.tsx", "src\pages\DynamicPage.tsx",
     "src\pages\SectionPage.tsx", "src\pages\AnalysisPage.tsx",
     "src\pages\MemberRegisterPage.tsx", "src\pages\MemberLoginPage.tsx",
     "src\pages\MemberSubscribePage.tsx", "src\pages\MemberAnalysisPage.tsx",
-    "src\App.tsx",
-    "src\index.css"
+    "src\App.tsx"
 )
 $DefaultBackend = @(
     "routes\pages.ts",
