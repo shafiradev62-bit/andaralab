@@ -113,13 +113,10 @@ export interface SeedBlogPost {
   category: string;
   tag?: string;
   image?: string;
-  imagePosition?: "top" | "bottom" | "left" | "right"; // Bug 11 fix
-  images?: string[]; // Bug 11 fix: gallery images
   readTime?: string;
   linkedId?: string;
   publishedAt?: string;
   subcategory?: string;
-  hideFromMacroOutlook?: boolean;
 }
 
 // ─── Chart Datasets ─────────────────────────────────────────────────────────────

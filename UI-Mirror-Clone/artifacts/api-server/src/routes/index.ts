@@ -10,15 +10,10 @@ import calendarRouter from "./calendar.js";
 import calendarConfigRouter from "./calendar-config.js";
 import webhookRouter from "./webhook.js";
 import activityRouter from "./activity.js";
-import authRouter from "./auth.js";
-import uploadRouter from "./upload.js";
-import memberAuthRouter from "./member-auth.js";
-import subscriptionsRouter from "./subscriptions.js";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
-router.use("/auth", authRouter);
 router.use("/datasets", datasetsRouter);
 router.use("/pages",    pagesRouter);
 router.use("/blog",     blogPostsRouter);
@@ -29,8 +24,5 @@ router.use("/calendar/events", calendarRouter);
 router.use("/calendar/config", calendarConfigRouter);
 router.use("/webhook", webhookRouter);
 router.use("/activity", activityRouter);
-router.use("/upload", uploadRouter);
-router.use("/member-auth", memberAuthRouter);
-router.use("/subscriptions", subscriptionsRouter);
 
 export default router;

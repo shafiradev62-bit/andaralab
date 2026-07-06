@@ -5,15 +5,15 @@
     "label": "IDR/USD",
     "labelEn": "IDR/USD",
     "labelId": "IDR/USD",
-    "value": "17.100",
-    "change": "-0.04%",
-    "changeValue": -0.04091892207868124,
-    "up": false,
+    "value": "17.107",
+    "change": "+0.18%",
+    "changeValue": 0.1756748843473678,
+    "up": true,
     "category": "currency",
     "order": 1,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-13T08:05:49.621Z"
+    "updatedAt": "2026-04-11T00:51:47.185Z"
   },
   {
     "id": "jci",
@@ -21,31 +21,31 @@
     "label": "JCI",
     "labelEn": "JCI",
     "labelId": "IHSG",
-    "value": "145",
-    "change": "-0.65%",
-    "changeValue": -0.6505512565911037,
-    "up": false,
+    "value": "138",
+    "change": "+0.25%",
+    "changeValue": 0.2477953501931371,
+    "up": true,
     "category": "index",
     "order": 2,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-05-01T21:30:21.084Z"
+    "updatedAt": "2026-04-17T05:05:33.826Z"
   },
   {
     "id": "bi-rate",
     "symbol": "BI Rate",
     "label": "BI Rate",
     "labelEn": "BI Rate",
-    "labelId": " Suku Bunga BI",
-    "value": "4.75%",
-    "change": "0",
+    "labelId": "Suku Bunga BI",
+    "value": "6.00%",
+    "change": "Unch",
     "changeValue": 0,
     "up": null,
     "category": "bond",
     "order": 3,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-15T01:28:52.869Z"
+    "updatedAt": "2026-04-08"
   },
   {
     "id": "us-10y",
@@ -61,7 +61,7 @@
     "order": 4,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-13T08:05:49.618Z"
+    "updatedAt": "2026-04-11T00:51:47.176Z"
   },
   {
     "id": "gold",
@@ -69,15 +69,15 @@
     "label": "Gold",
     "labelEn": "Gold",
     "labelId": "Emas",
-    "value": "$43",
-    "change": "-5.66%",
-    "changeValue": -5.66497012613409,
-    "up": false,
+    "value": "$47",
+    "change": "+3.67%",
+    "changeValue": 3.6674816625916837,
+    "up": true,
     "category": "commodity",
     "order": 5,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-05-01T21:30:21.084Z"
+    "updatedAt": "2026-04-17T05:05:33.826Z"
   },
   {
     "id": "brent",
@@ -85,15 +85,15 @@
     "label": "Brent",
     "labelEn": "Brent Crude",
     "labelId": "Minyak Brent",
-    "value": "$101.99",
-    "change": "+7.13%",
-    "changeValue": 7.132352941176462,
-    "up": true,
+    "value": "$94.45",
+    "change": "-1.53%",
+    "changeValue": -1.5325271059216001,
+    "up": false,
     "category": "commodity",
     "order": 6,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-13T08:05:49.607Z"
+    "updatedAt": "2026-04-11T00:51:47.202Z"
   },
   {
     "id": "eur-usd",
@@ -101,15 +101,15 @@
     "label": "EUR/USD",
     "labelEn": "EUR/USD",
     "labelId": "EUR/USD",
-    "value": "1.1699",
-    "change": "-0.26%",
-    "changeValue": -0.25577628101288374,
-    "up": false,
+    "value": "1.1729",
+    "change": "+0.22%",
+    "changeValue": 0.22216525677178142,
+    "up": true,
     "category": "currency",
     "order": 7,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-13T08:05:49.630Z"
+    "updatedAt": "2026-04-11T00:51:47.147Z"
   },
   {
     "id": "dxy",
@@ -117,15 +117,15 @@
     "label": "DXY",
     "labelEn": "DXY Index",
     "labelId": "Indeks DXY",
-    "value": "98.93",
-    "change": "+0.28%",
-    "changeValue": 0.27977698935630635,
-    "up": true,
+    "value": "98.70",
+    "change": "-0.12%",
+    "changeValue": -0.12244608830286616,
+    "up": false,
     "category": "currency",
     "order": 8,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-13T08:05:49.619Z"
+    "updatedAt": "2026-04-11T00:51:47.213Z"
   },
   {
     "id": "sp500",
@@ -141,7 +141,7 @@
     "order": 9,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-13T08:05:49.632Z"
+    "updatedAt": "2026-04-11T00:51:47.197Z"
   },
   {
     "id": "shanghai",
@@ -157,7 +157,7 @@
     "order": 10,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-11T01:17:39.537Z"
+    "updatedAt": "2026-04-11T00:22:14.824Z"
   },
   {
     "id": "nikkei",
@@ -165,15 +165,15 @@
     "label": "Nikkei",
     "labelEn": "Nikkei 225",
     "labelId": "Nikkei 225",
-    "value": "56,503",
-    "change": "-0.74%",
-    "changeValue": -0.7401784586531152,
-    "up": false,
+    "value": "56,924",
+    "change": "+1.84%",
+    "changeValue": 1.8405655428755052,
+    "up": true,
     "category": "index",
     "order": 11,
     "enabled": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-13T08:05:49.624Z"
+    "updatedAt": "2026-04-11T00:51:47.191Z"
   },
   {
     "id": "cpi-id",

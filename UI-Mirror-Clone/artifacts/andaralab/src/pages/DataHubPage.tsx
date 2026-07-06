@@ -3,9 +3,8 @@ import { useLocation, Link } from "wouter";
 import { useDatasets, useExchangeRates } from "@/lib/cms-store";
 import { useLocale } from "@/lib/locale";
 import { applyDocumentSeo } from "@/lib/document-meta";
-import { formatValue, formatNumberID } from "@/lib/utils";
+import { formatValue } from "@/lib/utils";
 import InteractiveChart from "@/components/InteractiveChart";
-import DatasetPreviewTable from "@/components/DatasetPreviewTable";
 import CalendarWidget from "@/components/CalendarWidget";
 import { BarChart2, LineChart as LineChartIcon, TrendingUp, Calendar, Table as TableIcon, ArrowRight, ExternalLink, AlertCircle, Loader2, Search, X, Filter, SortAsc, Layers } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -461,7 +460,37 @@ export default function DataHubPage() {
                 {activeView === "chart" ? (
                   <InteractiveChart dataset={selectedDataset} height={360} />
                 ) : (
-                  <DatasetPreviewTable dataset={selectedDataset} locale={locale} />
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-[13px]">
+                      <thead>
+                        <tr className="border-b border-[#E5E7EB]">
+                          {selectedDataset.columns.map((col) => (
+                            <th key={col} className="text-left py-2.5 px-3 text-[11.5px] font-semibold text-gray-500 uppercase tracking-wide">
+                              {col}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedDataset.rows.map((row, i) => (
+                          <tr key={i} className="border-b border-[#F3F4F6] hover:bg-gray-50">
+                            {selectedDataset.columns.map((col, colIdx) => {
+                              const val = row[col];
+                              const isNumeric = colIdx > 0 && typeof val === 'number';
+                              
+                              return (
+                                <td key={col} className={`py-2.5 px-3 text-gray-700 ${isNumeric ? 'font-mono' : ''}`}>
+                                  {isNumeric 
+                                    ? formatValue(val as number, selectedDataset.unitType, "") 
+                                    : (val ?? "—")}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
                 <p className="text-[11px] text-gray-400 mt-4">
                   {t("unit_label")}: {selectedDataset.unit?.trim() ? selectedDataset.unit : "—"} · {t("updated_label")}: {selectedDataset.updatedAt}

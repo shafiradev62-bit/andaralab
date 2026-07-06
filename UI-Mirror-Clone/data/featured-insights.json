@@ -4,19 +4,16 @@
     "locale": "en",
     "slugs": [
       {
-        "slug": "digital-economy-indonesia-2026",
-        "label": "",
-        "order": 3
+        "slug": "nickel-ev-indonesia",
+        "order": 1
       },
       {
-        "slug": "global-fertilizer-supply-tightens-en",
-        "label": "",
+        "slug": "digital-economy-indonesia-2026",
         "order": 2
       },
       {
         "slug": "bank-mandatory-ratio-q1-2026",
-        "label": "",
-        "order": 4
+        "order": 3
       }
     ],
     "title": "Featured Insights",
@@ -25,7 +22,7 @@
     "limit": 3,
     "showOnHomepage": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-04-24T05:53:24.460Z"
+    "updatedAt": "2026-04-06"
   },
   {
     "id": "featured-id",
@@ -33,23 +30,15 @@
     "slugs": [
       {
         "slug": "ri-transmigration-nickel-downstreaming",
-        "label": "",
-        "order": 2
-      },
-      {
-        "slug": "Pasokan-pupuk-global-semakin-menipis-id",
-        "label": "",
         "order": 1
       },
       {
         "slug": "prospeks-makro-indonesia-2026-id",
-        "label": "",
-        "order": 3
+        "order": 2
       },
       {
         "slug": "food-inflation-handling-indonesia",
-        "label": "",
-        "order": 4
+        "order": 3
       }
     ],
     "title": "Wawasan Pilihan",
@@ -58,6 +47,6 @@
     "limit": 3,
     "showOnHomepage": true,
     "createdAt": "2026-01-01",
-    "updatedAt": "2026-05-01T02:36:24.602Z"
+    "updatedAt": "2026-04-06"
   }
 ]

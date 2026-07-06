@@ -3,18 +3,19 @@ import { Link } from "wouter";
 import { usePosts } from "../lib/cms-store";
 import { useLocale } from "../lib/locale";
 import { RESEARCH_TAG_PILL } from "../lib/research-tag-styles";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
-function formatDate(dateStr?: string) {
+function formatDate(dateStr: string | undefined, locale: string) {
   if (!dateStr) return "";
   try {
-    return new Date(dateStr).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    return new Date(dateStr).toLocaleDateString(locale === "id" ? "id-ID" : "en-US", { month: "short", day: "numeric", year: "numeric" });
   } catch {
     return dateStr;
   }
 }
 
 export default function LatestInsights() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { data: posts = [], isLoading } = usePosts({ status: "published", locale });
 
   const published = posts
@@ -42,9 +43,9 @@ export default function LatestInsights() {
     <section className="py-12 bg-white border-t border-[#E5E7EB]">
       <div className="max-w-[1200px] mx-auto px-6">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-[22px] font-semibold text-gray-900">Latest Insights</h2>
+          <h2 className="text-[22px] font-semibold text-gray-900">{t("latest_insights")}</h2>
           <Link href="/blog" className="text-[12.5px] font-medium text-gray-900 hover:underline flex items-center gap-1">
-            View all <ArrowRight className="w-3.5 h-3.5" />
+            {t("view_all")} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
@@ -60,18 +61,21 @@ export default function LatestInsights() {
                 <span className={`text-[10.5px] font-semibold px-2 py-0.5 uppercase tracking-wide ${RESEARCH_TAG_PILL}`}>
                   {post.category}
                 </span>
+                {locale === "id" && post.locale === "en" && (
+                  <span className="text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-sm">EN</span>
+                )}
               </div>
               <h3 className="text-[14.5px] font-semibold text-gray-900 leading-snug mb-2.5 group-hover:text-gray-900 transition-colors flex-1">
-                {post.title}
+                <MarkdownRenderer content={post.title} inlineOnly />
               </h3>
               {post.excerpt && (
-                <p className="text-[12.5px] text-gray-500 leading-relaxed mb-4 line-clamp-3">
-                  {post.excerpt}
-                </p>
+                <div className="text-[12.5px] text-gray-500 leading-relaxed mb-4 line-clamp-3">
+                  <MarkdownRenderer content={post.excerpt} inlineOnly />
+                </div>
               )}
               <div className="flex items-center justify-between mt-auto pt-3 border-t border-[#F3F4F6]">
                 <div className="flex items-center gap-2 text-[11px] text-gray-400">
-                  <span>{formatDate(post.publishedAt || post.createdAt)}</span>
+                  <span>{formatDate(post.publishedAt || post.createdAt, locale)}</span>
                   {post.readTime && (
                     <>
                       <span>·</span>
@@ -82,7 +86,7 @@ export default function LatestInsights() {
                   )}
                 </div>
                 <span className="text-[12px] font-medium text-gray-900 flex items-center gap-1 group-hover:gap-2 transition-all">
-                  Read <ArrowRight className="w-3 h-3" />
+                  {t("read_label")} <ArrowRight className="w-3 h-3" />
                 </span>
               </div>
             </Link>
@@ -104,12 +108,15 @@ export default function LatestInsights() {
                   </span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[13.5px] font-medium text-gray-900 truncate group-hover:text-gray-900 transition-colors">
+                  <div className="text-[13.5px] font-medium text-gray-900 truncate group-hover:text-gray-900 transition-colors flex items-center gap-2">
                     {post.title}
+                    {locale === "id" && post.locale === "en" && (
+                      <span className="flex-shrink-0 text-[9.5px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-200 rounded-sm">EN</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0 text-[11px] text-gray-400">
-                  <span>{formatDate(post.publishedAt || post.createdAt)}</span>
+                  <span>{formatDate(post.publishedAt || post.createdAt, locale)}</span>
                   {post.readTime && (
                     <span className="flex items-center gap-0.5">
                       <Clock className="w-3 h-3" /> {post.readTime}

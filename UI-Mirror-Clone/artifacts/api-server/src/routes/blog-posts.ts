@@ -9,22 +9,18 @@ import { blogPostStore } from "../lib/store.js";
 // ─── Zod validation ─────────────────────────────────────────────────────────────
 
 const createPostSchema = z.object({
-  slug:          z.string().min(1),
-  locale:        z.enum(["en", "id"]),
-  status:        z.enum(["draft", "published"]),
-  title:         z.string().min(1),
-  excerpt:       z.string().optional(),
-  body:          z.array(z.string()).optional().default([]),
-  category:      z.string().min(1),
-  subcategory:   z.string().optional(),
-  hideFromMacroOutlook: z.boolean().optional(),
-  tag:           z.string().optional(),
-  image:         z.string().optional(),
-  imagePosition: z.enum(["top", "bottom", "left", "right"]).optional().default("top"),
-  images:        z.array(z.string()).optional().default([]),
-  readTime:      z.string().optional(),
-  linkedId:      z.string().optional(),
-  publishedAt:   z.string().optional(),
+  slug:        z.string().min(1),
+  locale:      z.enum(["en", "id"]),
+  status:      z.enum(["draft", "published"]),
+  title:       z.string().min(1),
+  excerpt:     z.string().optional(),
+  body:        z.array(z.string()).optional().default([]),
+  category:    z.string().min(1),
+  tag:         z.string().optional(),
+  image:       z.string().optional(),
+  readTime:    z.string().optional(),
+  linkedId:    z.string().optional(),
+  publishedAt: z.string().optional(),
 });
 
 const updatePostSchema = createPostSchema.partial().refine(

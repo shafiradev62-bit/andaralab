@@ -129,50 +129,6 @@
   --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
-/* ─── Dark mode CSS variable overrides ──────────────────────────────────────── */
-.dark {
-  --background: 220 13% 9%;
-  --foreground: 210 20% 92%;
-  --border: 220 13% 18%;
-  --card: 220 13% 12%;
-  --card-foreground: 210 20% 92%;
-  --card-border: 220 13% 18%;
-  --sidebar: 220 13% 10%;
-  --sidebar-foreground: 210 20% 92%;
-  --sidebar-border: 220 13% 18%;
-  --sidebar-primary: 210 20% 80%;
-  --sidebar-primary-foreground: 220 13% 9%;
-  --sidebar-accent: 220 13% 16%;
-  --sidebar-accent-foreground: 210 20% 92%;
-  --sidebar-ring: 210 20% 60%;
-  --popover: 220 13% 12%;
-  --popover-foreground: 210 20% 92%;
-  --popover-border: 220 13% 18%;
-  --primary: 210 20% 80%;
-  --primary-foreground: 220 13% 9%;
-  --secondary: 220 13% 16%;
-  --secondary-foreground: 210 20% 92%;
-  --muted: 220 13% 16%;
-  --muted-foreground: 215 15% 55%;
-  --accent: 220 13% 16%;
-  --accent-foreground: 210 20% 92%;
-  --destructive: 0 65% 55%;
-  --destructive-foreground: 0 0% 100%;
-  --input: 220 13% 20%;
-  --ring: 210 20% 60%;
-  --chart-1: 210 20% 70%;
-  --chart-2: 160 55% 50%;
-  --chart-3: 30 75% 60%;
-  --chart-4: 280 60% 65%;
-  --chart-5: 340 70% 60%;
-
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .06);
-  --opaque-button-border-intensity: 8;
-  --elevate-1: rgba(255,255,255, .03);
-  --elevate-2: rgba(255,255,255, .07);
-}
-
 @layer base {
   * {
     @apply border-border;
@@ -219,12 +175,6 @@
 
 .shimmer {
   background: linear-gradient(90deg, #f0f4f9 25%, #e4eaf3 50%, #f0f4f9 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s ease infinite;
-}
-
-.dark .shimmer {
-  background: linear-gradient(90deg, #1e2533 25%, #252d3d 50%, #1e2533 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease infinite;
 }

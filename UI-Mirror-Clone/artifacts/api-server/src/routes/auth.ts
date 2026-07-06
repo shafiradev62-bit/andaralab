@@ -3,7 +3,6 @@ import type { Request, Response } from "express";
 import {
   createAdminSession,
   getAdminSession,
-  renewAdminSession,
   revokeAdminSession,
   validateAdminCredentials,
 } from "../lib/admin-auth.js";
@@ -65,19 +64,6 @@ router.get("/me", (req: Request, res: Response) => {
   const session = getAdminSession(token);
   if (!session) return res.status(401).json({ error: "Unauthorized" });
   return res.json({ data: { username: session.username, expiresAt: session.expiresAt } });
-});
-
-router.post("/renew", (req: Request, res: Response) => {
-  const token = getBearer(req);
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
-  const session = renewAdminSession(token);
-  if (!session) return res.status(401).json({ error: "Unauthorized" });
-  return res.json({
-    data: {
-      username: session.username,
-      expiresAt: session.expiresAt,
-    },
-  });
 });
 
 router.post("/logout", (req: Request, res: Response) => {
