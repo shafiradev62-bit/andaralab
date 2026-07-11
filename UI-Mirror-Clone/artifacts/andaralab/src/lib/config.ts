@@ -23,5 +23,5 @@ export const API_BASE_URL = normalizeApiBase(
 );
 
 export const API_FALLBACK_BASE_URL = normalizeApiBase(
-  import.meta.env.VITE_API_FALLBACK_BASE_URL ?? "http://76.13.17.91:3001/api",
+  import.meta.env.VITE_API_FALLBACK_BASE_URL ?? "http://177.7.55.182:3001/api",
 );

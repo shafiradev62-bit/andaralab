@@ -37,6 +37,9 @@ const allowedOrigins = [
   "http://76.13.17.91:3000",
   "http://76.13.17.91:3001",
   "http://76.13.17.91:5173",
+  // Production domain
+  "https://andaralab.id",
+  "https://www.andaralab.id",
   // Vercel production & preview deployments
   "https://andaralab-ui.vercel.app",
   "https://andaralab-lkxp7b875-rahmis-projects-881d2cc1.vercel.app",
@@ -52,7 +55,10 @@ const extraOrigins = (process.env.CORS_ORIGINS ?? "")
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (e.g., mobile apps, curl)
+    // Allow all if CORS_ALLOW_ALL env is set (default for production PM2 start)
+    if (process.env.CORS_ALLOW_ALL === "true") return callback(null, true);
+
+    // Allow requests with no origin (e.g., mobile apps, curl, server-to-server)
     if (!origin) return callback(null, true);
     
     // Dynamic localhost allowing for development (all ports)
@@ -64,11 +70,14 @@ app.use(cors({
     if (extraOrigins.includes(origin)) return callback(null, true);
     // Allow all Vercel preview/deployment URLs
     if (origin && origin.includes(".vercel.app")) return callback(null, true);
+    // Allow all Render deployment URLs
+    if (origin && origin.includes(".onrender.com")) return callback(null, true);
     // Self-hosted deployments (same IP, any port)
     if (/^https?:\/\/76\.13\.17\.91(?::\d+)?$/i.test(origin)) return callback(null, true);
+    if (/^https?:\/\/177\.7\.55\.182(?::\d+)?$/i.test(origin)) return callback(null, true);
     callback(new Error(`CORS: origin ${origin} not allowed`));
   },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 }));

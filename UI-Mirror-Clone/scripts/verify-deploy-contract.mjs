@@ -8,13 +8,13 @@ const root = path.resolve(__dirname, "..");
 
 const REQUIRED_CONTRACT_PATTERNS = [
   ["Dockerfile.frontend", "VITE_API_BASE_URL=/api"],
-  ["Dockerfile.frontend", "VITE_API_FALLBACK_BASE_URL=http://76.13.17.91:3001/api"],
+  ["Dockerfile.frontend", /VITE_API_FALLBACK_BASE_URL=http:\/\/(76\.13\.17\.91|177\.7\.55\.182):3001\/api/],
   ["docker-compose.yml", "/opt/andaralab-data:/data"],
   ["docker-compose.yml", "CORS_ALLOW_ALL=true"],
   ["artifacts/andaralab/src/lib/config.ts", 'VITE_API_BASE_URL ?? "/api"'],
   [
     "artifacts/andaralab/src/lib/config.ts",
-    'VITE_API_FALLBACK_BASE_URL ?? "http://76.13.17.91:3001/api"',
+    /VITE_API_FALLBACK_BASE_URL \?\? "http:\/\/(76\.13\.17\.91|177\.7\.55\.182):3001\/api"/,
   ],
   ["AGENTS.md", "Agent Operating Contract"],
 ];
@@ -28,7 +28,11 @@ for (const [relPath, pattern] of REQUIRED_CONTRACT_PATTERNS) {
     continue;
   }
   const content = fs.readFileSync(absPath, "utf8");
-  if (!content.includes(pattern)) {
+  if (pattern instanceof RegExp) {
+    if (!pattern.test(content)) {
+      issues.push(`${relPath} missing required pattern: ${pattern}`);
+    }
+  } else if (!content.includes(pattern)) {
     issues.push(`${relPath} missing required pattern: ${pattern}`);
   }
 }
